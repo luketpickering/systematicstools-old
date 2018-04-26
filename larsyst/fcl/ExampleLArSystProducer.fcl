@@ -1,0 +1,7 @@
+#include "ExampleGeneratedMetaData_splineable.fcl"
+
+ExampleLArSystProducer: {
+  module_type: "LArSystEventResponse"
+
+  generated_systematic_provider_configuration: @local::generated_systematic_provider_configuration
+}

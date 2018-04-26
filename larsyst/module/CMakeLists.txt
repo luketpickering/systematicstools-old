@@ -1,20 +1,23 @@
 art_make(LIBRARY_NAME larsyst
   LIB_LIBRARIES
-    larsyst_interface
-    larsyst_providers
+    larsyst_utility
     ${ART_FRAMEWORK_CORE}
     ${ART_FRAMEWORK_PRINCIPAL}
     art_Utilities
     canvas
     ${FHICLCPP}
+    cetlib
+    cetlib_except
     ${MF_MESSAGELOGGER}
     ${MF_UTILITIES}
     ${Boost_SYSTEM_LIBRARY}
     ${Boost_FILESYSTEM_LIBRARY}
   MODULE_LIBRARIES
-    larsyst_interface
+    larsyst_utility
+    ${ART_PERSISTENCY_COMMON}
+    ${ART_FRAMEWORK_SERVICES_REGISTRY}
+    ${ART_FRAMEWORK_SERVICES_OPTIONAL}
+    ${ART_FRAMEWORK_SERVICES_OPTIONAL_TFILESERVICE_SERVICE}
+    larsyst_interpreters
+    ${ROOT_BASIC_LIB_LIST}
 )
-
-install_headers()
-install_fhicl()
-install_source()

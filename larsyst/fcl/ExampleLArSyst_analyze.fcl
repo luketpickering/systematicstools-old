@@ -1,0 +1,41 @@
+#include "ExampleGeneratedMetaData_multisim.fcl"
+
+ExampleLArSystAnalyzer: {
+  module_type: "LArSystResponseTreeMaker"
+
+  param_tweak: -1
+
+  generated_systematic_provider_configuration: @local::generated_systematic_provider_configuration
+}
+
+process_name: LArSystExampleGen
+
+services: {
+  scheduler: { defaultExceptions: false } # Make all uncaught exceptions fatal.
+  TFileService: { fileName: "ExampleLArSystTreeMaker.root" }
+}
+
+source: {
+  module_type: RootInput
+  maxEvents: -1 # Number of events to create
+}
+
+# Define and configure some modules to do work on each event.
+# First modules are defined; they are scheduled later.
+# Modules are grouped by type.
+physics:
+{
+ analyzers:{
+   treedump: @local::ExampleLArSystAnalyzer
+ }
+
+ trigger_paths: []
+
+ dump_weights: [treedump]
+
+ #end_paths is a keyword and contains the paths that do not modify the art::Event,
+ #ie analyzers and output streams. these all run simultaneously
+ end_paths: [dump_weights]
+}
+
+physics.analyzers.treedump.input_module_label: "eventsyst"

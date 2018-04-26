@@ -1,7 +1,11 @@
-process_name: GenieEventWeight
+#include "ExampleLArSystProducer.fcl"
+#include "ExampleLArSystAnalyzer.fcl"
+
+process_name: LArSystExampleGen
 
 services: {
   scheduler: { defaultExceptions: false } # Make all uncaught exceptions fatal.
+  TFileService: { fileName: "ExampleLArSystTreeMaker.root" }
 }
 
 source: {
@@ -15,7 +19,11 @@ source: {
 physics:
 {
  producers:{
-   eventsyst: { module_type: "LArEventResponse" }
+   eventsyst: @local::ExampleLArSystProducer
+ }
+
+ analyzers:{
+   treedump: @local::ExampleLArSystAnalyzer
  }
 
  #define the output stream, there could be more than one if using filters
@@ -25,9 +33,10 @@ physics:
 
  trigger_paths: [stash_weights]
 
+ dump_weights: [treedump]
  #end_paths is a keyword and contains the paths that do not modify the art::Event,
  #ie analyzers and output streams. these all run simultaneously
- end_paths: [stream1]
+ end_paths: [stream1, dump_weights]
 }
 
 
@@ -42,3 +51,5 @@ outputs:
    fileName: "stashed_weights.root"
  }
 }
+
+physics.analyzers.treedump.input_module_label: "eventsyst"

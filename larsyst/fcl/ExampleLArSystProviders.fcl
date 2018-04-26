@@ -1,0 +1,60 @@
+ExampleGlobalWeightProvider_multisim: {
+  tool_type: "ExampleLArSystProvider"
+  uniqueName: "multisim"
+
+  numberOfThrows: 50
+}
+
+ExampleGlobalWeightProvider_multisim_applyall: {
+  tool_type: "ExampleLArSystProvider"
+  uniqueName: "multisim_applyall"
+
+  numberOfThrows: 50
+  applyToAll: true
+}
+
+ExampleGlobalWeightProvider_multisim_smalleruncert: {
+  tool_type: "ExampleLArSystProvider"
+  uniqueName: "multisim_smalleruncert"
+
+  unitsAreNatural: true
+  oneSigmaShifts: [-1,1]
+
+  numberOfThrows: 50
+}
+
+ExampleGlobalWeightProvider_multisim_centreshift: {
+  tool_type: "ExampleLArSystProvider"
+  uniqueName: "multisim_centreshift"
+
+  unitsAreNatural: true
+  centralParamValue: 10
+  oneSigmaShifts: [-2,2]
+
+  numberOfThrows: 50
+}
+
+ExampleGlobalWeightProvider_spline: {
+  tool_type: "ExampleLArSystProvider"
+    uniqueName: "global_spline"
+
+  splineKnotDescriptor: "-2_2:0.1"
+}
+
+ExampleEventByEventWeightProvider_spline: {
+  tool_type: "ExampleLArSystProvider"
+    uniqueName: "ev_spline"
+
+  splineKnotDescriptor: "-2_2:0.1"
+  isGlobal: false
+}
+
+ExampleEventByEventLateralProvider_spline: {
+  tool_type: "ExampleLArSystProvider"
+  uniqueName: "lateral_ev_spline"
+
+  provideLateral: true
+
+  splineKnotDescriptor: "-2_2:0.1"
+  isGlobal: false
+}

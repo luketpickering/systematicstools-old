@@ -1,8 +1,0 @@
-<lcgdict>
-  <class name="larsyst::SystParamHeader"/>
-  <class name="art::Wrapper<larsyst::SystParamHeader>"/>
-  <class name="larsyst::SystMetaData"/>
-  <class name="art::Wrapper<larsyst::SystMetaData>"/>
-  <class name="larsyst::EventResponse"/>
-  <class name="art::Wrapper<larsyst::EventResponse>"/>
-</lcgdict>
