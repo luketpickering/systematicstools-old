@@ -162,8 +162,11 @@ LArSystResponseTreeMaker::LArSystResponseTreeMaker(fhicl::ParameterSet const &p)
   ParamValidationAndErrorResponse errSettings;
   errSettings.fCare = ParamValidationAndErrorResponse::kTortoise;
   errSettings.fPedantry = ParamValidationAndErrorResponse::kNotOnMyWatch;
-  if (configuredParameterHeaders.begin()->second.second.isSplineable) {
+  if (fSplineMode) {
     fEventHelper.SetChkErr(errSettings);
+    for (auto const &sph_it : configuredParameterHeaders) {
+      fEventHelper.DeclareUsingParameter(sph_it.first, fTweak);
+    }
   } else {
     fHeaderHelper.SetChkErr(errSettings);
   }
@@ -206,9 +209,8 @@ void LArSystResponseTreeMaker::analyze(art::Event const &e) {
         fOutputTree.SetParamResponse(
             sph.first, fTweak,
             sph.second.second.isWeightSystematicVariation
-                ? fEventHelper.GetEventWeightResponse(sph.first, ev_it, fTweak)
-                : fEventHelper.GetEventLateralResponse(sph.first, ev_it,
-                                                       fTweak));
+                ? fEventHelper.GetEventWeightResponse(sph.first, ev_it)
+                : fEventHelper.GetEventLateralResponse(sph.first, ev_it));
       }
       fOutputTree.SetTotalWeight(
           fEventHelper.GetTotalEventWeightResponse(ev_it));

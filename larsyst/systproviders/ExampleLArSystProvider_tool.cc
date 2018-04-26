@@ -53,8 +53,9 @@ struct Config {
   Atom<std::string> splineKnotDescriptor{
       Name("splineKnotDescriptor"), Comment(""),
       [this]() -> bool {
+        std::cout << "wefiojewiojioewf: " << this->numberOfThrows() << ", " << this->centralParamValue() << std::endl;
         return (this->numberOfThrows() == 0) &&
-               (this->centralParamValue() == 0);
+               (this->centralParamValue() == default_centralvalue_nu);
       },
       ""};
 

@@ -36,14 +36,14 @@ ExampleGlobalWeightProvider_multisim_centreshift: {
 
 ExampleGlobalWeightProvider_spline: {
   tool_type: "ExampleLArSystProvider"
-    uniqueName: "global_spline"
+  uniqueName: "global_spline"
 
   splineKnotDescriptor: "-2_2:0.1"
 }
 
 ExampleEventByEventWeightProvider_spline: {
   tool_type: "ExampleLArSystProvider"
-    uniqueName: "ev_spline"
+  uniqueName: "ev_spline"
 
   splineKnotDescriptor: "-2_2:0.1"
   isGlobal: false

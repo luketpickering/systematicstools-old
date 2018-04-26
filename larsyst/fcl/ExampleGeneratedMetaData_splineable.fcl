@@ -2,11 +2,10 @@ generated_systematic_provider_configuration: {
    ExampleLArSystProvider_ev_spline: {
       ExampleLArSystEventByEventLateral_some: {
          centralParamValue: 1
-         differsEventByEvent: true
          isSplineable: true
-         isWeightSystematicVariation: true
-         multiDimDescriptor: [
-            []
+         oneSigmaShifts: [
+            5,
+            5
          ]
          paramVariations: [
             -2,
@@ -53,7 +52,6 @@ generated_systematic_provider_configuration: {
          ]
          prettyName: "ExampleLArSystEventByEventLateral_some"
          systParamId: 1
-         unitsAreNatural: false
       }
       parameterHeaders: [
          "ExampleLArSystEventByEventLateral_some"
@@ -66,9 +64,9 @@ generated_systematic_provider_configuration: {
          centralParamValue: 1
          differsEventByEvent: false
          isSplineable: true
-         isWeightSystematicVariation: true
-         multiDimDescriptor: [
-            []
+         oneSigmaShifts: [
+            5,
+            5
          ]
          paramVariations: [
             -2,
@@ -114,8 +112,50 @@ generated_systematic_provider_configuration: {
             2
          ]
          prettyName: "ExampleLArSystGlobalLateral_some"
+         responses: [
+            1.1100000000000000977,
+            1.10499999999999998224,
+            1.10000000000000008882,
+            1.09499999999999997335,
+            1.09000000000000007994,
+            1.08499999999999996447,
+            1.08000000000000007105,
+            1.07499999999999995559,
+            1.07000000000000006217,
+            1.06499999999999994671,
+            1.06000000000000005329,
+            1.05499999999999993783,
+            1.05000000000000004441,
+            1.04499999999999992895,
+            1.04000000000000003553,
+            1.03499999999999992006,
+            1.03000000000000002665,
+            1.02499999999999991118,
+            1.02000000000000001776,
+            1.0149999999999999023,
+            1.01000000000000000888,
+            1.0149999999999999023,
+            1.02000000000000001776,
+            1.02499999999999991118,
+            1.03000000000000002665,
+            1.03499999999999992006,
+            1.04000000000000003553,
+            1.04499999999999992895,
+            1.05000000000000004441,
+            1.05499999999999993783,
+            1.06000000000000005329,
+            1.06499999999999994671,
+            1.07000000000000006217,
+            1.07499999999999995559,
+            1.08000000000000007105,
+            1.08499999999999996447,
+            1.09000000000000007994,
+            1.09499999999999997335,
+            1.10000000000000008882,
+            1.10499999999999998224,
+            1.1100000000000000977
+         ]
          systParamId: 0
-         unitsAreNatural: false
       }
       parameterHeaders: [
          "ExampleLArSystGlobalLateral_some"
@@ -126,11 +166,11 @@ generated_systematic_provider_configuration: {
    ExampleLArSystProvider_lateral_ev_spline: {
       ExampleLArSystEventByEventNorm_some: {
          centralParamValue: 1
-         differsEventByEvent: true
          isSplineable: true
          isWeightSystematicVariation: false
-         multiDimDescriptor: [
-            []
+         oneSigmaShifts: [
+            5,
+            5
          ]
          paramVariations: [
             -2,
@@ -176,8 +216,7 @@ generated_systematic_provider_configuration: {
             2
          ]
          prettyName: "ExampleLArSystEventByEventNorm_some"
-         systParamId: 3
-         unitsAreNatural: false
+         systParamId: 2
       }
       parameterHeaders: [
          "ExampleLArSystEventByEventNorm_some"
@@ -185,9 +224,10 @@ generated_systematic_provider_configuration: {
       tool_type: "ExampleLArSystProvider"
       uniqueName: "lateral_ev_spline"
    }
-   syst_providers_splineable: [
+   syst_providers: [
       "ExampleLArSystProvider_ev_spline",
       "ExampleLArSystProvider_global_spline",
       "ExampleLArSystProvider_lateral_ev_spline"
    ]
 }
+

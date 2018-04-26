@@ -1,5 +1,18 @@
-#include "ExampleLArSystProducer.fcl"
-#include "ExampleLArSystAnalyzer.fcl"
+#include "ExampleGeneratedMetaData_splineable.fcl"
+
+ExampleLArSystProducer: {
+  module_type: "LArSystEventResponse"
+
+  generated_systematic_provider_configuration: @local::generated_systematic_provider_configuration
+}
+
+ExampleLArSystAnalyzer: {
+  module_type: "LArSystResponseTreeMaker"
+
+  generated_systematic_provider_configuration: @local::generated_systematic_provider_configuration
+}
+
+ExampleLArSystAnalyzer.param_tweak: 1.5
 
 process_name: LArSystExampleGen
 
