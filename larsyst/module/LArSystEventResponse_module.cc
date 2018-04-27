@@ -11,6 +11,7 @@
 #include "larsyst/utility/append_event_response.hh"
 #include "larsyst/utility/configure_syst_providers.hh"
 #include "larsyst/utility/md5.hh"
+#include "larsyst/utility/scrub_unity_responses.hh"
 
 #include "art/Framework/Core/EDProducer.h"
 #include "art/Framework/Core/ModuleMacros.h"
@@ -105,16 +106,21 @@ void lareventsyst::produce(art::Event &e) {
 
   if (!er) {
     std::cout << "[ERROR]: Null event response pointer." << std::endl;
+    throw;
   }
 
+  larsyst::scrub_unity_responses(er);
   for (size_t ctr = 0; ctr < er->responses.size(); ++ctr) {
-    std::cout << "[INFO]: For event:unit " << e.event() << ": " << ctr
-              << " writing responses: " << std::endl;
+    std::cout << "[INFO]: For (event:unit) = (" << e.event() << ":" << ctr
+              << ") writing " << er->responses[ctr].size()
+              << " responses: " << std::endl;
     for (auto irmap : er->responses[ctr]) {
       std::cout << "\t ParamId: " << irmap.first << " with "
                 << irmap.second.size() << " responses." << std::endl;
     }
   }
+
+  std::cout << "[INFO]: Built response: " << larsyst::to_str(*er) << std::endl;
 
   e.put(std::move(er), sp_config_hash);
 }

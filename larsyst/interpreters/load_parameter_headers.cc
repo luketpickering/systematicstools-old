@@ -89,7 +89,8 @@ struct FHICLSystMetaData {
   fhicl::Sequence<double> paramVariations{
       fhicl::Name("paramVariations"),
       fhicl::Comment("The shifted values of this parameter that should be "
-                     "calculated when producing a spline or a multi-sim.")};
+                     "calculated when producing a spline or a multi-sim."),
+      std::vector<double>{}};
 
   fhicl::Atom<bool> isResponselessParam{
       fhicl::Name("isResponselessParam"),

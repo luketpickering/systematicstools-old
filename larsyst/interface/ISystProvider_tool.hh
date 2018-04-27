@@ -144,13 +144,9 @@ public:
       hdrctr++;
     }
 
-    std::cout << "[INFO]: Syst provider configured " << fMetaData.headers.size()
-              << " parameters." << GetFullyQualifiedName() << std::endl;
-    for (auto const &sph : fMetaData.headers) {
-      std::cout << to_str(sph) << std::endl;
-    }
-    std::cout << "============================================================="
-              << std::endl;
+    std::cout << "[INFO]: Syst provider "
+              << std::quoted(GetFullyQualifiedName()) << " configured "
+              << fMetaData.headers.size() << " parameters." << std::endl;
 
     return fIsFullyConfigured;
   }
@@ -208,6 +204,7 @@ protected:
       if (sph.systParamId == i) {
         return index;
       }
+      index++;
     }
     return kParamUnhandled<size_t>;
   }
