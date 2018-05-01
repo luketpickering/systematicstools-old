@@ -121,6 +121,106 @@ struct SystMetaData {
   std::vector<SystParamHeader> headers;
 };
 
+///\brief Get parameter Id from header list and pretty name. Returns
+/// kParamUnhandled<paramId_t> on failure.
+inline paramId_t GetParamId(SystMetaData const &md, std::string const &name) {
+  for (size_t it = 0; it < md.headers.size(); ++it) {
+    if (md.headers[it].prettyName == name) {
+      return md.headers[it].systParamId;
+    }
+  }
+  return kParamUnhandled<paramId_t>;
+}
+///\brief Get parameter index in header list for supplied parameter Id. Returns
+/// kParamUnhandled<size_t> on failure.
+inline size_t GetParamIndex(SystMetaData const &md, paramId_t pid) {
+  for (size_t it = 0; it < md.headers.size(); ++it) {
+    if (md.headers[it].systParamId == pid) {
+      return it;
+    }
+  }
+  return kParamUnhandled<size_t>;
+}
+///\brief Whether a given index is handled by the Syst meta data headers.
+inline bool IndexIsHandled(SystMetaData const &md, size_t index) {
+  return (index != kParamUnhandled<size_t>)&&(index < md.headers.size());
+}
+///\brief Get parameter index in header list for supplied parameter pretty name.
+/// Returns kParamUnhandled<size_t> on failure.
+inline size_t GetParamIndex(SystMetaData const &md, std::string const &name) {
+  return GetParamIndex(md, GetParamId(md, name));
+}
+///\brief Checks if named parameter exists in header list.
+inline bool HasParam(SystMetaData const &md, std::string const &name) {
+  return IndexIsHandled(md, GetParamIndex(md, name));
+}
+///\brief Checks if parameter with given Id exists in header list.
+inline bool HasParam(SystMetaData const &md, paramId_t pid) {
+  return IndexIsHandled(md, GetParamIndex(md, pid));
+}
+///\brief Gets a const reference to a parameter header given a header list and a
+/// parameter pretty name.
+///
+///\note Throws on failure, look before you leap (or prepare a safety net).
+inline SystParamHeader const &GetParam(SystMetaData const &md,
+                                       std::string const &name) {
+  size_t idx = GetParamIndex(md, name);
+  if (IndexIsHandled(md, idx)) {
+    return md.headers[idx];
+  }
+  std::cout << "[ERROR]: Tried to get parameter named " << std::quoted(name)
+            << " from a SystMetaData instance, but it doesn't exist."
+            << std::endl;
+  throw;
+}
+///\brief Gets a non-const reference to a parameter header given a header list
+/// and a parameter pretty name.
+///
+///\note Throws on failure, look before you leap (or prepare a safety net).
+inline SystParamHeader &GetParam(SystMetaData &md, std::string const &name) {
+  size_t idx = GetParamIndex(md, name);
+  if (IndexIsHandled(md, idx)) {
+    return md.headers[idx];
+  }
+  std::cout << "[ERROR]: Tried to get parameter named " << std::quoted(name)
+            << " from a SystMetaData instance, but it doesn't exist."
+            << std::endl;
+  throw;
+}
+///\brief Gets a const regerence to a parameter header given a header list and a
+/// parameter Id.
+///
+///\note Throws on failure, look before you leap (or prepare a safety net).
+inline SystParamHeader const &GetParam(SystMetaData const &md, paramId_t pid) {
+  size_t idx = GetParamIndex(md, pid);
+  if (IndexIsHandled(md, idx)) {
+    return md.headers[idx];
+  }
+  std::cout << "[ERROR]: Tried to get parameter with id " << std::quoted(pid)
+            << " from a SystMetaData instance, but it doesn't exist."
+            << std::endl;
+  throw;
+}
+///\brief Gets a const regerence to a parameter header given a header list and a
+/// parameter Id.
+///
+///\note Throws on failure, look before you leap (or prepare a safety net).
+inline SystParamHeader &GetParam(SystMetaData &md, paramId_t pid) {
+  size_t idx = GetParamIndex(md, pid);
+  if (IndexIsHandled(md, idx)) {
+    return md.headers[idx];
+  }
+  std::cout << "[ERROR]: Tried to get parameter with id " << std::quoted(pid)
+            << " from a SystMetaData instance, but it doesn't exist."
+            << std::endl;
+  throw;
+}
+inline template <typename T>
+bool SystHasOpt(SystMetaData const &md, T const &pid, std::string const &opt) {
+  SystParamHeader const &hdr = GetParam(md, pid);
+  return (std::find(hdr.opts.begin(), hdr.opts.end(), opt) != hdr.opts.end());
+}
+
 } // namespace larsyst
 
 #endif

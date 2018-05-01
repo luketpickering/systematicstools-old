@@ -75,15 +75,27 @@ bool validate_SystParamHeader(SystParamHeader const &hdr, bool quiet) {
       return false;
     }
   }
-  if (hdr.isResponselessParam && hdr.responses.size()) {
-    if (!quiet) {
-      std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
-                << std::quoted(hdr.prettyName)
-                << ") marked as responseless, but also has "
-                   "header-level responses."
-                << std::endl;
+  if (hdr.isResponselessParam) {
+    if (hdr.responses.size()) {
+      if (!quiet) {
+        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+                  << std::quoted(hdr.prettyName)
+                  << ") marked as responseless, but also has "
+                     "header-level responses."
+                  << std::endl;
+      }
+      return false;
     }
-    return false;
+    if (hdr.responseParamId == kParamUnhandled<paramId_t>) {
+      if (!quiet) {
+        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+                  << std::quoted(hdr.prettyName)
+                  << ") marked as responseless, but it doesn't have a valid, "
+                     "associated response parameter."
+                  << std::endl;
+      }
+      return false;
+    }
   }
   if (hdr.differsEventByEvent) { // differs event by event
     if (hdr.responses.size()) {
@@ -107,7 +119,8 @@ bool validate_SystParamHeader(SystParamHeader const &hdr, bool quiet) {
       }
       return false;
     }
-    if (hdr.responses.size() != hdr.paramVariations.size()) {
+    if (!hdr.isCorrection &&
+        (hdr.responses.size() != hdr.paramVariations.size())) {
       if (!quiet) {
         std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
                   << std::quoted(hdr.prettyName)
