@@ -6,6 +6,9 @@
 
 #include "build_parameter_set_from_header.hh"
 
+#include "fhiclcpp/ParameterSet.h"
+
+#include <iomanip>
 #include <string>
 
 namespace larsyst {
@@ -31,5 +34,13 @@ inline std::string to_str(EventResponse const &er) {
   return ss.str();
 }
 } // namespace larsyst
+
+namespace std {
+template <typename T> auto quoted(T t) {
+  std::stringstream ss("");
+  ss << t;
+  return std::quoted(ss.str());
+}
+} // namespace std
 
 #endif

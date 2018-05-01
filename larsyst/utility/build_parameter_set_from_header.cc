@@ -1,8 +1,10 @@
 #include "build_parameter_set_from_header.hh"
 
+#include "larsyst/interface/SystMetaData.hh"
 #include "larsyst/interface/types.hh"
-#include "larsyst/interpreters/validate_SystParamHeader.hh"
+#include "larsyst/interface/validation.hh"
 
+#include "fhiclcpp/ParameterSet.h"
 #include "fhiclcpp/types/Atom.h"
 #include "fhiclcpp/types/Sequence.h"
 #include "fhiclcpp/types/Table.h"

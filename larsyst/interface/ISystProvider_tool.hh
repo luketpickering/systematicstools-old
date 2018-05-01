@@ -84,6 +84,15 @@ public:
   virtual SystMetaData
   GenerateSystSetConfiguration(fhicl::ParameterSet const &ps, paramId_t id) {
     fMetaData = this->ConfigureFromFHICL(ps, id);
+
+    // The follow check expects them to be ordered, but the provider isn't under
+    // any obligation to order them.
+
+    std::stable_sort(fMetaData.headers.begin(), fMetaData.headers.end(),
+                     [](SystParamHeader const &l, SystParamHeader const &r) {
+                       return l.systParamId < r.systParamId;
+                     });
+
     for (auto &hdr : fMetaData.headers) {
       if (hdr.systParamId != id) {
         std::cout << "[ERROR]: Provider "

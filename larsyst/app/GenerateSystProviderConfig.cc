@@ -1,8 +1,7 @@
 #include "larsyst/interface/ISystProvider_tool.hh"
 #include "larsyst/interface/SystMetaData.hh"
 #include "larsyst/interface/types.hh"
-
-#include "larsyst/interpreters/validate_SystParamHeader.hh"
+#include "larsyst/interface/validation.hh"
 
 #include "larsyst/utility/build_parameter_set_from_header.hh"
 #include "larsyst/utility/configure_syst_providers.hh"
@@ -147,13 +146,12 @@ int main(int argc, char const *argv[]) {
   fhicl::ParameterSet out_ps;
   std::vector<std::string> providerNames;
   for (auto &prov : tools) {
-    for (auto &sph : prov.second->GetSystSetConfiguration().headers) {
-      if (!validate_SystParamHeader(sph, false)) {
-        std::cout << "[ERROR]: A parameter handled by provider: "
-                  << std::quoted(prov.first) << " failed basic validation."
-                  << std::endl;
-        throw;
-      }
+    if (!validate_SystMetaData(prov.second->GetSystSetConfiguration(),
+                               false)) {
+      std::cout << "[ERROR]: A parameter handled by provider: "
+                << std::quoted(prov.first) << " failed validation."
+                << std::endl;
+      throw;
     }
     fhicl::ParameterSet tool_ps =
         larsyst::generate_provider_parameter_set(prov.second);

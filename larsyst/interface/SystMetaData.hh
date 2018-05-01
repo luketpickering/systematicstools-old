@@ -1,9 +1,12 @@
 #ifndef LARSYST_INTERFACE_SYSTMETADATA_SEEN
 #define LARSYST_INTERFACE_SYSTMETADATA_SEEN
 
+#include "larsyst/utility/printers.hh"
 #include "types.hh"
 
 #include <array>
+#include <iomanip>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <tuple>
@@ -11,11 +14,6 @@
 
 namespace larsyst {
 
-///\brief
-///
-///\note Any new or modified data members must be reflected in
-/// larsyst/utility/translate_fhicl_systparamheader.hh to be picked up
-/// throughout the codebase.
 struct SystParamHeader {
   SystParamHeader()
       : prettyName{""}, systParamId{kParamUnhandled<paramId_t>},
@@ -201,7 +199,7 @@ inline SystParamHeader const &GetParam(SystMetaData const &md, paramId_t pid) {
             << std::endl;
   throw;
 }
-///\brief Gets a const regerence to a parameter header given a header list and a
+///\brief Gets a const reference to a parameter header given a header list and a
 /// parameter Id.
 ///
 ///\note Throws on failure, look before you leap (or prepare a safety net).
@@ -215,8 +213,12 @@ inline SystParamHeader &GetParam(SystMetaData &md, paramId_t pid) {
             << std::endl;
   throw;
 }
-inline template <typename T>
-bool SystHasOpt(SystMetaData const &md, T const &pid, std::string const &opt) {
+template <typename T>
+inline bool SystHasOpt(SystMetaData const &md, T const &pid,
+                       std::string const &opt) {
+  if (!HasParam(md, pid)) {
+    return false;
+  }
   SystParamHeader const &hdr = GetParam(md, pid);
   return (std::find(hdr.opts.begin(), hdr.opts.end(), opt) != hdr.opts.end());
 }
