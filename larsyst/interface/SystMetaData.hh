@@ -2,7 +2,7 @@
 #define LARSYST_INTERFACE_SYSTMETADATA_SEEN
 
 #include "larsyst/utility/printers.hh"
-#include "types.hh"
+#include "larsyst/interface/types.hh"
 
 #include <array>
 #include <iomanip>

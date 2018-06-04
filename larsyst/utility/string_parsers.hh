@@ -106,7 +106,7 @@ ParseToVect(std::string const &inp, std::string const &delim,
 }
 
 // Converts "5_10:1" into a vector containing: 5,6,7,8,9,10
-std::vector<double> BuildDoubleList(std::string const &str) {
+inline std::vector<double> BuildDoubleList(std::string const &str) {
 #ifdef LARSYST_UTILITY_STRINGPARSERS_DEBUG
   std::cout << "------ Translating " << str << " into..." << std::endl;
 #endif
@@ -144,8 +144,7 @@ std::vector<double> BuildDoubleList(std::string const &str) {
 }
 
 // Converts "1,5_10:1,15" into a vector containing: 1,5,6,7,8,9,10,15
-
-std::vector<double> ParseDoubleListDescriptor(std::string const &str) {
+inline std::vector<double> ParseDoubleListDescriptor(std::string const &str) {
 #ifdef LARSYST_UTILITY_STRINGPARSERS_DEBUG
   std::cout << "--- Translating " << str << " into... " << std::endl;
 #endif

@@ -5,12 +5,6 @@
 #include "larsyst/interface/validation.hh"
 
 #include "fhiclcpp/ParameterSet.h"
-#include "fhiclcpp/types/Atom.h"
-#include "fhiclcpp/types/Sequence.h"
-#include "fhiclcpp/types/Table.h"
-
-#include "fhiclcpp/types/Comment.h"
-#include "fhiclcpp/types/Name.h"
 
 #include <iomanip>
 #include <iostream>

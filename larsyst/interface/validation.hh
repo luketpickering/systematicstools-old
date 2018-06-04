@@ -5,6 +5,7 @@
 
 #include <iomanip>
 #include <iostream>
+#include <set>
 
 namespace larsyst {
 ///\brief Checks interface validity of a SystParamHeader

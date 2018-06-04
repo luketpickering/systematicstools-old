@@ -36,7 +36,7 @@ inline std::string to_str(EventResponse const &er) {
 } // namespace larsyst
 
 namespace std {
-template <typename T> auto quoted(T t) {
+template <typename T> inline auto quoted(T t) {
   std::stringstream ss("");
   ss << t;
   return std::quoted(ss.str());

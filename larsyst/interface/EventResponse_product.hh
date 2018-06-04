@@ -1,7 +1,7 @@
 #ifndef LARSYST_INTERFACE_EVENTRESPONSEPRODUCE_SEEN
 #define LARSYST_INTERFACE_EVENTRESPONSEPRODUCE_SEEN
 
-#include "types.hh"
+#include "larsyst/interface/types.hh"
 
 #include <map>
 #include <vector>

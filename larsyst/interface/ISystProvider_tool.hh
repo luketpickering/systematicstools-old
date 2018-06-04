@@ -1,14 +1,17 @@
 #ifndef LARSYST_INTERFACE_ISYSTPROVIDERTOOL_SEEN
 #define LARSYST_INTERFACE_ISYSTPROVIDERTOOL_SEEN
 
-#include "EventResponse_product.hh"
-#include "SystMetaData.hh"
+#include "larsyst/interface/EventResponse_product.hh"
+#include "larsyst/interface/SystMetaData.hh"
 
 #include "larsyst/interpreters/load_parameter_headers.hh"
+
 #include "larsyst/utility/md5.hh"
 #include "larsyst/utility/printers.hh"
 
+#ifndef NO_ART
 #include "art/Framework/Principal/Event.h"
+#endif
 
 #include "fhiclcpp/ParameterSet.h"
 
@@ -75,6 +78,7 @@ public:
     throw;
   };
 
+#ifndef NO_ART
   ///\brief Convert arbitrary configuration fhicl parameter set into generic
   /// systematic meta data.
   ///
@@ -106,6 +110,7 @@ public:
     fHaveMetaData = true;
     return GetSystSetConfiguration();
   }
+#endif
 
   SystMetaData GetSystSetConfiguration() {
     CheckHaveMetaData();
@@ -160,7 +165,9 @@ public:
     return fIsFullyConfigured;
   }
 
+#ifndef NO_ART
   virtual std::unique_ptr<EventResponse> GetEventResponse(art::Event &) = 0;
+#endif
 
   std::string const &GetToolType() const { return fToolType; }
   std::string const &GetFullyQualifiedName() const { return fFQName; }

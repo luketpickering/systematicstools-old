@@ -1,11 +1,13 @@
 #include "load_parameter_headers.hh"
 
+#ifndef NO_ART
 #include "fhiclcpp/types/Atom.h"
 #include "fhiclcpp/types/Sequence.h"
 #include "fhiclcpp/types/Table.h"
 
 #include "fhiclcpp/types/Comment.h"
 #include "fhiclcpp/types/Name.h"
+#endif
 
 #include <iomanip>
 #include <iostream>
@@ -14,6 +16,7 @@
 
 namespace larsyst {
 
+#ifndef NO_ART
 namespace {
 struct FHICLSystMetaData {
   fhicl::Atom<std::string> prettyName{
@@ -118,9 +121,11 @@ struct FHICLSystMetaData {
       std::vector<std::string>{}};
 };
 } // namespace
+#endif
 
 SystParamHeader
 build_header_from_parameter_set(fhicl::ParameterSet const &paramset) {
+#ifndef NO_ART
   fhicl::Table<FHICLSystMetaData> const result{paramset};
 
   SystParamHeader sph;
@@ -140,6 +145,26 @@ build_header_from_parameter_set(fhicl::ParameterSet const &paramset) {
   sph.responseParamId = result().responseParamId();
   sph.responses = result().responses();
   sph.opts = result().opts();
+#else // We are using standalone fhiclcpp which doesn't have the
+  SystParamHeader sph;
+  sph.prettyName = paramset.get<std::string>("prettyName");
+  sph.systParamId = paramset.get<paramId_t>("systParamId");
+  paramset.get_if_present("isWeightSystematicVariation",
+                          sph.isWeightSystematicVariation);
+  paramset.get_if_present("unitsAreNatural", sph.unitsAreNatural);
+  paramset.get_if_present("differsEventByEvent", sph.differsEventByEvent);
+  paramset.get_if_present("centralParamValue", sph.centralParamValue);
+  paramset.get_if_present("isCorrection", sph.isCorrection);
+  paramset.get_if_present("oneSigmaShifts", sph.oneSigmaShifts);
+  paramset.get_if_present("paramValidityRange", sph.paramValidityRange);
+  paramset.get_if_present("isSplineable", sph.isSplineable);
+  paramset.get_if_present("isRandomlyThrown", sph.isRandomlyThrown);
+  paramset.get_if_present("paramVariations", sph.paramVariations);
+  paramset.get_if_present("isResponselessParam", sph.isResponselessParam);
+  paramset.get_if_present("responseParamId", sph.responseParamId);
+  paramset.get_if_present("responses", sph.responses);
+  paramset.get_if_present("opts", sph.opts);
+#endif
 
   return sph;
 }
