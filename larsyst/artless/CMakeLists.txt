@@ -3,7 +3,8 @@ include(ExternalProject)
 
 ExternalProject_Add(fhiclcpp-simple
   PREFIX "${PROJECT_BINARY_DIR}/fhiclcpp-simple"
-  GIT_REPOSITORY https://github.com/luketpickering/fhiclcpp-simple.git
+  # GIT_REPOSITORY https://github.com/luketpickering/fhiclcpp-simple.git
+  GIT_REPOSITORY file:///home/picker24/software/fhiclcpp-simple
   CMAKE_ARGS
   -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
   -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
@@ -121,4 +122,4 @@ else(CMAKE_BUILD_TYPE MATCHES RELEASE)
 endif()
 
 INSTALL(TARGETS larsyst_interpreters DESTINATION lib)
-INSTALL(FILES ${INTR_IMPLFILES} DESTINATION include/larsyst/interpreters)
+INSTALL(FILES ${INTR_HDRFILES} DESTINATION include/larsyst/interpreters)
