@@ -90,7 +90,7 @@ else(CMAKE_BUILD_TYPE MATCHES RELEASE)
 endif()
 
 INSTALL(TARGETS larsyst_utility DESTINATION lib)
-INSTALL(FILES ${UTIL_HDRFILES} DESTINATION include/larsyst)
+INSTALL(FILES ${UTIL_HDRFILES} DESTINATION include/larsyst/utility)
 
 ####### Interface headers
 SET(IFCE_HDRFILES
@@ -100,7 +100,7 @@ SET(IFCE_HDRFILES
   ${CMAKE_SOURCE_DIR}/larsyst/interface/types.hh
   ${CMAKE_SOURCE_DIR}/larsyst/interface/validation.hh)
 
-INSTALL(FILES ${IFCE_HDRFILES} DESTINATION include/larsyst)
+INSTALL(FILES ${IFCE_HDRFILES} DESTINATION include/larsyst/interface)
 
 ####### Interpreters
 SET(INTR_IMPLFILES
@@ -121,4 +121,4 @@ else(CMAKE_BUILD_TYPE MATCHES RELEASE)
 endif()
 
 INSTALL(TARGETS larsyst_interpreters DESTINATION lib)
-INSTALL(FILES ${INTR_IMPLFILES} DESTINATION include/larsyst)
+INSTALL(FILES ${INTR_IMPLFILES} DESTINATION include/larsyst/interpreters)
