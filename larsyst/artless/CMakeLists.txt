@@ -90,6 +90,8 @@ else(CMAKE_BUILD_TYPE MATCHES RELEASE)
   add_library(larsyst_utility SHARED ${UTIL_IMPLFILES})
 endif()
 
+add_dependencies(larsyst_utility fhiclcpp-simple)
+
 INSTALL(TARGETS larsyst_utility DESTINATION lib)
 INSTALL(FILES ${UTIL_HDRFILES} DESTINATION include/larsyst/utility)
 
@@ -120,6 +122,8 @@ if(CMAKE_BUILD_TYPE MATCHES DEBUG)
 else(CMAKE_BUILD_TYPE MATCHES RELEASE)
   add_library(larsyst_interpreters SHARED ${INTR_IMPLFILES})
 endif()
+
+add_dependencies(larsyst_interpreters fhiclcpp-simple)
 
 INSTALL(TARGETS larsyst_interpreters DESTINATION lib)
 INSTALL(FILES ${INTR_HDRFILES} DESTINATION include/larsyst/interpreters)
