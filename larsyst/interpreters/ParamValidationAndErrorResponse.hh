@@ -80,8 +80,7 @@ struct ParamValidationAndErrorResponse {
   ///\note If and index is passed, then the response is determined to be
   /// from a spline or a multisim parameter, and any error messages tailored.
   double CheckResponse(double, larsyst::SystParamHeader const &,
-                       size_t idx = std::numeric_limits<size_t>::max());
-
+                       size_t idx = std::numeric_limits<size_t>::max()) const;
 };
 
 #endif

@@ -9,7 +9,7 @@ namespace larsyst {
 
 SystParamHeader ParamHeaderHelper::nullheader = SystParamHeader();
 
-SystParamHeader const &ParamHeaderHelper::GetHeader(paramId_t i) {
+SystParamHeader const &ParamHeaderHelper::GetHeader(paramId_t i) const {
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
     if (!HaveHeader(i)) {
       if (fChkErr.fPedantry <= ParamValidationAndErrorResponse::kMeh) {
@@ -28,10 +28,10 @@ SystParamHeader const &ParamHeaderHelper::GetHeader(paramId_t i) {
       return nullheader;
     }
   }
-  return fHeaders[i].second;
+  return fHeaders.at(i).second;
 }
 
-bool ParamHeaderHelper::HaveHeader(paramId_t i) {
+bool ParamHeaderHelper::HaveHeader(paramId_t i) const {
   auto const &h_it = fHeaders.find(i);
   if (h_it == fHeaders.end()) {
     return false;
@@ -39,7 +39,7 @@ bool ParamHeaderHelper::HaveHeader(paramId_t i) {
   return true;
 }
 
-param_list_t ParamHeaderHelper::GetParameters() {
+param_list_t ParamHeaderHelper::GetParameters() const {
   param_list_t paramIds;
   for (auto const &hdr : fHeaders) {
     paramIds.push_back(hdr.second.second.systParamId);
@@ -47,14 +47,14 @@ param_list_t ParamHeaderHelper::GetParameters() {
   return paramIds;
 }
 
-bool ParamHeaderHelper::IsThrownParam(paramId_t i) {
+bool ParamHeaderHelper::IsThrownParam(paramId_t i) const {
   return GetHeader(i).isRandomlyThrown;
 }
 
-bool ParamHeaderHelper::IsResponselessParam(paramId_t i) {
+bool ParamHeaderHelper::IsResponselessParam(paramId_t i) const {
   return GetHeader(i).isResponselessParam;
 }
-paramId_t ParamHeaderHelper::GetResponseParamId(paramId_t i) {
+paramId_t ParamHeaderHelper::GetResponseParamId(paramId_t i) const {
   SystParamHeader const &hdr = GetHeader(i);
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
     if (!IsResponselessParam(i)) {
@@ -77,22 +77,22 @@ paramId_t ParamHeaderHelper::GetResponseParamId(paramId_t i) {
   return hdr.responseParamId;
 }
 
-bool ParamHeaderHelper::IsSplineParam(paramId_t i) {
+bool ParamHeaderHelper::IsSplineParam(paramId_t i) const {
   return GetHeader(i).isSplineable;
 }
 
-bool ParamHeaderHelper::ValuesAreInNaturalUnits(paramId_t i) {
+bool ParamHeaderHelper::ValuesAreInNaturalUnits(paramId_t i) const {
   return GetHeader(i).unitsAreNatural;
 }
 
-bool ParamHeaderHelper::IsWeightResponse(paramId_t i) {
+bool ParamHeaderHelper::IsWeightResponse(paramId_t i) const {
   return GetHeader(i).isWeightSystematicVariation;
 }
 
-bool ParamHeaderHelper::HasParameterLimits(paramId_t i) {
+bool ParamHeaderHelper::HasParameterLimits(paramId_t i) const {
   return HasParameterLowLimit(i) || HasParameterUpLimit(i);
 }
-bool ParamHeaderHelper::HasParameterLowLimit(paramId_t i) {
+bool ParamHeaderHelper::HasParameterLowLimit(paramId_t i) const {
   SystParamHeader const &hdr = GetHeader(i);
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
     if (!IsSplineParam(i)) {
@@ -115,7 +115,7 @@ bool ParamHeaderHelper::HasParameterLowLimit(paramId_t i) {
   }
   return hdr.paramValidityRange[0] != 0xdeadb33f;
 }
-bool ParamHeaderHelper::HasParameterUpLimit(paramId_t i) {
+bool ParamHeaderHelper::HasParameterUpLimit(paramId_t i) const {
   SystParamHeader const &hdr = GetHeader(i);
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
     if (!IsSplineParam(i)) {
@@ -138,7 +138,7 @@ bool ParamHeaderHelper::HasParameterUpLimit(paramId_t i) {
   }
   return hdr.paramValidityRange[1] != 0xdeadb33f;
 }
-double ParamHeaderHelper::GetParameterLowLimit(paramId_t i) {
+double ParamHeaderHelper::GetParameterLowLimit(paramId_t i) const {
   SystParamHeader const &hdr = GetHeader(i);
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
     if (!HasParameterLowLimit(i)) {
@@ -161,7 +161,7 @@ double ParamHeaderHelper::GetParameterLowLimit(paramId_t i) {
   }
   return hdr.paramValidityRange[0];
 }
-double ParamHeaderHelper::GetParameterUpLimit(paramId_t i) {
+double ParamHeaderHelper::GetParameterUpLimit(paramId_t i) const {
   SystParamHeader const &hdr = GetHeader(i);
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
     if (!HasParameterUpLimit(i)) {
@@ -186,7 +186,7 @@ double ParamHeaderHelper::GetParameterUpLimit(paramId_t i) {
 }
 
 param_value_map_t
-ParamHeaderHelper::CheckParamValueMap(param_value_map_t ivmap) {
+ParamHeaderHelper::CheckParamValueMap(param_value_map_t ivmap) const {
   for (param_value_map_t::iterator iv_it = ivmap.begin();
        iv_it != ivmap.end();) {
     if (!HaveHeader(iv_it->first)) {
@@ -255,9 +255,9 @@ ParamHeaderHelper::CheckParamValueMap(param_value_map_t ivmap) {
   }
   return ivmap;
 }
-param_list_t ParamHeaderHelper::CheckParamList(param_list_t ilist,
-                                               bool ExpectSpline,
-                                               bool RequireWeightResponse) {
+param_list_t
+ParamHeaderHelper::CheckParamList(param_list_t ilist, bool ExpectSpline,
+                                  bool RequireWeightResponse) const {
   for (param_list_t::iterator i_it = ilist.begin(); i_it != ilist.end();) {
     if (!HaveHeader(*i_it)) {
       if (fChkErr.fPedantry <= ParamValidationAndErrorResponse::kMeh) {
@@ -348,7 +348,7 @@ param_list_t ParamHeaderHelper::CheckParamList(param_list_t ilist,
 
 TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
                                       spline_t const &event_responses,
-                                      SystParamHeader const &hdr) {
+                                      SystParamHeader const &hdr) const {
 
   // Check if the response header suggests that this is a spline-type parameter.
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
@@ -424,7 +424,7 @@ TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
 }
 TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
                                       event_unit_response_t const &eur,
-                                      SystParamHeader const &hdr) {
+                                      SystParamHeader const &hdr) const {
 
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
     auto const it = eur.find(i);
@@ -451,17 +451,17 @@ TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
 }
 
 TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
-                                      spline_t const &event_responses) {
+                                      spline_t const &event_responses) const {
   SystParamHeader const &hdr = GetHeader(i);
   return GetSpline(i, event_responses, hdr);
 }
 TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
-                                      event_unit_response_t const &eur) {
+                                      event_unit_response_t const &eur) const {
   SystParamHeader const &hdr = GetHeader(i);
   return GetSpline(i, eur, hdr);
 }
 std::vector<TSpline3>
-ParamHeaderHelper::GetSplines(paramId_t i, event_response_t const &er) {
+ParamHeaderHelper::GetSplines(paramId_t i, event_response_t const &er) const {
   SystParamHeader const &hdr = GetHeader(i);
   std::vector<TSpline3> rtn;
   for (auto &eur : er) {
@@ -472,7 +472,7 @@ ParamHeaderHelper::GetSplines(paramId_t i, event_response_t const &er) {
 
 ParamHeaderHelper::param_tspline_map_t
 ParamHeaderHelper::GetSplines(param_list_t const &ilist,
-                              event_unit_response_t const &eur) {
+                              event_unit_response_t const &eur) const {
   param_tspline_map_t rtn;
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
     param_list_t ilist_cpy = CheckParamList(ilist, true, false);
@@ -490,7 +490,7 @@ ParamHeaderHelper::GetSplines(param_list_t const &ilist,
 }
 std::vector<ParamHeaderHelper::param_tspline_map_t>
 ParamHeaderHelper::GetSplines(param_list_t const &ilist,
-                              event_response_t const &er) {
+                              event_response_t const &er) const {
 
   std::vector<param_tspline_map_t> rtn;
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
@@ -508,7 +508,7 @@ ParamHeaderHelper::GetSplines(param_list_t const &ilist,
 
 double
 ParamHeaderHelper::GetParameterResponse(paramId_t i, double v,
-                                        spline_t const &event_responses) {
+                                        spline_t const &event_responses) const {
   if (fChkErr.fCare == ParamValidationAndErrorResponse::kHare) {
     if (fChkErr.fPedantry <= ParamValidationAndErrorResponse::kMeh) {
       std::cout << "["
@@ -589,9 +589,8 @@ ParamHeaderHelper::GetParameterResponse(paramId_t i, double v,
   return GetSpline(i, event_responses).Eval(v);
 }
 
-double
-ParamHeaderHelper::GetParameterResponse(paramId_t i, double v,
-                                        event_unit_response_t const &eur) {
+double ParamHeaderHelper::GetParameterResponse(
+    paramId_t i, double v, event_unit_response_t const &eur) const {
 
   // Manually do this check here (from GetSpline) as it seems to be the path of
   // least duplication.
@@ -628,8 +627,9 @@ ParamHeaderHelper::GetParameterResponse(paramId_t i, double v,
   return GetParameterResponse(i, v, eur.at(i));
 }
 
-double ParamHeaderHelper::GetTotalResponse(param_value_map_t const &ivmap,
-                                           event_unit_response_t const &eur) {
+double
+ParamHeaderHelper::GetTotalResponse(param_value_map_t const &ivmap,
+                                    event_unit_response_t const &eur) const {
 
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
     param_value_map_t ivmap_cpy = CheckParamValueMap(ivmap);
@@ -651,7 +651,7 @@ double ParamHeaderHelper::GetTotalResponse(param_value_map_t const &ivmap,
 
 std::vector<double>
 ParamHeaderHelper::GetParameterResponse(paramId_t i, double v,
-                                        event_response_t const &er) {
+                                        event_response_t const &er) const {
   std::vector<double> rtn;
   for (auto &eur : er) {
     rtn.push_back(GetParameterResponse(i, v, eur));
@@ -660,7 +660,7 @@ ParamHeaderHelper::GetParameterResponse(paramId_t i, double v,
 }
 std::vector<double>
 ParamHeaderHelper::GetTotalResponse(param_value_map_t const &ivmap,
-                                    event_response_t const &er) {
+                                    event_response_t const &er) const {
   std::vector<double> rtn;
   for (auto &eur : er) {
     rtn.push_back(GetTotalResponse(ivmap, eur));
@@ -668,13 +668,13 @@ ParamHeaderHelper::GetTotalResponse(param_value_map_t const &ivmap,
   return rtn;
 }
 
-size_t ParamHeaderHelper::GetNDiscreteVariations(paramId_t i) {
+size_t ParamHeaderHelper::GetNDiscreteVariations(paramId_t i) const {
   SystParamHeader const &hdr = GetHeader(i);
   return hdr.paramVariations.size();
 }
 
 std::vector<size_t>
-ParamHeaderHelper::GetNDiscreteVariations(param_list_t const &paramlist) {
+ParamHeaderHelper::GetNDiscreteVariations(param_list_t const &paramlist) const {
   std::vector<size_t> rtn;
   for (auto &i : paramlist) {
     rtn.push_back(GetNDiscreteVariations(i));
@@ -685,7 +685,7 @@ ParamHeaderHelper::GetNDiscreteVariations(param_list_t const &paramlist) {
 ParamHeaderHelper::discrete_variation_list_t
 ParamHeaderHelper::GetDiscreteResponses(
     paramId_t i, discrete_variation_list_t const &event_responses,
-    SystParamHeader const &hdr) {
+    SystParamHeader const &hdr) const {
 
   // Check if the response header suggests that this is a responseless
   // parameter.
@@ -752,14 +752,14 @@ ParamHeaderHelper::GetDiscreteResponses(
 
 ParamHeaderHelper::discrete_variation_list_t
 ParamHeaderHelper::GetDiscreteResponses(
-    paramId_t i, discrete_variation_list_t const &event_responses) {
+    paramId_t i, discrete_variation_list_t const &event_responses) const {
   return GetDiscreteResponses(i, event_responses, GetHeader(i));
 }
 
 ParamHeaderHelper::discrete_variation_list_t
 ParamHeaderHelper::GetDiscreteResponses(paramId_t i,
                                         event_unit_response_t const &eur,
-                                        SystParamHeader const &hdr) {
+                                        SystParamHeader const &hdr) const {
 
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
     auto const it = eur.find(i);
@@ -785,13 +785,14 @@ ParamHeaderHelper::GetDiscreteResponses(paramId_t i,
   return ParamHeaderHelper::GetDiscreteResponses(i, eur.at(i), hdr);
 }
 ParamHeaderHelper::discrete_variation_list_t
-ParamHeaderHelper::GetDiscreteResponses(paramId_t i,
-                                        event_unit_response_t const &eur) {
+ParamHeaderHelper::GetDiscreteResponses(
+    paramId_t i, event_unit_response_t const &eur) const {
   return GetDiscreteResponses(i, eur, GetHeader(i));
 }
 
 double ParamHeaderHelper::GetDiscreteResponse(
-    paramId_t i, size_t j, discrete_variation_list_t const &event_responses) {
+    paramId_t i, size_t j,
+    discrete_variation_list_t const &event_responses) const {
 
   if (fChkErr.fCare == ParamValidationAndErrorResponse::kHare) {
     if (fChkErr.fPedantry <= ParamValidationAndErrorResponse::kMeh) {
@@ -817,7 +818,7 @@ double ParamHeaderHelper::GetDiscreteResponse(
 
 double
 ParamHeaderHelper::GetDiscreteResponse(paramId_t i, size_t j,
-                                       event_unit_response_t const &eur) {
+                                       event_unit_response_t const &eur) const {
 
   // Manually do this check here (from GetSpline) as it seems to be the path of
   // least duplication.
@@ -860,7 +861,7 @@ ParamHeaderHelper::GetDiscreteResponse(paramId_t i, size_t j,
 
 double
 ParamHeaderHelper::GetDiscreteResponse(param_list_t const &ilist, size_t j,
-                                       event_unit_response_t const &eur) {
+                                       event_unit_response_t const &eur) const {
 
   double response_weight = 1;
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
@@ -881,7 +882,7 @@ ParamHeaderHelper::GetDiscreteResponse(param_list_t const &ilist, size_t j,
 
 std::vector<double>
 ParamHeaderHelper::GetDiscreteResponses(paramId_t i, size_t j,
-                                        event_response_t const &er) {
+                                        event_response_t const &er) const {
   std::vector<double> rtn;
   for (auto &eur : er) {
     // Use this for to get lazy checking of whether the throws are in eur
@@ -892,7 +893,7 @@ ParamHeaderHelper::GetDiscreteResponses(paramId_t i, size_t j,
 
 std::vector<double>
 ParamHeaderHelper::GetDiscreteResponses(param_list_t const &ilist, size_t j,
-                                        event_response_t const &er) {
+                                        event_response_t const &er) const {
   std::vector<double> rtn;
   for (auto &eur : er) {
     rtn.push_back(GetDiscreteResponse(ilist, j, eur));
@@ -902,7 +903,7 @@ ParamHeaderHelper::GetDiscreteResponses(param_list_t const &ilist, size_t j,
 
 std::vector<ParamHeaderHelper::discrete_variation_list_t>
 ParamHeaderHelper::GetAllDiscreteResponses(paramId_t i,
-                                           event_response_t const &er) {
+                                           event_response_t const &er) const {
   std::vector<std::vector<double>> rtn;
   for (auto &eur : er) {
     rtn.emplace_back(GetDiscreteResponses(i, eur));
@@ -912,7 +913,7 @@ ParamHeaderHelper::GetAllDiscreteResponses(paramId_t i,
 
 std::vector<ParamHeaderHelper::discrete_variation_list_t>
 ParamHeaderHelper::GetAllDiscreteResponses(param_list_t const &ilist,
-                                           event_response_t const &er) {
+                                           event_response_t const &er) const {
 
   size_t nvariations = GetNDiscreteVariations(ilist.front());
   std::vector<std::vector<double>> rtn;
@@ -945,12 +946,57 @@ ParamHeaderHelper::GetAllDiscreteResponses(param_list_t const &ilist,
 
 std::map<paramId_t, ParamHeaderHelper::discrete_variation_list_t>
 ParamHeaderHelper::GetDiscreteVariationParameterValues(
-    param_list_t const &ilist) {
+    param_list_t const &ilist) const {
   std::map<paramId_t, discrete_variation_list_t> discrete_var_param_values;
   for (auto const &i : ilist) {
     discrete_var_param_values[i] = GetHeader(i).paramVariations;
   }
   return discrete_var_param_values;
+}
+
+std::string ParamHeaderHelper::GetHeaderInfo() const {
+  std::stringstream ss("");
+
+  for (paramId_t p : GetParameters()) {
+    SystParamHeader const &hdr = GetHeader(p);
+    ss << " Parameter: { \n\tId: " << hdr.systParamId
+       << ", \n\tname: " << hdr.prettyName
+       << ", \n\tNParamValues: " << hdr.paramVariations.size() << " }."
+       << std::endl;
+  }
+  return ss.str();
+}
+std::string
+ParamHeaderHelper::GetEventResponseInfo(event_unit_response_t eur) const {
+  std::stringstream ss("");
+
+  for (paramId_t p : GetParameters()) {
+    SystParamHeader const &hdr = GetHeader(p);
+    ss << " Parameter: { \n\tId: " << hdr.systParamId
+       << ", \n\tname: " << hdr.prettyName
+       << ", \n\tNParamValues: " << hdr.paramVariations.size() << std::flush;
+
+    if (eur.find(p) == eur.end()) {
+      ss << " }." << std::endl;
+      continue;
+    }
+
+    if (hdr.isCorrection) {
+      ss << ", \n\tcorrection: (" << hdr.centralParamValue << " -> "
+         << eur[p][0] << ") }." << std::endl;
+      continue;
+    }
+
+    ss << ", \n\t(val -> resp): [ " << std::endl;
+
+    for (size_t i = 0; i < hdr.paramVariations.size(); ++i) {
+      ss << "\n\t\t(" << hdr.paramVariations[i] << " -> "
+         << ((eur[p].size() > i) ? std::to_string(eur[p][i]) : "NR")
+         << ((i + 1 == hdr.paramVariations.size()) ? "]" : ",") << std::endl;
+    }
+    ss << "\t               ] }." << std::endl;
+  }
+  return ss.str();
 }
 
 } // namespace larsyst

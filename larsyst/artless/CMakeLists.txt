@@ -4,7 +4,7 @@ include(ExternalProject)
 ExternalProject_Add(fhiclcpp-simple
   PREFIX "${PROJECT_BINARY_DIR}/fhiclcpp-simple"
   GIT_REPOSITORY https://github.com/luketpickering/fhiclcpp-simple.git
-  # GIT_REPOSITORY file:///home/picker24/software/fhiclcpp-simple
+  GIT_TAG stable
   CMAKE_ARGS
   -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
   -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}

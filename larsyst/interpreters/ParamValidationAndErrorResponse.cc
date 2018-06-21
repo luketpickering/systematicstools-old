@@ -6,7 +6,7 @@
 using namespace larsyst;
 
 double ParamValidationAndErrorResponse::CheckResponse(
-    double r, SystParamHeader const &hdr, size_t idx) {
+    double r, SystParamHeader const &hdr, size_t idx) const {
   // Can only really check weight response as lateral systematics could be
   // anything.
   if (hdr.isWeightSystematicVariation) {

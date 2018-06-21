@@ -40,11 +40,11 @@ public:
   }
 
   ///\brief Get the header object for parameter i
-  SystParamHeader const &GetHeader(paramId_t i);
+  SystParamHeader const &GetHeader(paramId_t i) const;
   ///\brief Whether parameter i is handled by this helper.
-  bool HaveHeader(paramId_t);
+  bool HaveHeader(paramId_t) const;
   ///\brief Get list of all handled parameter Ids.
-  param_list_t GetParameters();
+  param_list_t GetParameters() const;
 
   ///\brief Whether the values of parameter i have been randomly thrown
   ///
@@ -52,52 +52,52 @@ public:
   /// variations are still discrete and accessed through the
   /// GetDiscreteResponse{s} interface, but it should be known by a consumer
   /// that they are not randomly distributed.
-  bool IsThrownParam(paramId_t);
+  bool IsThrownParam(paramId_t) const;
 
   ///\brief Whether responses to parameter i are retrevied directly, or induce
   /// response in another parameter.
   ///
   /// If false, use GetResponseParamId to determine which parameter variations
   /// of i are included in.
-  bool IsResponselessParam(paramId_t);
+  bool IsResponselessParam(paramId_t) const;
 
   ///\brief Get parameter id that variations in parameter i induce a response
   /// on.
   ///
   ///\note At higher care levels, will check if parameter i is a responseless
   /// parameter.
-  paramId_t GetResponseParamId(paramId_t);
+  paramId_t GetResponseParamId(paramId_t) const;
 
   ///\brief Whether parameter i is a spline-style parameter
   ///
   /// For spline-style parameters,the GetSpline, GetParameterResponse, and
   /// GetTotalResponse methods should be used to get parameter response
   /// information for a given value or set of parameter-value pairs.
-  bool IsSplineParam(paramId_t);
+  bool IsSplineParam(paramId_t) const;
 
   ///\brief Whether values of parameter i are considered to be in units of sigma
   /// or in 'natural' units.
-  bool ValuesAreInNaturalUnits(paramId_t);
+  bool ValuesAreInNaturalUnits(paramId_t) const;
 
   ///\brief Whether responses to variations in parameter i are characterised by
   /// an event weight or some lateral shift in observables.
-  bool IsWeightResponse(paramId_t);
+  bool IsWeightResponse(paramId_t) const;
 
   ///\brief Whether parameter i has a bounded range of validity
   ///
   ///\note For higher pedantry levels, requesting this for a non spline
   /// parameter will constiute an error.
-  bool HasParameterLimits(paramId_t);
+  bool HasParameterLimits(paramId_t) const;
   ///\brief Whether parameter i has a lower bound on the range of validity
   ///
   ///\note For higher pedantry levels, requesting this for a non spline
   /// parameter will constiute an error.
-  bool HasParameterLowLimit(paramId_t);
+  bool HasParameterLowLimit(paramId_t) const;
   ///\brief Whether parameter i has an upper bound on the range of validity
   ///
   ///\note For higher pedantry levels, requesting this for a non spline
   /// parameter will constiute an error.
-  bool HasParameterUpLimit(paramId_t);
+  bool HasParameterUpLimit(paramId_t) const;
 
   ///\brief Get the lower bound for on parameter i values.
   ///
@@ -106,7 +106,7 @@ public:
   ///
   ///\note For higher pedantry levels, requesting this for a spline-type
   /// parameter that isn't bounded from below will constitute an error.
-  double GetParameterLowLimit(paramId_t);
+  double GetParameterLowLimit(paramId_t) const;
   ///\brief Get the upper bound for on parameter i values.
   ///
   ///\note For higher pedantry levels, requesting this for a non-spline
@@ -114,40 +114,40 @@ public:
   ///
   ///\note For higher pedantry levels, requesting this for a spline-type
   /// parameter that isn't bounded from above will constitute an error.
-  double GetParameterUpLimit(paramId_t);
+  double GetParameterUpLimit(paramId_t) const;
 
   ///\brief Get a TSpline object for a given parameter for a given event from
   /// the passed vector of responses.
   ///
   ///\note At higher care levels, the passing of non-spline parameters will
   /// checked for.
-  TSpline3 GetSpline(paramId_t, spline_t const &event_responses = {});
+  TSpline3 GetSpline(paramId_t, spline_t const &event_responses = {}) const;
   ///\brief Get a TSpline object for a given parameter for a given event from
   /// the passed event unit response.
   ///
   ///\note At higher care levels, the passing of non-spline parameters will
   /// checked for.
-  TSpline3 GetSpline(paramId_t, event_unit_response_t const &);
+  TSpline3 GetSpline(paramId_t, event_unit_response_t const &) const;
   ///\brief Get all of the splines for parameter i from the passed event
   /// responses.
   ///
   ///\note At higher care levels, the passing of non-spline parameters will
   /// checked for.
-  std::vector<TSpline3> GetSplines(paramId_t, event_response_t const &);
+  std::vector<TSpline3> GetSplines(paramId_t, event_response_t const &) const;
   ///\brief Get a map of the parameter-spline responses for all parameters in
   /// passed list from the passed event unit response.
   ///
   ///\note At higher care levels, the passing of non-spline parameters will
   /// checked for.
   param_tspline_map_t GetSplines(param_list_t const &,
-                                 event_unit_response_t const &);
+                                 event_unit_response_t const &) const;
   ///\brief Get the splined parameter responses for each event unit in the
   /// passed event response.
   ///
   ///\note At higher care levels, the passing of non-spline parameters will
   /// checked for.
   std::vector<param_tspline_map_t> GetSplines(param_list_t const &,
-                                              event_response_t const &);
+                                              event_response_t const &) const;
 
   ///\brief Gets the splined response for parameter i, set to value v, given the
   /// passed spline information.
@@ -164,7 +164,7 @@ public:
   ///
   /// Uses GetSpline internally
   double GetParameterResponse(paramId_t, double,
-                              spline_t const &event_responses = {});
+                              spline_t const &event_responses = {}) const;
   ///\brief Gets the splined response for parameter i, set to value v, given the
   /// passed event unit information.
   ///
@@ -180,7 +180,7 @@ public:
   ///
   /// Uses GetSpline internally
   double GetParameterResponse(paramId_t i, double v,
-                              event_unit_response_t const &);
+                              event_unit_response_t const &) const;
   ///\brief Gets the multiplicatively combined, splined response for all passed
   /// parameter-value pairs given the passed event unit information.
   ///
@@ -196,7 +196,7 @@ public:
   ///
   /// Uses GetSpline internally
   double GetTotalResponse(param_value_map_t const &,
-                          event_unit_response_t const &);
+                          event_unit_response_t const &) const;
 
   ///\brief Gets the splined response for parameter i, set to value v, for each
   /// event unit in the passed event response.
@@ -210,7 +210,7 @@ public:
   ///
   /// Uses GetSpline internally
   std::vector<double> GetParameterResponse(paramId_t, double,
-                                           event_response_t const &);
+                                           event_response_t const &) const;
   ///\brief Gets the multiplicatively combined, splined response for all passed
   /// parameter-value pairs separately for each event unit in the passed event
   /// response.
@@ -227,13 +227,13 @@ public:
   ///
   /// Uses GetSpline internally
   std::vector<double> GetTotalResponse(param_value_map_t const &,
-                                       event_response_t const &);
+                                       event_response_t const &) const;
 
   ///\brief Gets the number of variations for parameter i
-  size_t GetNDiscreteVariations(paramId_t);
+  size_t GetNDiscreteVariations(paramId_t) const;
   ///\brief Gets the number of variations for each parameter
   /// in the passed parameter list.
-  std::vector<size_t> GetNDiscreteVariations(param_list_t const &);
+  std::vector<size_t> GetNDiscreteVariations(param_list_t const &) const;
 
   ///\brief Gets the list of responses of parameter i from the passed mutlisim
   /// response information.
@@ -246,7 +246,7 @@ public:
   ///\note This method can be of practical use for parameters which do not
   /// effect a response that differs event by event.
   discrete_variation_list_t
-  GetDiscreteResponses(paramId_t, discrete_variation_list_t const &);
+  GetDiscreteResponses(paramId_t, discrete_variation_list_t const &) const;
 
   ///\brief Gets the list of responses of parameter i from the passed mutlisim
   /// response information.
@@ -262,7 +262,7 @@ public:
   ///\note At higher care levels the existance of parameter in event unit
   /// response will be checked for.
   discrete_variation_list_t
-  GetDiscreteResponses(paramId_t, event_unit_response_t const &eur = {});
+  GetDiscreteResponses(paramId_t, event_unit_response_t const &eur = {}) const;
 
   ///\brief Gets the response at variation j of parameter i from the passed
   /// mutlisim
@@ -277,7 +277,7 @@ public:
   /// for.
   double
   GetDiscreteResponse(paramId_t, size_t j,
-                      discrete_variation_list_t const &event_responses = {});
+                      discrete_variation_list_t const &event_responses = {}) const;
 
   ///\brief Gets the response at variation j of parameter i from the passed
   /// event unit response information.
@@ -285,18 +285,18 @@ public:
   ///\note For parameters that produce a different response for each event, this
   /// method essentially returns event_responses[j]
   double GetDiscreteResponse(paramId_t i, size_t j,
-                             event_unit_response_t const &);
+                             event_unit_response_t const &) const;
   ///\brief Gets the multiplicativly combined response at variation j of each
   /// parameter in the passed parameter list from the passed event unit response
   /// information.
   double GetDiscreteResponse(param_list_t const &, size_t j,
-                             event_unit_response_t const &);
+                             event_unit_response_t const &) const;
 
   ///\brief Gets the response at variation j of parameter i for each event unit
   /// from
   /// the event response information.
   std::vector<double> GetDiscreteResponses(paramId_t, size_t j,
-                                           event_response_t const &);
+                                           event_response_t const &) const;
   ///\brief Gets the multiplicatively combined responses at variation j of the
   /// passed parameter set for each event unit from the event response
   /// information.
@@ -304,12 +304,12 @@ public:
   ///\note This shouldn't be used on non-weight parameters. For higher care
   /// levels this will be enforced.
   std::vector<double> GetDiscreteResponses(param_list_t const &, size_t j,
-                                           event_response_t const &);
+                                           event_response_t const &) const;
 
   ///\brief Gets the response to all variations, for all events in the passed
   /// event response information.
   std::vector<discrete_variation_list_t>
-  GetAllDiscreteResponses(paramId_t, event_response_t const &);
+  GetAllDiscreteResponses(paramId_t, event_response_t const &) const;
 
   ///\brief Gets the multiplicatively combined responses to all variations, for
   /// all passed parameters, for all events in the passed event response
@@ -318,12 +318,12 @@ public:
   ///\note This shouldn't be used on non-weight parameters. For higher care
   /// levels this will be enforced.
   std::vector<discrete_variation_list_t>
-  GetAllDiscreteResponses(param_list_t const &, event_response_t const &);
+  GetAllDiscreteResponses(param_list_t const &, event_response_t const &) const;
 
   ///\brief Gets the thrown parameter values for all parameters specified in the
   /// passed parameter list.
   std::map<paramId_t, discrete_variation_list_t>
-  GetDiscreteVariationParameterValues(param_list_t const &);
+  GetDiscreteVariationParameterValues(param_list_t const &) const;
 
   ///\brief How carefully to check parameter usage.
   ///
@@ -376,12 +376,15 @@ public:
   /// error checking purposes.
   void SetSmallWeightBoundary(double s) { fChkErr.fSmallWeight = s; }
 
+  std::string GetHeaderInfo() const;
+  std::string GetEventResponseInfo(event_unit_response_t) const;
+
 private:
   ///\brief Used internally to skip getting a header that we have already got.
   ///
   /// Probably reeks of premature optimization.
   TSpline3 GetSpline(paramId_t, spline_t const &event_responses,
-                     SystParamHeader const &);
+                     SystParamHeader const &) const;
 
   ///\brief Used internally to skip getting a header that we have already got.
   ///
@@ -390,14 +393,14 @@ private:
   ///\note At higher care levels checks before assuming parameter is in event
   /// unit response.
   TSpline3 GetSpline(paramId_t, event_unit_response_t const &,
-                     SystParamHeader const &);
+                     SystParamHeader const &) const;
 
   ///\brief Used internally to skip getting a header that we have already got.
   ///
   /// Probably reeks of premature optimization.
   discrete_variation_list_t
   GetDiscreteResponses(paramId_t, discrete_variation_list_t const &,
-                       SystParamHeader const &);
+                       SystParamHeader const &) const;
   ///\brief Used internally to skip getting a header that we have already got.
   ///
   /// Probably reeks of premature optimization.
@@ -406,12 +409,12 @@ private:
   /// unit response.
   discrete_variation_list_t
   GetDiscreteResponses(paramId_t i, event_unit_response_t const &eur,
-                       SystParamHeader const &hdr);
+                       SystParamHeader const &hdr) const;
 
   ///\brief Checks parameter-value map for parameter mis-use
   ///
   /// Checks for bad parameters in a parameter map and acts accordingly.
-  param_value_map_t CheckParamValueMap(param_value_map_t);
+  param_value_map_t CheckParamValueMap(param_value_map_t) const;
 
 
   ///\brief Checks parameter list of parameter mis-use
@@ -421,7 +424,7 @@ private:
   /// Optionally checks for splineable parameters in the list.
   ///
   /// Optionally checks for weight-only responses, useful when returning a total weight
-  param_list_t CheckParamList(param_list_t, bool ExpectSpline, bool RequireWeightResponse);
+  param_list_t CheckParamList(param_list_t, bool ExpectSpline, bool RequireWeightResponse) const;
 
 
   ///\brief Empty header
@@ -430,8 +433,9 @@ private:
   /// set low.
   static SystParamHeader nullheader;
 
-  spline_t scratch_spline_t1, scratch_spline_t2;
-  discrete_variation_list_t scratch_discrete_variation_list_t1;
+  mutable spline_t scratch_spline_t1;
+  mutable spline_t scratch_spline_t2;
+  mutable discrete_variation_list_t scratch_discrete_variation_list_t1;
 };
 } // namespace larsyst
 #endif
