@@ -990,9 +990,9 @@ ParamHeaderHelper::GetEventResponseInfo(event_unit_response_t eur) const {
     ss << ", \n\t(val -> resp): [ " << std::endl;
 
     for (size_t i = 0; i < hdr.paramVariations.size(); ++i) {
-      ss << "\n\t\t(" << hdr.paramVariations[i] << " -> "
+      ss << "\t\t(" << hdr.paramVariations[i] << " -> "
          << ((eur[p].size() > i) ? std::to_string(eur[p][i]) : "NR")
-         << ((i + 1 == hdr.paramVariations.size()) ? "]" : ",") << std::endl;
+         << ((i + 1 == hdr.paramVariations.size()) ? ")" : "),") << std::endl;
     }
     ss << "\t               ] }." << std::endl;
   }
