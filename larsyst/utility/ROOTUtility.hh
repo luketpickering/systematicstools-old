@@ -23,7 +23,7 @@ NEW_EXCEPT(invalid_hist_name);
 
 #undef NEW_EXCEPT
 
-inline TFile *CheckOpenFile(std::string const &fname, char const *opts) {
+inline TFile *CheckOpenFile(std::string const &fname, char const *opts="") {
   TFile *inpF = new TFile(fname.c_str(), opts);
   if (!inpF || !inpF->IsOpen()) {
     throw invalid_tfile() << "[ERROR]: Couldn't open input file: " << fname;
