@@ -8,9 +8,9 @@
 #include <string>
 
 #define NEW_EXCEPT(EXCEPT_NAME)                                                \
-  struct EXCEPT_NAME : public larsyst_except {                                 \
-    EXCEPT_NAME() : larsyst_except() {}                                        \
-    EXCEPT_NAME(EXCEPT_NAME const &other) : larsyst_except(other) {}           \
+  struct EXCEPT_NAME : public larsyst::larsyst_except {                        \
+    EXCEPT_NAME() : larsyst::larsyst_except() {}                               \
+    EXCEPT_NAME(EXCEPT_NAME const &other) : larsyst::larsyst_except(other) {}  \
     template <typename T> EXCEPT_NAME &operator<<(T const &obj) {              \
       msgstrm << obj;                                                          \
       msg = msgstrm.str();                                                     \
@@ -37,7 +37,7 @@ inline TH *GetHistogram(TFile *f, std::string const &fhname) {
 
   if (!inpH) {
     throw invalid_hist_name() << "[ERROR]: Couldn't get TH: " << fhname
-                          << " from input file: " << f->GetName();
+                              << " from input file: " << f->GetName();
   }
 
   inpH = static_cast<TH *>(inpH->Clone());
