@@ -3,8 +3,8 @@
 
 #include "larsyst/interface/types.hh"
 
-#include "larsyst/utility/printers.hh"
 #include "larsyst/utility/exceptions.hh"
+#include "larsyst/utility/printers.hh"
 
 #include <array>
 #include <iomanip>

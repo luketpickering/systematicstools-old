@@ -23,11 +23,6 @@
 
 namespace larsyst {
 
-NEW_LARSYST_EXCEPT(invalid_parameter_value);
-NEW_LARSYST_EXCEPT(invalid_parameter_name);
-NEW_LARSYST_EXCEPT(invalid_parameter_Id);
-NEW_LARSYST_EXCEPT(incorrectly_configured);
-
 class ISystProvider_tool {
 public:
   ISystProvider_tool(fhicl::ParameterSet const &ps)

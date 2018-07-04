@@ -26,7 +26,7 @@ struct larsyst_except : public std::exception {
 } // namespace larsyst
 
 #define NEW_LARSYST_EXCEPT(EXCEPT_NAME)                                        \
-  struct EXCEPT_NAME : public larsyst::larsyst_except {                                 \
+  struct EXCEPT_NAME : public larsyst::larsyst_except {                        \
     EXCEPT_NAME() : larsyst_except() {}                                        \
     EXCEPT_NAME(EXCEPT_NAME const &other) : larsyst_except(other) {}           \
     template <typename T> EXCEPT_NAME &operator<<(T const &obj) {              \
@@ -35,5 +35,10 @@ struct larsyst_except : public std::exception {
       return (*this);                                                          \
     }                                                                          \
   }
+
+NEW_LARSYST_EXCEPT(invalid_parameter_name);
+NEW_LARSYST_EXCEPT(invalid_parameter_Id);
+NEW_LARSYST_EXCEPT(invalid_parameter_value);
+NEW_LARSYST_EXCEPT(incorrectly_configured);
 
 #endif
