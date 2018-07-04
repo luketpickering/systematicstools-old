@@ -2,7 +2,9 @@
 #define LARSYST_INTERFACE_SYSTMETADATA_SEEN
 
 #include "larsyst/interface/types.hh"
+
 #include "larsyst/utility/printers.hh"
+#include "larsyst/utility/exceptions.hh"
 
 #include <array>
 #include <iomanip>
@@ -222,7 +224,7 @@ inline bool SystHasOpt(SystMetaData const &md, T const &pid,
   SystParamHeader const &hdr = GetParam(md, pid);
   return (std::find(hdr.opts.begin(), hdr.opts.end(), opt) != hdr.opts.end());
 }
-
+template <typename T>
 inline bool SystHasOptKV(SystMetaData const &md, T const &pid,
                          std::string const &key) {
   if (!HasParam(md, pid)) {
@@ -230,20 +232,24 @@ inline bool SystHasOptKV(SystMetaData const &md, T const &pid,
   }
   SystParamHeader const &hdr = GetParam(md, pid);
   for (auto const &opt : hdr.opts) {
-    if (opt.find(key + "=") = 0) {
+    if (opt.find(key + "=") == 0) {
       return true;
     }
   }
   return false;
 }
+
+NEW_LARSYST_EXCEPT(no_such_opt_kv);
+
+template <typename T>
 inline std::string SystGetOptKV(SystMetaData const &md, T const &pid,
                                 std::string const &key) {
   if (!HasParam(md, pid)) {
-    return false;
+    return "";
   }
   SystParamHeader const &hdr = GetParam(md, pid);
   for (auto const &opt : hdr.opts) {
-    if (opt.find(key + "=") = 0) {
+    if (opt.find(key + "=") == 0) {
       return opt.substr(key.size() + 1);
     }
   }
