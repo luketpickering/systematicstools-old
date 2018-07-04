@@ -6,6 +6,7 @@
 
 #include "larsyst/interpreters/load_parameter_headers.hh"
 
+#include "larsyst/utility/exceptions.hh"
 #include "larsyst/utility/md5.hh"
 #include "larsyst/utility/printers.hh"
 
@@ -21,6 +22,11 @@
 #include <string>
 
 namespace larsyst {
+
+NEW_LARSYST_EXCEPT(invalid_parameter_value);
+NEW_LARSYST_EXCEPT(invalid_parameter_name);
+NEW_LARSYST_EXCEPT(invalid_parameter_Id);
+NEW_LARSYST_EXCEPT(incorrectly_configured);
 
 class ISystProvider_tool {
 public:

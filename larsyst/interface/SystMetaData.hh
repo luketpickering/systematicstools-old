@@ -1,8 +1,8 @@
 #ifndef LARSYST_INTERFACE_SYSTMETADATA_SEEN
 #define LARSYST_INTERFACE_SYSTMETADATA_SEEN
 
-#include "larsyst/utility/printers.hh"
 #include "larsyst/interface/types.hh"
+#include "larsyst/utility/printers.hh"
 
 #include <array>
 #include <iomanip>
@@ -221,6 +221,36 @@ inline bool SystHasOpt(SystMetaData const &md, T const &pid,
   }
   SystParamHeader const &hdr = GetParam(md, pid);
   return (std::find(hdr.opts.begin(), hdr.opts.end(), opt) != hdr.opts.end());
+}
+
+inline bool SystHasOptKV(SystMetaData const &md, T const &pid,
+                         std::string const &key) {
+  if (!HasParam(md, pid)) {
+    return false;
+  }
+  SystParamHeader const &hdr = GetParam(md, pid);
+  for (auto const &opt : hdr.opts) {
+    if (opt.find(key + "=") = 0) {
+      return true;
+    }
+  }
+  return false;
+}
+inline std::string SystGetOptKV(SystMetaData const &md, T const &pid,
+                                std::string const &key) {
+  if (!HasParam(md, pid)) {
+    return false;
+  }
+  SystParamHeader const &hdr = GetParam(md, pid);
+  for (auto const &opt : hdr.opts) {
+    if (opt.find(key + "=") = 0) {
+      return opt.substr(key.size() + 1);
+    }
+  }
+  throw no_such_opt_kv() << "[ERROR]: For header, "
+                         << std::quoted(hdr.prettyName)
+                         << " failed to find KV option for key: "
+                         << std::quoted(key);
 }
 
 } // namespace larsyst

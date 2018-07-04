@@ -10,8 +10,7 @@ struct larsyst_except : public std::exception {
   std::stringstream msgstrm;
   std::string msg;
   larsyst_except() : msgstrm(), msg() {}
-  larsyst_except(larsyst_except const &other)
-      : msgstrm(), msg() {
+  larsyst_except(larsyst_except const &other) : msgstrm(), msg() {
     msgstrm << other.msg;
     msg = other.msg;
   }
@@ -24,21 +23,17 @@ struct larsyst_except : public std::exception {
   }
 };
 
-#define NEW_EXCEPT(EXCEPT_NAME)                                                \
-  struct EXCEPT_NAME : public larsyst_except {                        \
-    EXCEPT_NAME() : larsyst_except() {}                               \
-    EXCEPT_NAME(EXCEPT_NAME const &other) : larsyst_except(other) {}  \
+} // namespace larsyst
+
+#define NEW_LARSYST_EXCEPT(EXCEPT_NAME)                                        \
+  struct EXCEPT_NAME : public larsyst::larsyst_except {                                 \
+    EXCEPT_NAME() : larsyst_except() {}                                        \
+    EXCEPT_NAME(EXCEPT_NAME const &other) : larsyst_except(other) {}           \
     template <typename T> EXCEPT_NAME &operator<<(T const &obj) {              \
       msgstrm << obj;                                                          \
       msg = msgstrm.str();                                                     \
       return (*this);                                                          \
     }                                                                          \
   }
-
-NEW_EXCEPT(invalid_parameter_value);
-
-#undef NEW_EXCEPT
-
-} // namespace larsyst
 
 #endif
