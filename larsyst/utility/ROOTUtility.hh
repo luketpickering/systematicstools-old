@@ -7,23 +7,10 @@
 
 #include <string>
 
-#define NEW_EXCEPT(EXCEPT_NAME)                                                \
-  struct EXCEPT_NAME : public larsyst::larsyst_except {                        \
-    EXCEPT_NAME() : larsyst::larsyst_except() {}                               \
-    EXCEPT_NAME(EXCEPT_NAME const &other) : larsyst::larsyst_except(other) {}  \
-    template <typename T> EXCEPT_NAME &operator<<(T const &obj) {              \
-      msgstrm << obj;                                                          \
-      msg = msgstrm.str();                                                     \
-      return (*this);                                                          \
-    }                                                                          \
-  }
-
 NEW_EXCEPT(invalid_tfile);
 NEW_EXCEPT(invalid_hist_name);
 
-#undef NEW_EXCEPT
-
-inline TFile *CheckOpenFile(std::string const &fname, char const *opts="") {
+inline TFile *CheckOpenFile(std::string const &fname, char const *opts = "") {
   TFile *inpF = new TFile(fname.c_str(), opts);
   if (!inpF || !inpF->IsOpen()) {
     throw invalid_tfile() << "[ERROR]: Couldn't open input file: " << fname;
@@ -61,6 +48,10 @@ inline TH *GetHistogram(std::string const &fname, std::string const &hname) {
   }
 
   return h;
+}
+
+inline bool IsFlowBin(TAxis *ax, Int_t bin_it) {
+  return ()(bin_it == 0) || (bin_it == (ax->GetNbins()+1)));
 }
 
 #endif
