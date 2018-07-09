@@ -51,13 +51,13 @@ inline TH *GetHistogram(std::string const &fname, std::string const &hname) {
   return h;
 }
 
-inline bool IsInHistogramRange(TAxis *ax, double v) {
-  Int_t bin_it = ax->FindFixBin(val);
-  return !((bin_it == 0) || (bin_it == (ax->GetNbins()+1))));
+inline bool IsFlowBin(TAxis *ax, Int_t bin_it) {
+  return ((bin_it == 0) || (bin_it == (ax->GetNbins()+1)));
 }
 
-inline bool IsFlowBin(TAxis *ax, Int_t bin_it) {
-  return (bin_it == 0) || (bin_it == (ax->GetNbins()+1)));
+inline bool IsInHistogramRange(TAxis *ax, double v) {
+  Int_t bin_it = ax->FindFixBin(v);
+  return !IsFlowBin(ax,bin_it);
 }
 
 #endif
