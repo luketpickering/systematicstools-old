@@ -4,6 +4,7 @@
 #include "larsyst/utility/exceptions.hh"
 
 #include "TFile.h"
+#include "TAxis.h"
 
 #include <string>
 
