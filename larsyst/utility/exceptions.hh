@@ -27,7 +27,7 @@ struct larsyst_except : public std::exception {
 
 #define NEW_LARSYST_EXCEPT(EXCEPT_NAME)                                        \
   struct EXCEPT_NAME : public larsyst::larsyst_except {                        \
-    EXCEPT_NAME() : larsyst_except() {}                                        \
+    EXCEPT_NAME() : larsyst::larsyst_except() {}                               \
     EXCEPT_NAME(EXCEPT_NAME const &other) : larsyst_except(other) {}           \
     template <typename T> EXCEPT_NAME &operator<<(T const &obj) {              \
       msgstrm << obj;                                                          \

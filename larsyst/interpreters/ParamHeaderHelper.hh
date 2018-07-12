@@ -50,7 +50,7 @@ public:
   bool HaveHeader(std::string const &) const;
   ///\brief Get the paramId_t for for parameter named, name, if it doesn't
   ///exist, kParamUnhandled<paramId_t> is returned.
-  paramId_t const &GetHeaderId(std::string const &name) const;
+  paramId_t GetHeaderId(std::string const &name) const;
 
   ///\brief Get list of all handled parameter Ids.
   param_list_t GetParameters() const;
