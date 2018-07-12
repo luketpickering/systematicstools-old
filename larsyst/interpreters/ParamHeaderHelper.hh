@@ -43,6 +43,15 @@ public:
   SystParamHeader const &GetHeader(paramId_t i) const;
   ///\brief Whether parameter i is handled by this helper.
   bool HaveHeader(paramId_t) const;
+
+  ///\brief Get the header object for parameter named, name
+  SystParamHeader const &GetHeader(std::string const &name) const;
+  ///\brief Whether parameter named, name, is handled by this helper.
+  bool HaveHeader(std::string const &) const;
+  ///\brief Get the paramId_t for for parameter named, name, if it doesn't
+  ///exist, kParamUnhandled<paramId_t> is returned.
+  paramId_t const &GetHeaderId(std::string const &name) const;
+
   ///\brief Get list of all handled parameter Ids.
   param_list_t GetParameters() const;
 
@@ -275,9 +284,9 @@ public:
   ///\note At higher care levels, the passing of spline parameters will
   /// checked
   /// for.
-  double
-  GetDiscreteResponse(paramId_t, size_t j,
-                      discrete_variation_list_t const &event_responses = {}) const;
+  double GetDiscreteResponse(
+      paramId_t, size_t j,
+      discrete_variation_list_t const &event_responses = {}) const;
 
   ///\brief Gets the response at variation j of parameter i from the passed
   /// event unit response information.
@@ -416,16 +425,16 @@ private:
   /// Checks for bad parameters in a parameter map and acts accordingly.
   param_value_map_t CheckParamValueMap(param_value_map_t) const;
 
-
   ///\brief Checks parameter list of parameter mis-use
   ///
   /// Checks for bad parameters in a parameter list and acts accordingly.
   ///
   /// Optionally checks for splineable parameters in the list.
   ///
-  /// Optionally checks for weight-only responses, useful when returning a total weight
-  param_list_t CheckParamList(param_list_t, bool ExpectSpline, bool RequireWeightResponse) const;
-
+  /// Optionally checks for weight-only responses, useful when returning a total
+  /// weight
+  param_list_t CheckParamList(param_list_t, bool ExpectSpline,
+                              bool RequireWeightResponse) const;
 
   ///\brief Empty header
   ///

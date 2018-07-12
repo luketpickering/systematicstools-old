@@ -3,19 +3,22 @@
 #include "larsyst/interface/validation.hh"
 
 #include "larsyst/utility/printers.hh"
+#include "larsyst/utility/exceptions.hh"
 
 #include <set>
+
+NEW_LARSYST_EXCEPT(invalid_SystMetaData);
+NEW_LARSYST_EXCEPT(systParamId_collision);
 
 namespace larsyst {
 void extend_SystMetaData(SystMetaData &md1, SystMetaData const &md2) {
   if (!validate_SystMetaData(md1, false) ||
       !validate_SystMetaData(md2, false)) {
-    std::cout << "[ERROR]: Attempting to merge two parameter header sets but "
+    throw invalid_SystMetaData() << "[ERROR]: Attempting to merge two parameter header sets but "
                  "one (md1 is valid:"
               << validate_SystMetaData(md1)
               << ", md2 is valid:" << validate_SystMetaData(md2)
               << ") is invalid." << std::endl;
-    throw;
   }
 
   std::set<paramId_t> UsedIds;
@@ -28,10 +31,9 @@ void extend_SystMetaData(SystMetaData &md1, SystMetaData const &md2) {
   for (auto const &sph : md2.headers) {
     auto inserted = UsedIds.insert(sph.systParamId);
     if (!inserted.second) {
-      std::cout << "[ERROR]: Attempting to merge two parameter header sets, "
+      throw  systParamId_collision() << "[ERROR]: Attempting to merge two parameter header sets, "
                    "but a parameter Id collison has been found for Id: "
                 << std::quoted(sph.systParamId) << std::endl;
-      throw;
     }
   }
 

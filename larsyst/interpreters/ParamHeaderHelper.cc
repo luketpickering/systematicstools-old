@@ -39,6 +39,40 @@ bool ParamHeaderHelper::HaveHeader(paramId_t i) const {
   return true;
 }
 
+SystParamHeader const &
+ParamHeaderHelper::GetHeader(std::string const &name) const {
+  if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
+    if (!HaveHeader(name)) {
+      if (fChkErr.fPedantry <= ParamValidationAndErrorResponse::kMeh) {
+        std::cout << "["
+                  << ((fChkErr.fPedantry ==
+                       ParamValidationAndErrorResponse::kNotOnMyWatch)
+                          ? "ERROR"
+                          : "WARN")
+                  << "]: Requested header for parameter named, " << name
+                  << ", but it is not currently configured." << std::endl;
+        if (fChkErr.fPedantry ==
+            ParamValidationAndErrorResponse::kNotOnMyWatch) {
+          throw;
+        }
+      }
+      return nullheader;
+    }
+  }
+  return fHeaders.at(GetHeaderId(name)).second;
+}
+bool ParamHeaderHelper::HaveHeader(std::string const &name) const {
+  return (GetHeaderId(name) != kParamUnhandled<paramId_t>);
+}
+paramId_t ParamHeaderHelper::GetHeaderId(std::string const &name) const {
+  for (auto hdr : fHeaders) {
+    if (hdr.second.second.prettyName == name) {
+      return hdr.second.second.systParamId;
+    }
+  }
+  return kParamUnhandled<paramId_t>;
+}
+
 param_list_t ParamHeaderHelper::GetParameters() const {
   param_list_t paramIds;
   for (auto const &hdr : fHeaders) {
@@ -994,7 +1028,7 @@ ParamHeaderHelper::GetEventResponseInfo(event_unit_response_t eur) const {
          << ((eur[p].size() > i) ? std::to_string(eur[p][i]) : "NR")
          << ((i + 1 == hdr.paramVariations.size()) ? ")" : "),") << std::endl;
     }
-    ss <<   "\t]\n }." << std::endl;
+    ss << "\t]\n }." << std::endl;
   }
   return ss.str();
 }
