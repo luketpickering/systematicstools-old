@@ -2,7 +2,6 @@
 
 #include "larsyst/interface/SystMetaData.hh"
 #include "larsyst/interface/types.hh"
-#include "larsyst/interface/validation.hh"
 
 #include "fhiclcpp/ParameterSet.h"
 
@@ -16,8 +15,8 @@ fhicl::ParameterSet
 build_parameter_set_from_header(SystParamHeader const &sph) {
   fhicl::ParameterSet ps;
 
-  if (!validate_SystParamHeader(sph)) {
-    (void)validate_SystParamHeader(sph, false);
+  if (!Validate(sph)) {
+    (void)Validate(sph, false);
     std::cout << "[ERROR]: Parameter set (" << sph.systParamId << ":"
               << std::quoted(sph.prettyName) << ") failed validation."
               << std::endl;

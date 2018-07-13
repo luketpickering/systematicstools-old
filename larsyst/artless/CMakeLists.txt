@@ -79,7 +79,6 @@ SET(UTIL_HDRFILES
   ${CMAKE_SOURCE_DIR}/larsyst/utility/md5.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/printers.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/ROOTUtility.hh
-  ${CMAKE_SOURCE_DIR}/larsyst/utility/scrub_unity_responses.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/string_parsers.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/exceptions.hh)
 

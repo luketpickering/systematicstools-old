@@ -60,6 +60,27 @@ inline void ExtendEventResponse(std::unique_ptr<EventResponse> &e1,
   }
 }
 
+inline bool FullOfUnity(std::vector<double> const &vec) {
+  for (auto &u : vec) {
+    if (u != 1) {
+      return false;
+    }
+  }
+  return true;
+}
+inline void ScrubUnityEventResponses(std::unique_ptr<EventResponse> &er) {
+  for (event_unit_response_t &eur : (*er)) {
+    for (event_unit_response_t::iterator resp_it = eur.begin();
+         resp_it != eur.end();) {
+      if (full_of_unity(resp_it->responses)) {
+        resp_it = eur.erase(resp_it);
+      } else {
+        ++resp_it;
+      }
+    }
+  }
+}
+
 } // namespace larsyst
 
 #endif
