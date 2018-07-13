@@ -72,14 +72,10 @@ include_directories(${CMAKE_INSTALL_PREFIX}/include)
 include_directories(${CMAKE_SOURCE_DIR})
 
 SET(UTIL_IMPLFILES
-  ${CMAKE_SOURCE_DIR}/larsyst/utility/append_event_response.cc
   ${CMAKE_SOURCE_DIR}/larsyst/utility/build_parameter_set_from_header.cc
-  ${CMAKE_SOURCE_DIR}/larsyst/utility/extend_SystMetaData.cc
   ${CMAKE_SOURCE_DIR}/larsyst/utility/md5.cc)
 SET(UTIL_HDRFILES
-  ${CMAKE_SOURCE_DIR}/larsyst/utility/append_event_response.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/build_parameter_set_from_header.hh
-  ${CMAKE_SOURCE_DIR}/larsyst/utility/extend_SystMetaData.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/md5.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/printers.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/ROOTUtility.hh
@@ -103,8 +99,9 @@ SET(IFCE_HDRFILES
   ${CMAKE_SOURCE_DIR}/larsyst/interface/EventResponse_product.hh
   ${CMAKE_SOURCE_DIR}/larsyst/interface/ISystProvider_tool.hh
   ${CMAKE_SOURCE_DIR}/larsyst/interface/SystMetaData.hh
-  ${CMAKE_SOURCE_DIR}/larsyst/interface/types.hh
-  ${CMAKE_SOURCE_DIR}/larsyst/interface/validation.hh)
+  ${CMAKE_SOURCE_DIR}/larsyst/interface/ParamResponses.hh
+  ${CMAKE_SOURCE_DIR}/larsyst/interface/SystParamHeader.hh
+  ${CMAKE_SOURCE_DIR}/larsyst/interface/types.hh)
 
 INSTALL(FILES ${IFCE_HDRFILES} DESTINATION include/larsyst/interface)
 

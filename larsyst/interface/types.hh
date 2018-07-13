@@ -31,8 +31,6 @@ typedef std::map<paramId_t, std::pair<std::string, SystParamHeader>>
 
 typedef std::vector<ParamResponses> event_unit_response_t;
 
-typedef std::vector<event_unit_response_t> event_response_t;
-
 } // namespace larsyst
 
 #endif

@@ -3,9 +3,13 @@
 
 #include "larsyst/interface/types.hh"
 
+#include "larsyst/utility/exceptions.hh"
+
 #include <array>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <iomanip>
 
 namespace larsyst {
 
@@ -108,5 +112,160 @@ struct SystParamHeader {
   /// syst-provider configuration.
   std::vector<std::string> opts;
 };
+
+NEW_LARSYST_EXCEPT(invalid_SystParamHeader);
+
+///\brief Checks interface validity of a SystParamHeader
+///
+/// Checks performed:
+/// * Has valid Id
+/// * Has non-empty pretty name
+/// * If it is a correction:
+///  * Does it have a specified central value? (should)
+///  * Does it have any responses or parameter variations defined? (shouldn't)
+/// * If it is not a correction, does it have at least one parameter variation
+/// specified?
+/// * If it is marked as splineable:
+///  * Is it also marked as randomly thrown? (shouldn't)
+///  * Is it also marked as responseless? (shouldn't)
+/// * If it is marked as responseless:
+///  * Does it have a corresponding response parameter? (should)
+///  * Does it have any responses defined? (shouldn't)
+/// * If it is marked as not differing event-by-event:
+///  * Does it have header-level responses defined? (should)
+///  * Does it have parameter variations specified? (should unless marked as a
+///  correction)
+/// * If it is marked as differing event-by-event, does it have header-level
+/// responses defined? (shouldn't)
+inline bool Validate(SystParamHeader const &hdr, bool quiet = true) {
+
+  if (hdr.systParamId == kParamUnhandled<paramId_t>) {
+    if (!quiet) {
+      std::cout << "[ERROR]: SystParamHeader has the default systParamId."
+                << std::endl;
+    }
+    return false;
+  }
+  if (!hdr.prettyName.size()) {
+    if (!quiet) {
+      std::cout << "[ERROR]: SystParamHeader doesn't have a prettyName."
+                << std::endl;
+    }
+    return false;
+  }
+  if (hdr.isCorrection) {
+    if (hdr.centralParamValue == 0xdeadb33f) {
+      if (!quiet) {
+        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+                  << std::quoted(hdr.prettyName)
+                  << ") is marked as a correction but the centralParamValue is "
+                     "defaulted."
+                  << std::endl;
+      }
+      return false;
+    }
+    if (hdr.paramVariations.size() || hdr.responses.size()) {
+      if (!quiet) {
+        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+                  << std::quoted(hdr.prettyName)
+                  << ") is marked as a correction but has variations ("
+                  << hdr.paramVariations.size() << ") or responses ("
+                  << hdr.responses.size() << ")" << std::endl;
+      }
+      return false;
+    }
+  } else {
+    if (!hdr.paramVariations.size()) {
+      if (!quiet) {
+        std::cout
+            << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+            << std::quoted(hdr.prettyName)
+            << ") is not marked as a correction, but contains no variations."
+            << std::endl;
+      }
+      return false;
+    }
+  }
+
+  if (hdr.isSplineable) { // Splineable
+    if (hdr.isRandomlyThrown) {
+      if (!quiet) {
+        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+                  << std::quoted(hdr.prettyName)
+                  << ") marked as splineable is also set as randomly thrown."
+                  << std::endl;
+      }
+      return false;
+    }
+    if (hdr.isResponselessParam) {
+      if (!quiet) {
+        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+                  << std::quoted(hdr.prettyName)
+                  << ") marked as splineable is also set as expressing "
+                     "response through another parameter ("
+                  << hdr.responseParamId << ")." << std::endl;
+      }
+      return false;
+    }
+  }
+  if (hdr.isResponselessParam) {
+    if (hdr.responses.size()) {
+      if (!quiet) {
+        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+                  << std::quoted(hdr.prettyName)
+                  << ") marked as responseless, but also has "
+                     "header-level responses."
+                  << std::endl;
+      }
+      return false;
+    }
+    if (hdr.responseParamId == kParamUnhandled<paramId_t>) {
+      if (!quiet) {
+        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+                  << std::quoted(hdr.prettyName)
+                  << ") marked as responseless, but it doesn't have a valid, "
+                     "associated response parameter."
+                  << std::endl;
+      }
+      return false;
+    }
+  }
+  if (hdr.differsEventByEvent) { // differs event by event
+    if (hdr.responses.size()) {
+      if (!quiet) {
+        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+                  << std::quoted(hdr.prettyName)
+                  << ") marked as differing event by event, but also has "
+                     "header-level responses."
+                  << std::endl;
+      }
+      return false;
+    }
+  } else {
+    if (!hdr.responses.size()) {
+      if (!quiet) {
+        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+                  << std::quoted(hdr.prettyName)
+                  << ") marked as not differing event by event, but has no "
+                     "header-level responses."
+                  << std::endl;
+      }
+      return false;
+    }
+    if (!hdr.isCorrection &&
+        (hdr.responses.size() != hdr.paramVariations.size())) {
+      if (!quiet) {
+        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
+                  << std::quoted(hdr.prettyName)
+                  << ") marked as differing event by event, but also has "
+                     "header-level responses."
+                  << std::endl;
+      }
+      return false;
+    }
+  }
+  return true;
+}
+
 } // namespace larsyst
 #endif
