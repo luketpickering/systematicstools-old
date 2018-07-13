@@ -72,7 +72,7 @@ inline void ScrubUnityEventResponses(std::unique_ptr<EventResponse> &er) {
   for (event_unit_response_t &eur : (*er)) {
     for (event_unit_response_t::iterator resp_it = eur.begin();
          resp_it != eur.end();) {
-      if (full_of_unity(resp_it->responses)) {
+      if (FullOfUnity(resp_it->responses)) {
         resp_it = eur.erase(resp_it);
       } else {
         ++resp_it;

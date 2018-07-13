@@ -494,7 +494,7 @@ TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
   return GetSpline(i, eur, hdr);
 }
 std::vector<TSpline3>
-ParamHeaderHelper::GetSplines(paramId_t i, event_response_t const &er) const {
+ParamHeaderHelper::GetSplines(paramId_t i, EventResponse const &er) const {
   SystParamHeader const &hdr = GetHeader(i);
   std::vector<TSpline3> rtn;
   for (auto &eur : er) {
@@ -523,7 +523,7 @@ ParamHeaderHelper::GetSplines(param_list_t const &ilist,
 }
 std::vector<ParamHeaderHelper::param_tspline_map_t>
 ParamHeaderHelper::GetSplines(param_list_t const &ilist,
-                              event_response_t const &er) const {
+                              EventResponse const &er) const {
 
   std::vector<param_tspline_map_t> rtn;
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
@@ -684,7 +684,7 @@ ParamHeaderHelper::GetTotalResponse(param_value_map_t const &ivmap,
 
 std::vector<double>
 ParamHeaderHelper::GetParameterResponse(paramId_t i, double v,
-                                        event_response_t const &er) const {
+                                        EventResponse const &er) const {
   std::vector<double> rtn;
   for (auto &eur : er) {
     rtn.push_back(GetParameterResponse(i, v, eur));
@@ -693,7 +693,7 @@ ParamHeaderHelper::GetParameterResponse(paramId_t i, double v,
 }
 std::vector<double>
 ParamHeaderHelper::GetTotalResponse(param_value_map_t const &ivmap,
-                                    event_response_t const &er) const {
+                                    EventResponse const &er) const {
   std::vector<double> rtn;
   for (auto &eur : er) {
     rtn.push_back(GetTotalResponse(ivmap, eur));
@@ -915,7 +915,7 @@ ParamHeaderHelper::GetDiscreteResponse(param_list_t const &ilist, size_t j,
 
 std::vector<double>
 ParamHeaderHelper::GetDiscreteResponses(paramId_t i, size_t j,
-                                        event_response_t const &er) const {
+                                        EventResponse const &er) const {
   std::vector<double> rtn;
   for (auto &eur : er) {
     // Use this for to get lazy checking of whether the throws are in eur
@@ -926,7 +926,7 @@ ParamHeaderHelper::GetDiscreteResponses(paramId_t i, size_t j,
 
 std::vector<double>
 ParamHeaderHelper::GetDiscreteResponses(param_list_t const &ilist, size_t j,
-                                        event_response_t const &er) const {
+                                        EventResponse const &er) const {
   std::vector<double> rtn;
   for (auto &eur : er) {
     rtn.push_back(GetDiscreteResponse(ilist, j, eur));
@@ -936,7 +936,7 @@ ParamHeaderHelper::GetDiscreteResponses(param_list_t const &ilist, size_t j,
 
 std::vector<ParamHeaderHelper::discrete_variation_list_t>
 ParamHeaderHelper::GetAllDiscreteResponses(paramId_t i,
-                                           event_response_t const &er) const {
+                                           EventResponse const &er) const {
   std::vector<std::vector<double>> rtn;
   for (auto &eur : er) {
     rtn.emplace_back(GetDiscreteResponses(i, eur));
@@ -946,7 +946,7 @@ ParamHeaderHelper::GetAllDiscreteResponses(paramId_t i,
 
 std::vector<ParamHeaderHelper::discrete_variation_list_t>
 ParamHeaderHelper::GetAllDiscreteResponses(param_list_t const &ilist,
-                                           event_response_t const &er) const {
+                                           EventResponse const &er) const {
 
   size_t nvariations = GetNDiscreteVariations(ilist.front());
   std::vector<std::vector<double>> rtn;

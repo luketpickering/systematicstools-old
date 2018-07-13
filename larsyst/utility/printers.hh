@@ -18,9 +18,9 @@ inline std::string to_str(SystParamHeader const &sph, bool indent = true) {
 }
 inline std::string to_str(EventResponse const &er) {
   std::stringstream ss("");
-  ss << "Event response contains " << er.responses.size() << std::endl;
-  for (size_t eur_it = 0; eur_it < er.responses.size(); ++eur_it) {
-    auto &eur = er.responses[eur_it];
+  ss << "Event response contains " << er.size() << std::endl;
+  for (size_t eur_it = 0; eur_it < er.size(); ++eur_it) {
+    auto &eur = er[eur_it];
     ss << "\t\tFound " << eur.size() << " responses to event unit " << eur_it
        << ":" << std::endl;
     for (auto &pr : eur) {

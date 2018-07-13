@@ -142,7 +142,7 @@ public:
   ///
   ///\note At higher care levels, the passing of non-spline parameters will
   /// checked for.
-  std::vector<TSpline3> GetSplines(paramId_t, event_response_t const &) const;
+  std::vector<TSpline3> GetSplines(paramId_t, EventResponse const &) const;
   ///\brief Get a map of the parameter-spline responses for all parameters in
   /// passed list from the passed event unit response.
   ///
@@ -156,7 +156,7 @@ public:
   ///\note At higher care levels, the passing of non-spline parameters will
   /// checked for.
   std::vector<param_tspline_map_t> GetSplines(param_list_t const &,
-                                              event_response_t const &) const;
+                                              EventResponse const &) const;
 
   ///\brief Gets the splined response for parameter i, set to value v, given the
   /// passed spline information.
@@ -219,7 +219,7 @@ public:
   ///
   /// Uses GetSpline internally
   std::vector<double> GetParameterResponse(paramId_t, double,
-                                           event_response_t const &) const;
+                                           EventResponse const &) const;
   ///\brief Gets the multiplicatively combined, splined response for all passed
   /// parameter-value pairs separately for each event unit in the passed event
   /// response.
@@ -236,7 +236,7 @@ public:
   ///
   /// Uses GetSpline internally
   std::vector<double> GetTotalResponse(param_value_map_t const &,
-                                       event_response_t const &) const;
+                                       EventResponse const &) const;
 
   ///\brief Gets the number of variations for parameter i
   size_t GetNDiscreteVariations(paramId_t) const;
@@ -305,7 +305,7 @@ public:
   /// from
   /// the event response information.
   std::vector<double> GetDiscreteResponses(paramId_t, size_t j,
-                                           event_response_t const &) const;
+                                           EventResponse const &) const;
   ///\brief Gets the multiplicatively combined responses at variation j of the
   /// passed parameter set for each event unit from the event response
   /// information.
@@ -313,12 +313,12 @@ public:
   ///\note This shouldn't be used on non-weight parameters. For higher care
   /// levels this will be enforced.
   std::vector<double> GetDiscreteResponses(param_list_t const &, size_t j,
-                                           event_response_t const &) const;
+                                           EventResponse const &) const;
 
   ///\brief Gets the response to all variations, for all events in the passed
   /// event response information.
   std::vector<discrete_variation_list_t>
-  GetAllDiscreteResponses(paramId_t, event_response_t const &) const;
+  GetAllDiscreteResponses(paramId_t, EventResponse const &) const;
 
   ///\brief Gets the multiplicatively combined responses to all variations, for
   /// all passed parameters, for all events in the passed event response
@@ -327,7 +327,7 @@ public:
   ///\note This shouldn't be used on non-weight parameters. For higher care
   /// levels this will be enforced.
   std::vector<discrete_variation_list_t>
-  GetAllDiscreteResponses(param_list_t const &, event_response_t const &) const;
+  GetAllDiscreteResponses(param_list_t const &, EventResponse const &) const;
 
   ///\brief Gets the thrown parameter values for all parameters specified in the
   /// passed parameter list.

@@ -122,7 +122,7 @@ public:
   // }
 
   std::vector<eventId_t> CacheEvents(event_t const &e,
-                                     event_response_t const &er) {
+                                     EventResponse const &er) {
     std::vector<eventId_t> rtn;
     size_t NToAdd = e.size();
     if (e.size() != er.size()) {
@@ -145,7 +145,7 @@ public:
     }
     return rtn;
   }
-  std::vector<eventId_t> CacheEvents(event_t &&e, event_response_t &&er) {
+  std::vector<eventId_t> CacheEvents(event_t &&e, EventResponse &&er) {
     std::vector<eventId_t> rtn;
     size_t NToAdd = e.size();
     if (e.size() != er.size()) {

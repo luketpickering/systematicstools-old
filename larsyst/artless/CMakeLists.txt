@@ -68,8 +68,8 @@ else()
 endif()
 
 ####### Util library
-include_directories(${CMAKE_INSTALL_PREFIX}/include)
 include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_INSTALL_PREFIX}/include)
 
 SET(UTIL_IMPLFILES
   ${CMAKE_SOURCE_DIR}/larsyst/utility/build_parameter_set_from_header.cc
