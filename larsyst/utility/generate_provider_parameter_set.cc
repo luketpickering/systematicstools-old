@@ -15,7 +15,7 @@ generate_provider_parameter_set(provider_map_t::mapped_type const &provider) {
       std::pair<std::pair<std::string, std::string>,
                 std::vector<SystParamHeader>>{
           {provider->GetToolType(), provider->GetInstanceName()},
-          provider->GetSystSetConfiguration().headers});
+          provider->GetSystSetConfiguration()});
 }
 
 fhicl::ParameterSet generate_provider_parameter_set(

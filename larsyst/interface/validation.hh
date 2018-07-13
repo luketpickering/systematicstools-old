@@ -174,7 +174,7 @@ inline bool validate_SystParamHeader(SystParamHeader const &hdr,
 inline bool validate_SystMetaData(SystMetaData const &sh, bool quiet = true) {
   std::map<paramId_t, std::vector<paramId_t>> ResponselessParamSets;
   std::set<paramId_t> UsedIds;
-  for (auto &hdr : sh.headers) {
+  for (auto &hdr : sh) {
     if (!validate_SystParamHeader(hdr, quiet)) {
       return false;
     }

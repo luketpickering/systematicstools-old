@@ -40,5 +40,8 @@ NEW_LARSYST_EXCEPT(invalid_parameter_name);
 NEW_LARSYST_EXCEPT(invalid_parameter_Id);
 NEW_LARSYST_EXCEPT(invalid_parameter_value);
 NEW_LARSYST_EXCEPT(incorrectly_configured);
+NEW_LARSYST_EXCEPT(parameter_Id_not_handled);
+NEW_LARSYST_EXCEPT(parameter_name_not_handled);
+NEW_LARSYST_EXCEPT(systParamId_collision);
 
 #endif

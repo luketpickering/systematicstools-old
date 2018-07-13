@@ -10,6 +10,7 @@ namespace larsyst {
 
 class ISystProvider_tool;
 struct SystParamHeader;
+struct ParamResponses;
 
 typedef unsigned paramId_t;
 
@@ -28,7 +29,7 @@ typedef std::map<std::string, std::unique_ptr<ISystProvider_tool>>
 typedef std::map<paramId_t, std::pair<std::string, SystParamHeader>>
     param_header_map_t;
 
-typedef std::map<paramId_t, std::vector<double>> event_unit_response_t;
+typedef std::vector<ParamResponses> event_unit_response_t;
 
 typedef std::vector<event_unit_response_t> event_response_t;
 

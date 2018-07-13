@@ -2,6 +2,7 @@
 #define LARSYST_INTERFACE_EVENTRESPONSEPRODUCE_SEEN
 
 #include "larsyst/interface/types.hh"
+#include "larsyst/interface/ParamResponses.hh"
 
 #include <map>
 #include <vector>

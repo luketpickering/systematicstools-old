@@ -74,7 +74,7 @@ CorrelatedMultisimProvider::CorrelatedMultisimProvider(
     : ISystProvider_tool(params), RNgine{nullptr}, RNJesus{nullptr} {}
 
 std::string CorrelatedMultisimProvider::AsString() {
-  return to_str(fMetaData.headers[0]);
+  return to_str(fMetaData[0]);
 }
 
 SystMetaData
@@ -127,7 +127,7 @@ CorrelatedMultisimProvider::ConfigureFromFHICL(ParameterSet const &params,
   }
 
   for (auto &sp : child_providers) {
-    for (auto &ph : sp.second->GetSystSetConfiguration().headers) {
+    for (auto &ph : sp.second->GetSystSetConfiguration()) {
       if (CorrelatedParameters.find(ph.systParamId) ==
           CorrelatedParameters.end()) {
         UncorrelatedThrows.push_back(
@@ -190,10 +190,10 @@ CorrelatedMultisimProvider::ConfigureFromFHICL(ParameterSet const &params,
       }
     }
     sp.second->SuggestParameterThrows(std::move(provider_throws), true);
-    for (auto &hdr : sp.second->GetSystSetConfiguration().headers) {
+    for (auto &hdr : sp.second->GetSystSetConfiguration()) {
       hdr.opts.push_back("CorrMSProviderHint=" + sp.second->GetToolType() +
                          "::" + sp.second->GetInstanceName());
-      smd.headers.push_back(hdr);
+      smd.push_back(hdr);
     }
   }
   return smd;
@@ -204,7 +204,7 @@ bool CorrelatedMultisimProvider::Configure() {
 
   std::map<std::pair<std::string, std::string>, std::vector<SystParamHeader>>
       child_syst_provider_parameters;
-  for (auto hdr : fMetaData.headers) {
+  for (auto hdr : fMetaData) {
     bool foundToolType = false;
 
     for (size_t opt_it = 0; opt_it < hdr.opts.size(); ++opt_it) {

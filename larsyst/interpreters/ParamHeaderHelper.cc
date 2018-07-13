@@ -461,8 +461,7 @@ TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
                                       SystParamHeader const &hdr) const {
 
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
-    auto const it = eur.find(i);
-    if (it == eur.end()) {
+    if (!ContainterHasParamResponses(eur, i)) {
       if (fChkErr.fPedantry <= ParamValidationAndErrorResponse::kMeh) {
         std::cout << "["
                   << ((fChkErr.fPedantry ==
@@ -481,7 +480,7 @@ TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
     }
   }
 
-  return GetSpline(i, eur.at(i));
+  return GetSpline(i, GetParamResponsesContainer(eur, i).responses);
 }
 
 TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
@@ -629,8 +628,7 @@ double ParamHeaderHelper::GetParameterResponse(
   // Manually do this check here (from GetSpline) as it seems to be the path of
   // least duplication.
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
-    auto const it = eur.find(i);
-    if (it == eur.end()) {
+    if (!ContainterHasParamResponses(eur, i)) {
       if (fChkErr.fPedantry <= ParamValidationAndErrorResponse::kMeh) {
         std::cout << "["
                   << ((fChkErr.fPedantry ==
@@ -658,7 +656,8 @@ double ParamHeaderHelper::GetParameterResponse(
     }
   }
 
-  return GetParameterResponse(i, v, eur.at(i));
+  return GetParameterResponse(i, v,
+                              GetParamResponsesContainer(eur, i).responses);
 }
 
 double
@@ -796,8 +795,7 @@ ParamHeaderHelper::GetDiscreteResponses(paramId_t i,
                                         SystParamHeader const &hdr) const {
 
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
-    auto const it = eur.find(i);
-    if (it == eur.end()) {
+    if (!ContainterHasParamResponses(eur, i)) {
       if (fChkErr.fPedantry <= ParamValidationAndErrorResponse::kMeh) {
         std::cout << "["
                   << ((fChkErr.fPedantry ==
@@ -816,7 +814,8 @@ ParamHeaderHelper::GetDiscreteResponses(paramId_t i,
     }
   }
 
-  return ParamHeaderHelper::GetDiscreteResponses(i, eur.at(i), hdr);
+  return ParamHeaderHelper::GetDiscreteResponses(
+      i, GetParamResponsesContainer(eur, i).responses, hdr);
 }
 ParamHeaderHelper::discrete_variation_list_t
 ParamHeaderHelper::GetDiscreteResponses(
@@ -857,8 +856,7 @@ ParamHeaderHelper::GetDiscreteResponse(paramId_t i, size_t j,
   // Manually do this check here (from GetSpline) as it seems to be the path of
   // least duplication.
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
-    auto const it = eur.find(i);
-    if (it == eur.end()) {
+    if (!ContainterHasParamResponses(eur, i)) {
       if (fChkErr.fPedantry <= ParamValidationAndErrorResponse::kMeh) {
         std::cout << "["
                   << ((fChkErr.fPedantry ==
@@ -870,7 +868,7 @@ ParamHeaderHelper::GetDiscreteResponse(paramId_t i, size_t j,
                   << std::endl;
         std::cout << "[INFO]: Recieved response info for: " << std::endl;
         for (auto &ivs : eur) {
-          std::cout << "\t" << ivs.first << std::endl;
+          std::cout << "\t" << ivs.pid << std::endl;
         }
         if (fChkErr.fPedantry ==
             ParamValidationAndErrorResponse::kNotOnMyWatch) {
@@ -890,7 +888,8 @@ ParamHeaderHelper::GetDiscreteResponse(paramId_t i, size_t j,
     }
   }
 
-  return GetDiscreteResponse(i, j, eur.at(i));
+  return GetDiscreteResponse(i, j,
+                             GetParamResponsesContainer(eur, i).responses);
 }
 
 double
@@ -1010,22 +1009,25 @@ ParamHeaderHelper::GetEventResponseInfo(event_unit_response_t eur) const {
        << ", \n\tname: " << hdr.prettyName
        << ", \n\tNParamValues: " << hdr.paramVariations.size() << std::flush;
 
-    if (eur.find(p) == eur.end()) {
+    if (!ContainterHasParamResponses(eur, p)) {
       ss << " }." << std::endl;
       continue;
     }
 
     if (hdr.isCorrection) {
       ss << ", \n\tcorrection: (" << hdr.centralParamValue << " -> "
-         << eur[p][0] << ") }." << std::endl;
+         << GetParamResponsesContainer(eur, p).responses[0] << ") }."
+         << std::endl;
       continue;
     }
 
     ss << ", \n\t(val -> resp): [ " << std::endl;
 
+    auto const &responses = GetParamResponsesContainer(eur, p).responses;
+    size_t NResponses = responses.size();
     for (size_t i = 0; i < hdr.paramVariations.size(); ++i) {
       ss << "\t                 (" << hdr.paramVariations[i] << " -> "
-         << ((eur[p].size() > i) ? std::to_string(eur[p][i]) : "NR")
+         << ((NResponses > i) ? std::to_string(responses[i]) : "NR")
          << ((i + 1 == hdr.paramVariations.size()) ? ")" : "),") << std::endl;
     }
     ss << "\t]\n }." << std::endl;

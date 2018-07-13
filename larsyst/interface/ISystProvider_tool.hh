@@ -42,7 +42,7 @@ public:
   }
   paramId_t GetParameterId(std::string const &prettyName) {
     CheckHaveMetaData();
-    for (auto &sph : fMetaData.headers) {
+    for (auto &sph : fMetaData) {
       if (sph.prettyName == prettyName) {
         return sph.systParamId;
       }
@@ -93,12 +93,12 @@ public:
     // The follow check expects them to be ordered, but the provider isn't under
     // any obligation to order them.
 
-    std::stable_sort(fMetaData.headers.begin(), fMetaData.headers.end(),
+    std::stable_sort(fMetaData.begin(), fMetaData.end(),
                      [](SystParamHeader const &l, SystParamHeader const &r) {
                        return l.systParamId < r.systParamId;
                      });
 
-    for (auto &hdr : fMetaData.headers) {
+    for (auto &hdr : fMetaData) {
       if (hdr.systParamId != id) {
         std::cout << "[ERROR]: Provider "
                   << std::quoted(GetFullyQualifiedName())
@@ -131,20 +131,20 @@ public:
         ps.get<std::vector<std::string>>("parameterHeaders");
 
     for (auto const &ph : paramHeadersToRead) {
-      fMetaData.headers.emplace_back(larsyst::build_header_from_parameter_set(
+      fMetaData.emplace_back(larsyst::build_header_from_parameter_set(
           ps.get<fhicl::ParameterSet>(ph)));
     }
     fHaveMetaData = true;
 
     std::vector<std::string> parametermd5s;
     SystMetaData mdCopy = fMetaData;
-    for (auto const &sph : fMetaData.headers) {
+    for (auto const &sph : fMetaData) {
       parametermd5s.push_back(md5(to_str(sph)));
     }
     // Meta data loaded, now run any additonal subclass configuration.
     fIsFullyConfigured = this->Configure();
     size_t hdrctr = 0;
-    for (auto const &sph : fMetaData.headers) {
+    for (auto const &sph : fMetaData) {
       std::string digest = md5(to_str(sph));
       if (parametermd5s[hdrctr] != digest) {
         std::cout << "[ERROR]: MD5 of parameter #" << hdrctr << "("
@@ -152,7 +152,7 @@ public:
                   << GetToolType() << "::Configure to " << std::quoted(digest)
                   << "." << std::endl;
         std::cout << "BEFORE: " << to_str(sph, false) << std::endl;
-        std::cout << "AFTER: " << to_str(mdCopy.headers[hdrctr], false)
+        std::cout << "AFTER: " << to_str(mdCopy[hdrctr], false)
                   << std::endl;
         throw;
       }
@@ -161,7 +161,7 @@ public:
 
     std::cout << "[INFO]: Syst provider "
               << std::quoted(GetFullyQualifiedName()) << " configured "
-              << fMetaData.headers.size() << " parameters." << std::endl;
+              << fMetaData.size() << " parameters." << std::endl;
 
     return fIsFullyConfigured;
   }
@@ -217,7 +217,7 @@ protected:
     }
 
     size_t index = 0;
-    for (auto &sph : fMetaData.headers) {
+    for (auto &sph : fMetaData) {
       if (sph.systParamId == i) {
         return index;
       }
@@ -236,7 +236,7 @@ protected:
       throw;
     }
     CheckHaveMetaData(i);
-    return fMetaData.headers[GetParameterHeaderMetaDataIndex(i)];
+    return fMetaData[GetParameterHeaderMetaDataIndex(i)];
   }
 
   std::string fToolType;

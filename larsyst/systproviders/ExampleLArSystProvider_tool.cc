@@ -138,7 +138,7 @@ double GetResponse(double val, SystParamHeader const &sph) {
 
 std::string ExampleLArSystProvider::AsString() {
   CheckHaveMetaData();
-  return to_str(fMetaData.headers[0]);
+  return to_str(fMetaData[0]);
 }
 
 SystMetaData
@@ -240,7 +240,7 @@ void ExampleLArSystProvider::SuggestParameterThrows(
 
   for (auto &&p : throws) {
     size_t idx = GetParameterHeaderMetaDataIndex(p.first);
-    SystParamHeader &hdr = fMetaData.headers[idx];
+    SystParamHeader &hdr = fMetaData[idx];
     hdr.paramVariations = std::move(p.second);
 
     if (hdr.unitsAreNatural) {
@@ -264,9 +264,9 @@ bool ExampleLArSystProvider::Configure() {
 
   CheckHaveMetaData();
 
-  if (std::find(fMetaData.headers[0].opts.begin(),
-                fMetaData.headers[0].opts.end(),
-                "all") != fMetaData.headers[0].opts.end()) {
+  if (std::find(fMetaData[0].opts.begin(),
+                fMetaData[0].opts.end(),
+                "all") != fMetaData[0].opts.end()) {
     applyToAll = true;
   } else {
     if (!RNJesus) {
@@ -289,16 +289,16 @@ ExampleLArSystProvider::GetEventResponse(art::Event &e) {
   }
 
   std::unique_ptr<EventResponse> er = std::make_unique<EventResponse>();
-  if (!fMetaData.headers[0].differsEventByEvent) {
+  if (!fMetaData[0].differsEventByEvent) {
     er->responses.push_back(std::map<uint, std::vector<double>>{
-        {fMetaData.headers[0].systParamId, std::vector<double>{}}});
+        {fMetaData[0].systParamId, std::vector<double>{}}});
   } else {
     std::vector<double> responses;
-    for (auto psv : fMetaData.headers[0].paramVariations) {
-      responses.push_back(GetResponse(psv, fMetaData.headers[0]));
+    for (auto psv : fMetaData[0].paramVariations) {
+      responses.push_back(GetResponse(psv, fMetaData[0]));
     }
     er->responses.push_back(std::map<uint, std::vector<double>>{
-        {fMetaData.headers[0].systParamId, responses}});
+        {fMetaData[0].systParamId, responses}});
   }
   return er;
 }

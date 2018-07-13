@@ -24,8 +24,8 @@ inline std::string to_str(EventResponse const &er) {
     ss << "\t\tFound " << eur.size() << " responses to event unit " << eur_it
        << ":" << std::endl;
     for (auto &pr : eur) {
-      ss << "\t\t\tParam " << pr.first << ": {" << std::flush;
-      for (auto &r : pr.second) {
+      ss << "\t\t\tParam " << pr.pid << ": {" << std::flush;
+      for (auto &r : pr.responses) {
         ss << r << ", " << std::flush;
       }
       ss << "}" << std::endl;

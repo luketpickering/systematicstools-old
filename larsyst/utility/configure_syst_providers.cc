@@ -47,7 +47,7 @@ provider_map_t configure_syst_providers(fhicl::ParameterSet const &paramset,
     SystMetaData md =
         is->GenerateSystSetConfiguration(provider_cfg, syst_param_id);
     std::cout << "[INFO]\t Success!" << std::endl;
-    syst_param_id += md.headers.size();
+    syst_param_id += md.size();
 
     // build unique name
     std::string FQName = is->GetFullyQualifiedName();
@@ -107,7 +107,7 @@ load_syst_provider_configuration(fhicl::ParameterSet const &paramset,
       std::cout << "[ERROR]:\t Failure." << std ::endl;
       throw;
     }
-    nparams += is->GetSystSetConfiguration().headers.size();
+    nparams += is->GetSystSetConfiguration().size();
 
     // build unique name
     std::string FQName = is->GetFullyQualifiedName();

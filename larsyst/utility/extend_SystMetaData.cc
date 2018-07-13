@@ -8,7 +8,6 @@
 #include <set>
 
 NEW_LARSYST_EXCEPT(invalid_SystMetaData);
-NEW_LARSYST_EXCEPT(systParamId_collision);
 
 namespace larsyst {
 void extend_SystMetaData(SystMetaData &md1, SystMetaData const &md2) {
@@ -22,13 +21,13 @@ void extend_SystMetaData(SystMetaData &md1, SystMetaData const &md2) {
   }
 
   std::set<paramId_t> UsedIds;
-  for (auto const &sph : md1.headers) {
+  for (auto const &sph : md1) {
     // No colliding ids in each parameter set already checked by
     // validate_SystMetaData
     UsedIds.insert(sph.systParamId);
   }
 
-  for (auto const &sph : md2.headers) {
+  for (auto const &sph : md2) {
     auto inserted = UsedIds.insert(sph.systParamId);
     if (!inserted.second) {
       throw systParamId_collision()
@@ -38,8 +37,8 @@ void extend_SystMetaData(SystMetaData &md1, SystMetaData const &md2) {
     }
   }
 
-  for (auto const &sph : md2.headers) {
-    md1.headers.push_back(sph);
+  for (auto const &sph : md2) {
+    md1.push_back(sph);
   }
 }
 } // namespace larsyst
