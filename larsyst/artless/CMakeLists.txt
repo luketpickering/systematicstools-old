@@ -72,11 +72,11 @@ include_directories(${CMAKE_INSTALL_PREFIX}/include)
 
 ####### Util library
 SET(UTIL_IMPLFILES
-  ${CMAKE_SOURCE_DIR}/larsyst/utility/FHiCLSystParamHeaderConverters.cc
+  ${CMAKE_SOURCE_DIR}/larsyst/utility/FHiCLSystParamHeaderUtility.cc
   ${CMAKE_SOURCE_DIR}/larsyst/utility/ParameterAndProviderConfigurationUtility.cc
   ${CMAKE_SOURCE_DIR}/larsyst/utility/md5.cc)
 SET(UTIL_HDRFILES
-  ${CMAKE_SOURCE_DIR}/larsyst/utility/FHiCLSystParamHeaderConverters.cc
+  ${CMAKE_SOURCE_DIR}/larsyst/utility/FHiCLSystParamHeaderUtility.cc
   ${CMAKE_SOURCE_DIR}/larsyst/utility/ParameterAndProviderConfigurationUtility.cc
   ${CMAKE_SOURCE_DIR}/larsyst/utility/md5.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/printers.hh
@@ -139,3 +139,48 @@ add_dependencies(larsyst_interpreters fhiclcpp-simple)
 
 INSTALL(TARGETS larsyst_interpreters DESTINATION lib)
 INSTALL(FILES ${INTR_HDRFILES} DESTINATION include/larsyst/interpreters)
+
+####### SystProviders library
+
+SET(SPV_IMPLFILES
+${CMAKE_SOURCE_DIR}/larsyst/systproviders/ExampleISystProvider_tool.cc)
+
+SET(SPV_HDRFILES
+${CMAKE_SOURCE_DIR}/larsyst/systproviders/ExampleISystProvider_tool.hh)
+
+
+if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+  add_library(larsyst_systproviders STATIC ${SPV_IMPLFILES})
+else(CMAKE_BUILD_TYPE MATCHES RELEASE)
+  add_library(larsyst_systproviders SHARED ${SPV_IMPLFILES})
+endif()
+
+add_dependencies(larsyst_systproviders fhiclcpp-simple)
+
+INSTALL(TARGETS larsyst_systproviders DESTINATION lib)
+INSTALL(FILES ${SPV_HDRFILES} DESTINATION include/larsyst/systproviders)
+
+####### GenerateSystProvider app
+
+add_executable(GenerateSystProviderConfig ${CMAKE_SOURCE_DIR}/larsyst/app/GenerateSystProviderConfig.cc)
+
+target_link_libraries(GenerateSystProviderConfig larsyst_utility)
+target_link_libraries(GenerateSystProviderConfig larsyst_interface)
+target_link_libraries(GenerateSystProviderConfig larsyst_interpreters)
+target_link_libraries(GenerateSystProviderConfig larsyst_systproviders)
+add_dependencies(GenerateSystProviderConfig fhiclcpp-simple)
+
+INSTALL(TARGETS GenerateSystProviderConfig DESTINATION bin)
+
+####### fhicl files
+file(GLOB FCL ${CMAKE_SOURCE_DIR}/larsyst/fcl/*.fcl)
+install(FILES ${FCL} DESTINATION ${CMAKE_INSTALL_PREFIX}/fcl)
+
+
+####### environment scripts
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/setup.sh.in
+"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/larsyst.setup.sh" @ONLY)
+
+install(FILES
+  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/larsyst.setup.sh" DESTINATION
+  ${CMAKE_INSTALL_PREFIX})

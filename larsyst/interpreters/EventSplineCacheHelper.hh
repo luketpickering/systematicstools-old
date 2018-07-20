@@ -171,7 +171,7 @@ public:
 
   size_t GetNEventsInCache() { return fEvents.size(); }
 
-  void DeclareUsingParameter(paramId_t i, double v = 0xdeadb33f) {
+  void DeclareUsingParameter(paramId_t i, double v = kDefaultDouble) {
     if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
       if (!fHeaderHelper.HaveHeader(i)) {
         if (fChkErr.fPedantry <= ParamValidationAndErrorResponse::kMeh) {

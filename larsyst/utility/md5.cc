@@ -31,7 +31,7 @@ documentation and/or software.
 */
 
 /* interface header */
-#include "md5.hh"
+#include "larsyst/utility/md5.hh"
 
 /* system implementation headers */
 #include <cstdio>

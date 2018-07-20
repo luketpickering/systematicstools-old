@@ -4,7 +4,7 @@
 #include "larsyst/interface/EventResponse_product.hh"
 #include "larsyst/interface/SystMetaData.hh"
 
-#include "larsyst/utility/FHiCLSystParamHeaderConverters.hh"
+#include "larsyst/utility/FHiCLSystParamHeaderUtility.hh"
 #include "larsyst/utility/exceptions.hh"
 
 #ifndef NO_ART
@@ -24,6 +24,7 @@ NEW_LARSYST_EXCEPT(ISystProvider_tool_method_unimplemented);
 NEW_LARSYST_EXCEPT(ISystProvider_tool_seed_suggestion_post_configure);
 NEW_LARSYST_EXCEPT(ISystProvider_tool_noncontiguous_parameter_Ids);
 NEW_LARSYST_EXCEPT(ISystProvider_tool_metadata_not_generated);
+NEW_LARSYST_EXCEPT(invalid_ToolConfigurationFHiCL);
 
 /// ABC defining the interface to systematic response syst_providers
 class ISystProvider_tool {

@@ -1,19 +1,22 @@
 #include "larsyst/interface/ISystProvider_tool.hh"
 #include "larsyst/interface/SystMetaData.hh"
 #include "larsyst/interface/types.hh"
-#include "larsyst/interface/validation.hh"
 
-#include "larsyst/utility/build_parameter_set_from_header.hh"
-#include "larsyst/utility/configure_syst_providers.hh"
-#include "larsyst/utility/generate_provider_parameter_set.hh"
+#include "larsyst/utility/ParameterAndProviderConfigurationUtility.hh"
 #include "larsyst/utility/md5.hh"
 #include "larsyst/utility/printers.hh"
 #include "larsyst/utility/string_parsers.hh"
 
+#ifdef NO_ART
+#include "larsyst/systproviders/ExampleISystProvider_tool.hh"
+#endif
+
 #include "fhiclcpp/ParameterSet.h"
 #include "fhiclcpp/make_ParameterSet.h"
 
+#ifndef NO_ART
 #include "cetlib/filepath_maker.h"
+#endif
 
 #include <fstream>
 #include <iomanip>
@@ -24,12 +27,15 @@ std::string fclname = "";
 std::string outputfile = "";
 std::string envvar = "FHICL_FILE_PATH";
 std::string fhicl_key = "syst_providers";
+#ifndef NO_ART
 int lookup_policy = 1;
+#endif
 } // namespace cliopts
 
 void SayUsage(char const *argv[]) {
   std::cout << "[USAGE]: " << argv[0] << "\n" << std::endl;
   std::cout << "\t-?|--help        : Show this message.\n"
+#ifndef NO_ART
                "\t-l <policy_id>   : FHICL_FILE_PATH lookup policy:\n"
                "\t                    0 : cet::filepath_maker\n"
                "\t                   {1}: cet::filepath_lookup\n"
@@ -38,6 +44,7 @@ void SayUsage(char const *argv[]) {
                "\t-p <envvar name> : Environment variable to use when searching"
                " for fhicl. \n"
                "\t                   FHICL_FILE_PATH by default.\n"
+#endif
                "\t-c <config.fcl>  : fhicl file to read.\n"
                "\t-o <output.fcl>  : fhicl file to write, stdout by default.\n"
                "\t-k <list key>    : fhicl key to look for list of providers,\n"
@@ -52,6 +59,7 @@ void HandleOpts(int argc, char const *argv[]) {
         (std::string(argv[opt]) == "--help")) {
       SayUsage(argv);
       exit(0);
+#ifndef NO_ART
     } else if (std::string(argv[opt]) == "-l") {
       cliopts::lookup_policy = larsyst::str2T<int>(argv[++opt]);
       if (cliopts::lookup_policy > 3 || cliopts::lookup_policy < 0) {
@@ -72,6 +80,7 @@ void HandleOpts(int argc, char const *argv[]) {
         SayUsage(argv);
         exit(1);
       }
+#endif
     } else if (std::string(argv[opt]) == "-c") {
       cliopts::fclname = argv[++opt];
     } else if (std::string(argv[opt]) == "-o") {
@@ -90,6 +99,7 @@ void HandleOpts(int argc, char const *argv[]) {
 fhicl::ParameterSet ReadParameterSet(char const *argv[]) {
   char const *ev = nullptr;
 
+#ifndef NO_ART
   if (cliopts::lookup_policy != 0) {
     ev = getenv(cliopts::envvar.c_str());
     if (!ev) {
@@ -102,7 +112,10 @@ fhicl::ParameterSet ReadParameterSet(char const *argv[]) {
       exit(1);
     }
   }
+#endif
 
+  fhicl::ParameterSet ps;
+#ifndef NO_ART
   std::unique_ptr<cet::filepath_maker> fm(nullptr);
 
   switch (cliopts::lookup_policy) {
@@ -125,8 +138,10 @@ fhicl::ParameterSet ReadParameterSet(char const *argv[]) {
   }
   default: {}
   }
-  fhicl::ParameterSet ps;
   fhicl::make_ParameterSet(cliopts::fclname, *fm, ps);
+#else
+  ps = fhicl::make_ParameterSet(cliopts::fclname);
+#endif
   return ps;
 }
 
@@ -140,23 +155,43 @@ int main(int argc, char const *argv[]) {
 
   fhicl::ParameterSet in_ps = ReadParameterSet(argv);
 
-  larsyst::provider_map_t tools =
-      larsyst::configure_syst_providers(in_ps, cliopts::fhicl_key);
+  std::function<std::unique_ptr<larsyst::ISystProvider_tool>(
+      fhicl::ParameterSet const &)>
+      InstanceBuilder;
+#ifndef NO_ART
+  InstanceBuilder = art::make_tool<larsyst::ISystProvider_tool>
+#else
+  InstanceBuilder = [](fhicl::ParameterSet const &paramset)
+      -> std::unique_ptr<larsyst::ISystProvider_tool> {
+    std::string tool_type = "";
+    paramset.get_if_present("tool_type", tool_type);
+    if (tool_type == "ExampleISystProvider") {
+      return std::make_unique<ExampleISystProvider>(paramset);
+    } else {
+      std::cerr << "[ERROR]: When build artless can only instantiate "
+                   "ExampleISystProvider instances. A "
+                << std::quoted(tool_type) << " instance was requested."
+                << std::endl;
+      throw;
+    }
+  };
+#endif
+      larsyst::provider_list_t tools =
+          larsyst::ConfigureISystProvidersFromToolConfig(in_ps, InstanceBuilder,
+                                                         cliopts::fhicl_key);
 
   fhicl::ParameterSet out_ps;
   std::vector<std::string> providerNames;
   for (auto &prov : tools) {
-    if (!validate_SystMetaData(prov.second->GetSystSetConfiguration(),
-                               false)) {
-      std::cout << "[ERROR]: A parameter handled by provider: "
-                << std::quoted(prov.first) << " failed validation."
-                << std::endl;
-      throw;
+    if (!larsyst::Validate(prov->GetSystMetaData(), false)) {
+      throw larsyst::invalid_SystMetaData()
+          << "[ERROR]: A parameter handled by provider: "
+          << std::quoted(prov->GetFullyQualifiedName())
+          << " failed validation.";
     }
-    fhicl::ParameterSet tool_ps =
-        larsyst::generate_provider_parameter_set(prov.second);
-    out_ps.put(prov.first, tool_ps);
-    providerNames.push_back(prov.first);
+    fhicl::ParameterSet tool_ps = prov->GetParameterHeadersDocument();
+    out_ps.put(prov->GetFullyQualifiedName(), tool_ps);
+    providerNames.push_back(prov->GetFullyQualifiedName());
   }
   out_ps.put("syst_providers", providerNames);
 

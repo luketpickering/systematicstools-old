@@ -11,6 +11,10 @@
 
 namespace larsyst {
 
+///\brief Exception thrown when two ISystProvider_tools have identical fully
+///qualified (tool_name + instance_name) names.
+NEW_LARSYST_EXCEPT(ISystProvider_FQName_collision);
+
 ///\brief Builds map of SystProvider instances and handled parameters from a
 /// ParameterHeaders FHiCL document.
 ///

@@ -1,0 +1,330 @@
+generated_systematic_provider_configuration: {
+                                               ExampleISystProvider_ev_spline: {
+                                                                                 ExampleLArSystEventByEventLateral_some: {
+                                                                                                                           centralParamValue: 1
+                                                                                                                           isSplineable: true
+                                                                                                                           paramVariations: [
+                                                                                                                                              2
+                                                                                                                                            ]
+                                                                                                                           prettyName: ExampleLArSystEventByEventLateral_some
+                                                                                                                           systParamId: 5
+                                                                                                                         }
+                                                                                 instance_name: ev_spline
+                                                                                 parameter_headers: [
+                                                                                                      ExampleLArSystEventByEventLateral_some
+                                                                                                    ]
+                                                                                 tool_type: ExampleISystProvider
+                                                                               }
+                                               ExampleISystProvider_global_spline: {
+                                                                                     ExampleLArSystEventByEventLateral_all: {
+                                                                                                                              centralParamValue: 1
+                                                                                                                              isSplineable: true
+                                                                                                                              paramVariations: [
+                                                                                                                                                 2
+                                                                                                                                               ]
+                                                                                                                              prettyName: ExampleLArSystEventByEventLateral_all
+                                                                                                                              systParamId: 4
+                                                                                                                            }
+                                                                                     instance_name: global_spline
+                                                                                     parameter_headers: [
+                                                                                                          ExampleLArSystEventByEventLateral_all
+                                                                                                        ]
+                                                                                     tool_type: ExampleISystProvider
+                                                                                   }
+                                               ExampleISystProvider_lateral_ev_spline: {
+                                                                                         ExampleLArSystEventByEventNorm_all: {
+                                                                                                                               centralParamValue: 1
+                                                                                                                               isSplineable: true
+                                                                                                                               isWeightSystematicVariation: false
+                                                                                                                               paramVariations: [
+                                                                                                                                                  2
+                                                                                                                                                ]
+                                                                                                                               prettyName: ExampleLArSystEventByEventNorm_all
+                                                                                                                               systParamId: 6
+                                                                                                                             }
+                                                                                         instance_name: lateral_ev_spline
+                                                                                         parameter_headers: [
+                                                                                                              ExampleLArSystEventByEventNorm_all
+                                                                                                            ]
+                                                                                         tool_type: ExampleISystProvider
+                                                                                       }
+                                               ExampleISystProvider_multisim: {
+                                                                                ExampleLArSystEventByEventLateral_all: {
+                                                                                                                         centralParamValue: 1
+                                                                                                                         isRandomlyThrown: true
+                                                                                                                         paramVariations: [
+                                                                                                                                            3.59418e+08,
+                                                                                                                                            3.19369e+08,
+                                                                                                                                            5.38007e+09,
+                                                                                                                                            5.74863e+09,
+                                                                                                                                            6.31145e+08,
+                                                                                                                                            7.35649e+08,
+                                                                                                                                            3.05397e+09,
+                                                                                                                                            1.7534e+08,
+                                                                                                                                            2.15777e+09,
+                                                                                                                                            4.85944e+09,
+                                                                                                                                            1.48767e+09,
+                                                                                                                                            1.66883e+08,
+                                                                                                                                            6.94562e+08,
+                                                                                                                                            3.16994e+09,
+                                                                                                                                            2.95634e+08,
+                                                                                                                                            8.70385e+08,
+                                                                                                                                            5.90206e+08,
+                                                                                                                                            1.31585e+09,
+                                                                                                                                            2.27513e+08,
+                                                                                                                                            1.86232e+09,
+                                                                                                                                            4.91868e+09,
+                                                                                                                                            2.60627e+09,
+                                                                                                                                            1.98368e+09,
+                                                                                                                                            4.28264e+09,
+                                                                                                                                            3.10242e+09,
+                                                                                                                                            5.30777e+09,
+                                                                                                                                            3.11495e+09,
+                                                                                                                                            9.81237e+08,
+                                                                                                                                            4.74294e+09,
+                                                                                                                                            9.95132e+08,
+                                                                                                                                            1.20077e+10,
+                                                                                                                                            4.54649e+09,
+                                                                                                                                            2.70628e+09,
+                                                                                                                                            2.42713e+09,
+                                                                                                                                            1.58242e+08,
+                                                                                                                                            5.45315e+09,
+                                                                                                                                            3.83966e+09,
+                                                                                                                                            4.88363e+09,
+                                                                                                                                            5.58475e+09,
+                                                                                                                                            2.65968e+09,
+                                                                                                                                            1.43616e+09,
+                                                                                                                                            9.13899e+08,
+                                                                                                                                            2.79254e+09,
+                                                                                                                                            7.39628e+08,
+                                                                                                                                            3.61262e+08,
+                                                                                                                                            3.0935e+07,
+                                                                                                                                            2.60237e+09,
+                                                                                                                                            8.71344e+07,
+                                                                                                                                            2.00799e+09,
+                                                                                                                                            2.34865e+09
+                                                                                                                                          ]
+                                                                                                                         prettyName: ExampleLArSystEventByEventLateral_all
+                                                                                                                         systParamId: 0
+                                                                                                                       }
+                                                                                instance_name: multisim
+                                                                                parameter_headers: [
+                                                                                                     ExampleLArSystEventByEventLateral_all
+                                                                                                   ]
+                                                                                tool_type: ExampleISystProvider
+                                                                              }
+                                               ExampleISystProvider_multisim_applyall: {
+                                                                                         ExampleLArSystEventByEventLateral_all: {
+                                                                                                                                  centralParamValue: 1
+                                                                                                                                  isRandomlyThrown: true
+                                                                                                                                  paramVariations: [
+                                                                                                                                                     5.96704e+08,
+                                                                                                                                                     6.04257e+09,
+                                                                                                                                                     1.69163e+09,
+                                                                                                                                                     2.28074e+09,
+                                                                                                                                                     1.27867e+10,
+                                                                                                                                                     4.86479e+09,
+                                                                                                                                                     8.08576e+09,
+                                                                                                                                                     1.58418e+09,
+                                                                                                                                                     2.35744e+09,
+                                                                                                                                                     2.93946e+09,
+                                                                                                                                                     1.58671e+09,
+                                                                                                                                                     1.92557e+09,
+                                                                                                                                                     1.45979e+09,
+                                                                                                                                                     1.69054e+09,
+                                                                                                                                                     4.49213e+09,
+                                                                                                                                                     1.04934e+08,
+                                                                                                                                                     1.5182e+08,
+                                                                                                                                                     6.67701e+09,
+                                                                                                                                                     5.67567e+08,
+                                                                                                                                                     4.96253e+09,
+                                                                                                                                                     5.1275e+09,
+                                                                                                                                                     2.12589e+09,
+                                                                                                                                                     5.4618e+08,
+                                                                                                                                                     2.16943e+09,
+                                                                                                                                                     1.55111e+09,
+                                                                                                                                                     4.83614e+08,
+                                                                                                                                                     4.64504e+08,
+                                                                                                                                                     3.69918e+09,
+                                                                                                                                                     7.86697e+08,
+                                                                                                                                                     6.94083e+08,
+                                                                                                                                                     1.40289e+09,
+                                                                                                                                                     3.97056e+09,
+                                                                                                                                                     3.51641e+09,
+                                                                                                                                                     1.60283e+09,
+                                                                                                                                                     1.70665e+09,
+                                                                                                                                                     7.94594e+08,
+                                                                                                                                                     1.6139e+07,
+                                                                                                                                                     3.61658e+09,
+                                                                                                                                                     1.07555e+10,
+                                                                                                                                                     2.0397e+09,
+                                                                                                                                                     2.27451e+09,
+                                                                                                                                                     4.94117e+09,
+                                                                                                                                                     1.61104e+09,
+                                                                                                                                                     1.12846e+09,
+                                                                                                                                                     6.25383e+08,
+                                                                                                                                                     5.70204e+08,
+                                                                                                                                                     1.60787e+09,
+                                                                                                                                                     2.85178e+09,
+                                                                                                                                                     2.72174e+09,
+                                                                                                                                                     4.7853e+09
+                                                                                                                                                   ]
+                                                                                                                                  prettyName: ExampleLArSystEventByEventLateral_all
+                                                                                                                                  systParamId: 1
+                                                                                                                                }
+                                                                                         instance_name: multisim_applyall
+                                                                                         parameter_headers: [
+                                                                                                              ExampleLArSystEventByEventLateral_all
+                                                                                                            ]
+                                                                                         tool_type: ExampleISystProvider
+                                                                                       }
+                                               ExampleISystProvider_multisim_centreshift: {
+                                                                                            ExampleLArSystEventByEventLateral_all: {
+                                                                                                                                     centralParamValue: 10
+                                                                                                                                     isRandomlyThrown: true
+                                                                                                                                     oneSigmaShifts: [
+                                                                                                                                                       -2,
+                                                                                                                                                       2
+                                                                                                                                                     ]
+                                                                                                                                     paramVariations: [
+                                                                                                                                                        8.78716,
+                                                                                                                                                        12.1575,
+                                                                                                                                                        11.2996,
+                                                                                                                                                        8.62055,
+                                                                                                                                                        9.4543,
+                                                                                                                                                        7.7531,
+                                                                                                                                                        9.19743,
+                                                                                                                                                        10.7085,
+                                                                                                                                                        9.80864,
+                                                                                                                                                        11.4036,
+                                                                                                                                                        12.0381,
+                                                                                                                                                        10.6175,
+                                                                                                                                                        9.90492,
+                                                                                                                                                        7.18173,
+                                                                                                                                                        10.9457,
+                                                                                                                                                        8.53333,
+                                                                                                                                                        11.0512,
+                                                                                                                                                        11.8702,
+                                                                                                                                                        12.3749,
+                                                                                                                                                        9.87861,
+                                                                                                                                                        7.93159,
+                                                                                                                                                        10.5754,
+                                                                                                                                                        8.83959,
+                                                                                                                                                        9.42908,
+                                                                                                                                                        10.7001,
+                                                                                                                                                        10.6217,
+                                                                                                                                                        12.204,
+                                                                                                                                                        12.7523,
+                                                                                                                                                        10.9865,
+                                                                                                                                                        11.0725,
+                                                                                                                                                        9.70349,
+                                                                                                                                                        13.5128,
+                                                                                                                                                        12.9876,
+                                                                                                                                                        10.3795,
+                                                                                                                                                        10.2864,
+                                                                                                                                                        11.0511,
+                                                                                                                                                        8.2877,
+                                                                                                                                                        9.82177,
+                                                                                                                                                        8.67197,
+                                                                                                                                                        11.3944,
+                                                                                                                                                        12.5868,
+                                                                                                                                                        11.2132,
+                                                                                                                                                        8.54816,
+                                                                                                                                                        14.1183,
+                                                                                                                                                        10.0309,
+                                                                                                                                                        7.85491,
+                                                                                                                                                        13.748,
+                                                                                                                                                        9.87579,
+                                                                                                                                                        10.576,
+                                                                                                                                                        11.9832
+                                                                                                                                                      ]
+                                                                                                                                     prettyName: ExampleLArSystEventByEventLateral_all
+                                                                                                                                     systParamId: 3
+                                                                                                                                     unitsAreNatural: true
+                                                                                                                                   }
+                                                                                            instance_name: multisim_centreshift
+                                                                                            parameter_headers: [
+                                                                                                                 ExampleLArSystEventByEventLateral_all
+                                                                                                               ]
+                                                                                            tool_type: ExampleISystProvider
+                                                                                          }
+                                               ExampleISystProvider_multisim_smalleruncert: {
+                                                                                              ExampleLArSystEventByEventLateral_all: {
+                                                                                                                                       centralParamValue: 1
+                                                                                                                                       isRandomlyThrown: true
+                                                                                                                                       oneSigmaShifts: [
+                                                                                                                                                         -1,
+                                                                                                                                                         1
+                                                                                                                                                       ]
+                                                                                                                                       paramVariations: [
+                                                                                                                                                          1.1915,
+                                                                                                                                                          0.511432,
+                                                                                                                                                          3.02757,
+                                                                                                                                                          -0.795079,
+                                                                                                                                                          1.09699,
+                                                                                                                                                          0.0196897,
+                                                                                                                                                          1.47961,
+                                                                                                                                                          1.84205,
+                                                                                                                                                          1.46781,
+                                                                                                                                                          -0.276934,
+                                                                                                                                                          -0.23262,
+                                                                                                                                                          1.1311,
+                                                                                                                                                          1.80978,
+                                                                                                                                                          1.48135,
+                                                                                                                                                          0.432887,
+                                                                                                                                                          1.22061,
+                                                                                                                                                          1.55414,
+                                                                                                                                                          1.27652,
+                                                                                                                                                          1.19462,
+                                                                                                                                                          -0.772657,
+                                                                                                                                                          2.2929,
+                                                                                                                                                          2.27574,
+                                                                                                                                                          1.84887,
+                                                                                                                                                          -0.0967337,
+                                                                                                                                                          0.28588,
+                                                                                                                                                          2.30035,
+                                                                                                                                                          1.73921,
+                                                                                                                                                          -0.198024,
+                                                                                                                                                          0.771252,
+                                                                                                                                                          1.79757,
+                                                                                                                                                          1.07829,
+                                                                                                                                                          1.67666,
+                                                                                                                                                          0.77213,
+                                                                                                                                                          -0.0316097,
+                                                                                                                                                          1.9009,
+                                                                                                                                                          1.60705,
+                                                                                                                                                          1.94433,
+                                                                                                                                                          0.916423,
+                                                                                                                                                          -0.30868,
+                                                                                                                                                          0.472434,
+                                                                                                                                                          0.609838,
+                                                                                                                                                          2.98651,
+                                                                                                                                                          1.03295,
+                                                                                                                                                          0.624124,
+                                                                                                                                                          2.81503,
+                                                                                                                                                          0.984107,
+                                                                                                                                                          -0.102049,
+                                                                                                                                                          2.17034,
+                                                                                                                                                          0.0786583,
+                                                                                                                                                          0.914766
+                                                                                                                                                        ]
+                                                                                                                                       prettyName: ExampleLArSystEventByEventLateral_all
+                                                                                                                                       systParamId: 2
+                                                                                                                                       unitsAreNatural: true
+                                                                                                                                     }
+                                                                                              instance_name: multisim_smalleruncert
+                                                                                              parameter_headers: [
+                                                                                                                   ExampleLArSystEventByEventLateral_all
+                                                                                                                 ]
+                                                                                              tool_type: ExampleISystProvider
+                                                                                            }
+                                               syst_providers: [
+                                                                 ExampleISystProvider_multisim,
+                                                                 ExampleISystProvider_multisim_applyall,
+                                                                 ExampleISystProvider_multisim_smalleruncert,
+                                                                 ExampleISystProvider_multisim_centreshift,
+                                                                 ExampleISystProvider_global_spline,
+                                                                 ExampleISystProvider_ev_spline,
+                                                                 ExampleISystProvider_lateral_ev_spline
+                                                               ]
+                                             }

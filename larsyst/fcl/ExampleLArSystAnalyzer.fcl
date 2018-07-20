@@ -1,9 +1,0 @@
-#include "ExampleGeneratedMetaData_splineable.fcl"
-
-ExampleLArSystAnalyzer: {
-  module_type: "LArSystResponseTreeMaker"
-
-  generated_systematic_provider_configuration: @local::generated_systematic_provider_configuration
-
-  param_tweak: -1
-}

@@ -147,7 +147,7 @@ bool ParamHeaderHelper::HasParameterLowLimit(paramId_t i) const {
       return false;
     }
   }
-  return hdr.paramValidityRange[0] != 0xdeadb33f;
+  return hdr.paramValidityRange[0] != kDefaultDouble;
 }
 bool ParamHeaderHelper::HasParameterUpLimit(paramId_t i) const {
   SystParamHeader const &hdr = GetHeader(i);
@@ -170,7 +170,7 @@ bool ParamHeaderHelper::HasParameterUpLimit(paramId_t i) const {
       return false;
     }
   }
-  return hdr.paramValidityRange[1] != 0xdeadb33f;
+  return hdr.paramValidityRange[1] != kDefaultDouble;
 }
 double ParamHeaderHelper::GetParameterLowLimit(paramId_t i) const {
   SystParamHeader const &hdr = GetHeader(i);
@@ -190,7 +190,7 @@ double ParamHeaderHelper::GetParameterLowLimit(paramId_t i) const {
           throw;
         }
       }
-      return 0xdeadb33f;
+      return kDefaultDouble;
     }
   }
   return hdr.paramValidityRange[0];
@@ -213,7 +213,7 @@ double ParamHeaderHelper::GetParameterUpLimit(paramId_t i) const {
           throw;
         }
       }
-      return 0xdeadb33f;
+      return kDefaultDouble;
     }
   }
   return hdr.paramValidityRange[1];

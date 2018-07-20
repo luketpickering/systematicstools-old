@@ -3,7 +3,7 @@
 #include "larsyst/interface/ISystProvider_tool.hh"
 #include "larsyst/interface/SystParamHeader.hh"
 
-#include "larsyst/utility/FHiCLSystParamHeaderConverters.hh"
+#include "larsyst/utility/FHiCLSystParamHeaderUtility.hh"
 #include "larsyst/utility/exceptions.hh"
 
 #include <chrono>
@@ -14,8 +14,6 @@
 #include <vector>
 
 namespace larsyst {
-
-NEW_LARSYST_EXCEPT(ISystProvider_FQName_collision);
 
 param_header_map_t BuildParameterHeaders(fhicl::ParameterSet const &paramset,
                                          std::string const &key) {
@@ -162,4 +160,13 @@ provider_list_t ConfigureISystProvidersFromParameterHeaders(
   }
   return providers;
 }
+
+void ParseVariationDescriptor(fhicl::ParameterSet const &paramset,
+                              std::string const &CV_key,
+                              std::string const &vardescriptor_key,
+                              SystParamHeader &hdr);
+void MakeRandomVariations(fhicl::ParameterSet const &paramset,
+                          std::string const &nthrows_key, SystParamHeader &hdr,
+                          std::function<double()> &rngen);
+
 } // namespace larsyst

@@ -1,4 +1,4 @@
-#include "ExampleLArSystProviders.fcl"
+#include "ExampleISystProvider_tool.Config.fcl"
 
 syst_providers: [
   ExampleGlobalWeightProvider_multisim,

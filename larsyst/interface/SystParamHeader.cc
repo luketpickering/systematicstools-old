@@ -21,7 +21,7 @@ bool Validate(SystParamHeader const &hdr, bool quiet) {
     return false;
   }
   if (hdr.isCorrection) {
-    if (hdr.centralParamValue == 0xdeadb33f) {
+    if (hdr.centralParamValue == kDefaultDouble) {
       if (!quiet) {
         std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
                   << std::quoted(hdr.prettyName)

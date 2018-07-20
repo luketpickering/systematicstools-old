@@ -4,9 +4,9 @@
 #include "larsyst/utility/exceptions.hh"
 
 #include <array>
+#include <limits>
 #include <string>
 #include <vector>
-#include <limits>
 
 namespace larsyst {
 
@@ -17,15 +17,16 @@ namespace larsyst {
 /// different sets of systematic parameters.
 typedef unsigned paramId_t;
 
+/// Magic values for signalling that a value is defaulted
+constexpr double kDefaultDouble = 0xdeadbeef;
+
 /// Magic value for signalling that a parameter is not configured.
 ///
 /// Often specialized with paramId_t when requesting the Id of a named
 /// parameter, or with size_t when requesting the index of a parameter.
 template <typename T>
 constexpr T kParamUnhandled = std::numeric_limits<T>::max();
-
-template <> constexpr double kParamUnhandled<double> = 0xdeadbeef;
-
+template <> constexpr double kParamUnhandled<double> = kDefaultDouble;
 
 /// Exception to be thrown when a SystParamHeader fails Validate
 /// N.B. It is not thrown by the validate method upon failure, but should be
@@ -53,10 +54,11 @@ struct SystParamHeader {
   SystParamHeader()
       : prettyName{""}, systParamId{kParamUnhandled<paramId_t>},
         isWeightSystematicVariation{true}, unitsAreNatural{false},
-        differsEventByEvent{true}, centralParamValue{0xdeadb33f},
-        isCorrection{false}, oneSigmaShifts{{0xdeadb33f, 0xdeadb33f}},
-        paramValidityRange{{0xdeadb33f, 0xdeadb33f}}, isSplineable{false},
-        isRandomlyThrown{false}, paramVariations{}, isResponselessParam{false},
+        differsEventByEvent{true}, centralParamValue{kDefaultDouble},
+        isCorrection{false}, oneSigmaShifts{{kDefaultDouble, kDefaultDouble}},
+        paramValidityRange{{kDefaultDouble, kDefaultDouble}},
+        isSplineable{false}, isRandomlyThrown{false}, paramVariations{},
+        isResponselessParam{false},
         responseParamId{kParamUnhandled<paramId_t>}, responses{}, opts{} {}
 
   ///\brief Human readable systematic parameter name
@@ -109,7 +111,7 @@ struct SystParamHeader {
   std::array<double, 2> oneSigmaShifts;
   ///\brief The range of valid parameter values.
   ///
-  /// If either end of the range is set to `0xdeadb33f`, that 'side' is
+  /// If either end of the range is set to `kDefaultDouble`, that 'side' is
   /// unbounded.
   ///
   /// Respects unitsAreNatural

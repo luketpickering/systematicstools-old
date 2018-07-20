@@ -234,7 +234,7 @@ void LArSystResponseTreeMaker::analyze(art::Event const &e) {
             tweight *= w;
             fOutputTree.SetParamResponse(sph, var_vals.at(sph)[t], w);
           } else {
-            fOutputTree.SetParamResponse(sph, var_vals.at(sph)[t], 0xdeadb33f);
+            fOutputTree.SetParamResponse(sph, var_vals.at(sph)[t], kDefaultDouble);
           }
         }
         fOutputTree.SetTotalWeight(tweight);

@@ -4,7 +4,7 @@
 #include "larsyst/interface/EventResponse_product.hh"
 #include "larsyst/interface/SystParamHeader.hh"
 
-#include "larsyst/utility/FHiCLSystParamHeaderConverters.hh"
+#include "larsyst/utility/FHiCLSystParamHeaderUtility.hh"
 
 #include "fhiclcpp/ParameterSet.h"
 
