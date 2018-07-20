@@ -1,18 +1,54 @@
 #ifndef LARSYST_INTERFACE_SYSTPARAMHEADER_SEEN
 #define LARSYST_INTERFACE_SYSTPARAMHEADER_SEEN
 
-#include "larsyst/interface/types.hh"
-
 #include "larsyst/utility/exceptions.hh"
 
 #include <array>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <iomanip>
+#include <limits>
 
 namespace larsyst {
 
+/// Parameter indentifier.
+///
+/// Unique for a given parameter set configuration, but value--parameter
+/// associations should never be hard coded by consumers as they may change for
+/// different sets of systematic parameters.
+typedef unsigned paramId_t;
+
+/// Magic value for signalling that a parameter is not configured.
+///
+/// Often specialized with paramId_t when requesting the Id of a named
+/// parameter, or with size_t when requesting the index of a parameter.
+template <typename T>
+constexpr T kParamUnhandled = std::numeric_limits<T>::max();
+
+template <> constexpr double kParamUnhandled<double> = 0xdeadbeef;
+
+
+/// Exception to be thrown when a SystParamHeader fails Validate
+/// N.B. It is not thrown by the validate method upon failure, but should be
+/// thrown by calling methods that cannot handle invalid SystParamHeaders.
+NEW_LARSYST_EXCEPT(invalid_SystParamHeader);
+
+/// Systematic parameter metadata class
+///
+/// Instances are used to inform systematic response consumers how to interpret
+/// responses. A number of the most commonly used features are explicitly
+/// exposed as data members, but extensibility is provided by the opts data
+/// member which can hold an arbitrary vector of strings.
+///
+/// This class is currently only serialized to and from FHiCL and as such,
+/// adding new/removing/altering members will break usage, but it is fairly easy
+/// to fix in pre-generated parameter sets.
+///
+/// \note Changes to this class *must* be reflected in
+/// larsyst/interpreters/load_parameter_headers.xx and
+/// larsyst/utility/build_parameter_set_from_header.xx
+///
+/// Usually analyzers/users will interact with instances through
+/// larsyst/interpreters/ParamHeaderHelper.xx
 struct SystParamHeader {
   SystParamHeader()
       : prettyName{""}, systParamId{kParamUnhandled<paramId_t>},
@@ -22,11 +58,13 @@ struct SystParamHeader {
         paramValidityRange{{0xdeadb33f, 0xdeadb33f}}, isSplineable{false},
         isRandomlyThrown{false}, paramVariations{}, isResponselessParam{false},
         responseParamId{kParamUnhandled<paramId_t>}, responses{}, opts{} {}
+
   ///\brief Human readable systematic parameter name
   std::string prettyName;
   ///\brief Unique identifier for this systematic parameter
   ///
-  /// Used to key `std::map`-based event data product.
+  /// Used to `key` the per-event systematic response data product.
+  ///
   ///\note Not guaranteed to persist between different configurations. i.e.
   ///`systParamId == 0` might be used for some physics model parameter in one
   /// data product and a calibration parameter in another.
@@ -37,14 +75,23 @@ struct SystParamHeader {
   /// a downstream consumer.
   bool isWeightSystematicVariation;
   ///\brief Whether the quantities stored in paramVariations and
-  /// centralParamValue are in 'natural' units
+  /// centralParamValue are in 'natural' units or units of 'one sigma'
+  /// uncertainty.
   bool unitsAreNatural;
   ///\brief Whether the the response of this parameter is fully described by
-  /// this meta-data
+  /// this meta-data.
   ///
   /// Equivalent to `bool(Responses.size())`;
+  ///
+  /// This is used for variations that do not depend on the event properties of
+  /// events that variations of this parameter effects, such as normalization
+  /// weights for classes of events.
   bool differsEventByEvent;
-  ///\brief The central parameter value used in this systematic evaluation.
+  ///\brief The parameter value to be considered as the central value when
+  /// evaluating variations of this parameter.
+  ///
+  /// \note This may not be the value generated with in the case of
+  /// `isCorrection == true` or when the CV tune changes post-MC production.
   ///
   /// Respects unitsAreNatural value.
   double centralParamValue;
@@ -54,23 +101,24 @@ struct SystParamHeader {
   /// Uses centralParamValue to generate a single response, respects
   /// differsEventByEvent.
   bool isCorrection;
-  ///\brief The 'one sigma' shifts of this parameter, always defined in nautral
-  /// units.
+  ///\brief The 'one sigma' shifts of this parameter, if present, always defined
+  /// in nautral units.
   ///
   /// Can be used by a downstream consumer to convert centralParamValue and
   /// paramVariations to and from natural units.
   std::array<double, 2> oneSigmaShifts;
   ///\brief The range of valid parameter values.
   ///
-  /// If either end of the range is set to 0xdeadb33f, that 'side' is unbounded.
+  /// If either end of the range is set to `0xdeadb33f`, that 'side' is
+  /// unbounded.
   ///
   /// Respects unitsAreNatural
   std::array<double, 2> paramValidityRange;
   ///\brief Whether the paramVariations were chosen to facilitate a downstream
-  /// consumer to spline the parameter response.
+  /// consumer to interpolate between the calculated responses.
   ///
   /// When `isSplineable == false`, this parameter has likely been run in
-  /// 'multisim' mode.
+  /// 'multi-universe' mode.
   bool isSplineable;
   ///\brief Whether the non-splineable variations have been hand-picked to
   /// randomly distributed according to some prior (like gaussian).
@@ -90,14 +138,10 @@ struct SystParamHeader {
   /// parameter headers would be used, one describing variations in p1 and one
   /// in p2. All of the response to variations in both will be included on p1
   ///
-  /// As multi-dimensional responses cannot be effectively splined (yet), this
-  /// should always be used with numberOfVariations > 0 or isCorrection ==
-  /// true.
-  ///
   ///\note responseParamId holds the parameter Id that contains R(p1,p2,...).
   bool isResponselessParam;
   ///\brief The parameter Id of where responses to parameters with
-  /// isResponselessParam == true can be found.
+  /// `isResponselessParam == true` can be found.
   paramId_t responseParamId;
   ///\brief The parameter responses for 'parameter-level' systematics.
   ///
@@ -108,12 +152,10 @@ struct SystParamHeader {
   /// which do not need to be stored event-by-event.
   std::vector<double> responses;
 
-  ///\brief Arbitrary string options stored in the meta-data for further
-  /// syst-provider configuration.
+  ///\brief Arbitrary string options stored in the metadata for further
+  /// `ISystProvider_tool` configuration.
   std::vector<std::string> opts;
 };
-
-NEW_LARSYST_EXCEPT(invalid_SystParamHeader);
 
 ///\brief Checks interface validity of a SystParamHeader
 ///
@@ -137,135 +179,7 @@ NEW_LARSYST_EXCEPT(invalid_SystParamHeader);
 ///  correction)
 /// * If it is marked as differing event-by-event, does it have header-level
 /// responses defined? (shouldn't)
-inline bool Validate(SystParamHeader const &hdr, bool quiet = true) {
-
-  if (hdr.systParamId == kParamUnhandled<paramId_t>) {
-    if (!quiet) {
-      std::cout << "[ERROR]: SystParamHeader has the default systParamId."
-                << std::endl;
-    }
-    return false;
-  }
-  if (!hdr.prettyName.size()) {
-    if (!quiet) {
-      std::cout << "[ERROR]: SystParamHeader doesn't have a prettyName."
-                << std::endl;
-    }
-    return false;
-  }
-  if (hdr.isCorrection) {
-    if (hdr.centralParamValue == 0xdeadb33f) {
-      if (!quiet) {
-        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
-                  << std::quoted(hdr.prettyName)
-                  << ") is marked as a correction but the centralParamValue is "
-                     "defaulted."
-                  << std::endl;
-      }
-      return false;
-    }
-    if (hdr.paramVariations.size() || hdr.responses.size()) {
-      if (!quiet) {
-        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
-                  << std::quoted(hdr.prettyName)
-                  << ") is marked as a correction but has variations ("
-                  << hdr.paramVariations.size() << ") or responses ("
-                  << hdr.responses.size() << ")" << std::endl;
-      }
-      return false;
-    }
-  } else {
-    if (!hdr.paramVariations.size()) {
-      if (!quiet) {
-        std::cout
-            << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
-            << std::quoted(hdr.prettyName)
-            << ") is not marked as a correction, but contains no variations."
-            << std::endl;
-      }
-      return false;
-    }
-  }
-
-  if (hdr.isSplineable) { // Splineable
-    if (hdr.isRandomlyThrown) {
-      if (!quiet) {
-        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
-                  << std::quoted(hdr.prettyName)
-                  << ") marked as splineable is also set as randomly thrown."
-                  << std::endl;
-      }
-      return false;
-    }
-    if (hdr.isResponselessParam) {
-      if (!quiet) {
-        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
-                  << std::quoted(hdr.prettyName)
-                  << ") marked as splineable is also set as expressing "
-                     "response through another parameter ("
-                  << hdr.responseParamId << ")." << std::endl;
-      }
-      return false;
-    }
-  }
-  if (hdr.isResponselessParam) {
-    if (hdr.responses.size()) {
-      if (!quiet) {
-        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
-                  << std::quoted(hdr.prettyName)
-                  << ") marked as responseless, but also has "
-                     "header-level responses."
-                  << std::endl;
-      }
-      return false;
-    }
-    if (hdr.responseParamId == kParamUnhandled<paramId_t>) {
-      if (!quiet) {
-        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
-                  << std::quoted(hdr.prettyName)
-                  << ") marked as responseless, but it doesn't have a valid, "
-                     "associated response parameter."
-                  << std::endl;
-      }
-      return false;
-    }
-  }
-  if (hdr.differsEventByEvent) { // differs event by event
-    if (hdr.responses.size()) {
-      if (!quiet) {
-        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
-                  << std::quoted(hdr.prettyName)
-                  << ") marked as differing event by event, but also has "
-                     "header-level responses."
-                  << std::endl;
-      }
-      return false;
-    }
-  } else {
-    if (!hdr.responses.size()) {
-      if (!quiet) {
-        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
-                  << std::quoted(hdr.prettyName)
-                  << ") marked as not differing event by event, but has no "
-                     "header-level responses."
-                  << std::endl;
-      }
-      return false;
-    }
-    if (!hdr.isCorrection &&
-        (hdr.responses.size() != hdr.paramVariations.size())) {
-      if (!quiet) {
-        std::cout << "[ERROR]: SystParamHeader(" << hdr.systParamId << ":"
-                  << std::quoted(hdr.prettyName)
-                  << ") marked as differing event by event, but also has "
-                     "header-level responses."
-                  << std::endl;
-      }
-      return false;
-    }
-  }
-  return true;
-}
+bool Validate(SystParamHeader const &hdr, bool quiet = true);
 
 } // namespace larsyst
 #endif

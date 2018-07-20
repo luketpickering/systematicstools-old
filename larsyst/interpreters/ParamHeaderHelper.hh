@@ -204,7 +204,7 @@ public:
   /// cache the splines for each event.
   ///
   /// Uses GetSpline internally
-  double GetTotalResponse(param_value_map_t const &,
+  double GetTotalResponse(param_value_list_t const &,
                           event_unit_response_t const &) const;
 
   ///\brief Gets the splined response for parameter i, set to value v, for each
@@ -235,7 +235,7 @@ public:
   /// cache the splines for each event.
   ///
   /// Uses GetSpline internally
-  std::vector<double> GetTotalResponse(param_value_map_t const &,
+  std::vector<double> GetTotalResponse(param_value_list_t const &,
                                        EventResponse const &) const;
 
   ///\brief Gets the number of variations for parameter i
@@ -423,7 +423,7 @@ private:
   ///\brief Checks parameter-value map for parameter mis-use
   ///
   /// Checks for bad parameters in a parameter map and acts accordingly.
-  param_value_map_t CheckParamValueMap(param_value_map_t) const;
+  param_value_list_t CheckParamValueList(param_value_list_t) const;
 
   ///\brief Checks parameter list of parameter mis-use
   ///

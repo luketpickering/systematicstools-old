@@ -2,20 +2,22 @@
 #define LARSYST_UTILITY_PRINTERS_SEEN
 
 #include "larsyst/interface/EventResponse_product.hh"
-#include "larsyst/interface/SystMetaData.hh"
+#include "larsyst/interface/SystParamHeader.hh"
 
-#include "build_parameter_set_from_header.hh"
+#include "larsyst/utility/FHiCLSystParamHeaderConverters.hh"
 
 #include "fhiclcpp/ParameterSet.h"
 
 #include <iomanip>
 #include <string>
+#include <sstream>
 
 namespace larsyst {
 inline std::string to_str(SystParamHeader const &sph, bool indent = true) {
-  fhicl::ParameterSet ps = build_parameter_set_from_header(sph);
+  fhicl::ParameterSet ps = SystParamHeaderToFHiCL(sph);
   return indent ? ps.to_indented_string() : ps.to_string();
 }
+
 inline std::string to_str(EventResponse const &er) {
   std::stringstream ss("");
   ss << "Event response contains " << er.size() << std::endl;
@@ -33,14 +35,7 @@ inline std::string to_str(EventResponse const &er) {
   }
   return ss.str();
 }
-} // namespace larsyst
 
-namespace std {
-template <typename T> inline auto quoted(T t) {
-  std::stringstream ss("");
-  ss << t;
-  return std::quoted(ss.str());
-}
-} // namespace std
+} // namespace larsyst
 
 #endif

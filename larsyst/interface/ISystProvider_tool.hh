@@ -4,11 +4,8 @@
 #include "larsyst/interface/EventResponse_product.hh"
 #include "larsyst/interface/SystMetaData.hh"
 
-#include "larsyst/interpreters/load_parameter_headers.hh"
-
+#include "larsyst/utility/FHiCLSystParamHeaderConverters.hh"
 #include "larsyst/utility/exceptions.hh"
-#include "larsyst/utility/md5.hh"
-#include "larsyst/utility/printers.hh"
 
 #ifndef NO_ART
 #include "art/Framework/Principal/Event.h"
@@ -23,148 +20,87 @@
 
 namespace larsyst {
 
+NEW_LARSYST_EXCEPT(ISystProvider_tool_method_unimplemented);
+NEW_LARSYST_EXCEPT(ISystProvider_tool_seed_suggestion_post_configure);
+NEW_LARSYST_EXCEPT(ISystProvider_tool_noncontiguous_parameter_Ids);
+NEW_LARSYST_EXCEPT(ISystProvider_tool_metadata_not_generated);
+
+/// ABC defining the interface to systematic response syst_providers
 class ISystProvider_tool {
 public:
-  ISystProvider_tool(fhicl::ParameterSet const &ps)
-      : fToolType{ps.get<std::string>("tool_type")}, fSeedSuggestion{0},
-        fIsFullyConfigured{false}, fHaveMetaData{false} {
-    if (!ps.has_key("uniqueName")) {
-      fInstanceName = "";
-      fFQName = fToolType;
-    } else {
-      fInstanceName = ps.get<std::string>("uniqueName");
-      fFQName = fToolType + "_" + fInstanceName;
-    }
-  }
+  /// ABC constructor required for art::make_tool
+  ISystProvider_tool(fhicl::ParameterSet const &ps);
 
-  bool ParamIsHandled(paramId_t i) {
-    return GetParameterHeaderMetaDataIndex(i) != kParamUnhandled<size_t>;
-  }
-  paramId_t GetParameterId(std::string const &prettyName) {
-    CheckHaveMetaData();
-    for (auto &sph : fMetaData) {
-      if (sph.prettyName == prettyName) {
-        return sph.systParamId;
-      }
-    }
-    return kParamUnhandled<paramId_t>;
-  }
-  bool ParamIsHandled(std::string const &prettyName) {
-    return GetParameterId(prettyName) != kParamUnhandled<paramId_t>;
-  }
-  ///\brief Get the number of variations to be calculated for parameter i
-  size_t GetNVariations(paramId_t i) {
-    SystParamHeader const &sph = Header(i);
-    return sph.paramVariations.size();
-  }
-
-  ///\brief Allows set up method to suggest RNG seeds.
+  ///\brief Check if instance handles parameter
   ///
-  /// This stops many syst providers being set up in quick succession all using
-  /// similar seeds.
-  void SuggestSeed(uint64_t seed) { fSeedSuggestion = seed; }
+  /// Uses helper methods in larsyst/interface/SystMetaData.hh to check for
+  /// parameters identified by paramId_t or std::string
+  template <typename T> bool ParamIsHandled(T ident) {
+    return HasParam(fSystMetaData, ident);
+  }
 
-  ///\brief Allows a meta provider to be written that delegates well-correlated
+  ///\brief Get paramId_t for handled, named parameter
+  paramId_t GetParameterId(std::string const &prettyName);
+
+  ///\brief Get the number of variations to be calculated for parameter i
+  template <typename T> size_t GetNVariations(T ident) {
+    return GetParam(fSystMetaData, ident).paramVariations.size();
+  }
+
+  ///\brief Allows RNG seeds to be suggested to tool instances.
+  ///
+  /// Instances should use this seed to deterministically generate random
+  /// numbers.
+  ///
+  /// This also stops many syst providers being set up in quick succession all
+  /// using similar seeds.
+  void SuggestSeed(uint64_t seed);
+
+  ///\brief Suggest a list of parameter throws to an instance.
+  ///
+  /// Allows a meta provider to be written that delegates well-correlated
   /// throws to mutliple chiild providers.
   ///
-  /// Unfortunately must be public as sub classes do not get access to protected
-  /// member functions via a base class pointer (as they may actually call a
-  /// protected member of another subclass).
+  /// \note Unfortunately must be public as sub-classes do not get access to
+  /// protected member functions via a base class pointer (as they may actually
+  /// call a protected member of another subclass).
   virtual void SuggestParameterThrows(parameter_throws_list_t &&throws,
-                                      bool Check = false) {
-    std::cout
-        << "[ERROR]: Attempted to suggest parameter throws to provider tool "
-        << std::quoted(GetToolType())
-        << ", but it cannot handle suggested throws." << std::endl;
-    throw;
-  };
+                                      bool Check = false);
 
-#ifndef NO_ART
-  ///\brief Convert arbitrary configuration fhicl parameter set into generic
-  /// systematic meta data.
+  ///\brief Configure an ISystProvider instance with tool-specific FHiCL
   ///
-  virtual SystMetaData ConfigureFromFHICL(fhicl::ParameterSet const &,
-                                          paramId_t) = 0;
-
-  virtual SystMetaData
-  GenerateSystSetConfiguration(fhicl::ParameterSet const &ps, paramId_t id) {
-    fMetaData = this->ConfigureFromFHICL(ps, id);
-
-    // The follow check expects them to be ordered, but the provider isn't under
-    // any obligation to order them.
-
-    std::stable_sort(fMetaData.begin(), fMetaData.end(),
-                     [](SystParamHeader const &l, SystParamHeader const &r) {
-                       return l.systParamId < r.systParamId;
-                     });
-
-    for (auto &hdr : fMetaData) {
-      if (hdr.systParamId != id) {
-        std::cout << "[ERROR]: Provider "
-                  << std::quoted(GetFullyQualifiedName())
-                  << " failed to set parameter " << std::quoted(hdr.prettyName)
-                  << " to id " << id << " != " << hdr.systParamId << std::endl;
-        throw;
-      }
-      id++;
-    }
-    fHaveMetaData = true;
-    return GetSystSetConfiguration();
-  }
-#endif
-
-  SystMetaData GetSystSetConfiguration() {
-    CheckHaveMetaData();
-    return fMetaData;
-  }
-
-  /// Try and read parameter configuration from input fhicl file.
+  /// Takes the tool-specific FHiCL configuration and the paramId_t of the first
+  /// unused paramId_t (closest to 0) and builds the parameter metadata that can
+  /// be used to configure the ISystProvider for response calculation and also
+  /// interpret the calculated responses.
   ///
-  /// After reading parameters, the pure virtual Configure method is called for
-  /// any final subclass configuration.
+  /// Validates that the SystParamHeaders created by the subclass in
+  /// `BuildSystMetaData` are contiguous.
+  void ConfigureFromToolConfig(fhicl::ParameterSet const &ps,
+                               paramId_t firstId);
+
+  ///\brief Gets the currently configured set of systematic parameter headers.
   ///
-  ///\note sub-classes may not alter fMetaData during the configure call. This
-  /// is checked for by md5-ing the stringified fhicl representation of the
+  /// Checks that the headers have been built/loaded with CheckHaveMetaData,
+  /// which throws if they haven't.
+  SystMetaData const &GetSystMetaData();
+
+  ///\brief Build the Parameter Headers FHiCL document that can be used to
+  /// re-configure an instances of this tool via ConfigureFromParameterHeaders
+  ///
+  /// If a sub-class requires extra configuration options they should be exposed
+  /// through GetExtraToolOptions
+  fhicl::ParameterSet GetParameterHeadersDocument();
+
+  ///\brief Try and read parameter configuration from input fhicl file.
+  ///
+  /// After reading parameters, the pure virtual SetupResponseCalculator method
+  /// is called for any final subclass configuration.
+  ///
+  ///\note Sub-classes may not alter fSystMetaData during the configure call.
+  /// This is checked for by md5-ing the stringified fhicl representation of the
   /// parameters before and after the call.
-  bool ReadParameterHeaders(fhicl::ParameterSet const &ps) {
-    std::vector<std::string> const &paramHeadersToRead =
-        ps.get<std::vector<std::string>>("parameterHeaders");
-
-    for (auto const &ph : paramHeadersToRead) {
-      fMetaData.emplace_back(larsyst::build_header_from_parameter_set(
-          ps.get<fhicl::ParameterSet>(ph)));
-    }
-    fHaveMetaData = true;
-
-    std::vector<std::string> parametermd5s;
-    SystMetaData mdCopy = fMetaData;
-    for (auto const &sph : fMetaData) {
-      parametermd5s.push_back(md5(to_str(sph)));
-    }
-    // Meta data loaded, now run any additonal subclass configuration.
-    fIsFullyConfigured = this->Configure();
-    size_t hdrctr = 0;
-    for (auto const &sph : fMetaData) {
-      std::string digest = md5(to_str(sph));
-      if (parametermd5s[hdrctr] != digest) {
-        std::cout << "[ERROR]: MD5 of parameter #" << hdrctr << "("
-                  << std::quoted(parametermd5s[hdrctr]) << ") was changed by "
-                  << GetToolType() << "::Configure to " << std::quoted(digest)
-                  << "." << std::endl;
-        std::cout << "BEFORE: " << to_str(sph, false) << std::endl;
-        std::cout << "AFTER: " << to_str(mdCopy[hdrctr], false)
-                  << std::endl;
-        throw;
-      }
-      hdrctr++;
-    }
-
-    std::cout << "[INFO]: Syst provider "
-              << std::quoted(GetFullyQualifiedName()) << " configured "
-              << fMetaData.size() << " parameters." << std::endl;
-
-    return fIsFullyConfigured;
-  }
+  bool ConfigureFromParameterHeaders(fhicl::ParameterSet const &ps);
 
 #ifndef NO_ART
   virtual std::unique_ptr<EventResponse> GetEventResponse(art::Event &) = 0;
@@ -179,77 +115,66 @@ public:
   virtual ~ISystProvider_tool(){};
 
 protected:
+  ///\brief Convert tool-specific configuration fhicl parameter set into generic
+  /// SystParamHeaders.
+  virtual SystMetaData BuildSystMetaData(fhicl::ParameterSet const &,
+                                         paramId_t) = 0;
+
+  ///\brief Gets any extra tool options generated during
+  /// ConfigureFromToolConfig that aren't serializable to the SystParamHeader
+  /// format.
+  virtual fhicl::ParameterSet GetExtraToolOptions() {
+    return fhicl::ParameterSet();
+  }
+
   ///\brief Any further configuration required by a subclass before
   /// GetEventResponse can be called.
   ///
-  /// This is meant for setting up slave weight calculators that are required to
-  /// calculate responses but not for parameter variation re-interpretation.
+  /// This is meant for setting up slave weight calculators that are needed to
+  /// calculate event responses but not for parameter variation
+  /// re-interpretation.
   ///
-  ///\note No configurations to fMetaData should be made by subclasses in here,
-  /// all header information required by downstream interpreters must be built
-  /// by ConfigureFromFHICL. This is enforced by md5-ing each parameter header
-  /// before and after the call to Configure.
-  virtual bool Configure() = 0;
+  /// Configuration returned by GetExtraToolOptions after initial Tool
+  /// Configuration will be passed into here during
+  /// ConfigureFromParameterHeaders
+  virtual bool SetupResponseCalculator(fhicl::ParameterSet const &) = 0;
 
-  void CheckHaveMetaData(paramId_t i = kParamUnhandled<paramId_t>) {
-    if (!fHaveMetaData) {
-      std::cout
-          << "[ERROR]: Requested syst set configuration from syst provider "
-          << GetFullyQualifiedName() << ", but it has not been generated yet."
-          << std::endl;
-      throw;
-    }
-    if (i != kParamUnhandled<paramId_t>) {
-      if (!ParamIsHandled(i)) {
-        std::cout << "[ERROR]: SuggestParameterThrows Check failed. Parameter "
-                     "with id \""
-                  << i << "\", is not handled by this systematic provider: \""
-                  << GetFullyQualifiedName() << "\"." << std::endl;
-        throw;
-      }
-    }
-  }
+  ///\brief Checks if internal parameter metadata has been generated or loaded from a Parameter Headers file.
+  ///
+  /// If i is passed then it only checks for that specific paramId_t.
+  ///
+  /// Throws if no such metadata can be found.
+  void CheckHaveMetaData(paramId_t i = kParamUnhandled<paramId_t>);
 
-  size_t GetParameterHeaderMetaDataIndex(paramId_t i) {
-    CheckHaveMetaData();
-    if (i == kParamUnhandled<paramId_t>) {
-      return kParamUnhandled<size_t>;
-    }
-
-    size_t index = 0;
-    for (auto &sph : fMetaData) {
-      if (sph.systParamId == i) {
-        return index;
-      }
-      index++;
-    }
-    return kParamUnhandled<size_t>;
-  }
-
-  SystParamHeader const &Header(paramId_t i) {
-    if (i == kParamUnhandled<paramId_t>) {
-      std::cout << "[ERROR](" << __FILE__ << ":" << __LINE__
-                << "): Syst provider requested parameter header information "
-                   "for the unhandled parameter magic id. This is an internal "
-                   "logic error and should not have happened."
-                << std::endl;
-      throw;
-    }
-    CheckHaveMetaData(i);
-    return fMetaData[GetParameterHeaderMetaDataIndex(i)];
-  }
-
+  /// Class name of the tool implementation
   std::string fToolType;
+  /// A name for an instance of a tool used to disambiguate multiple instances
+  /// of the same tool.
   std::string fInstanceName;
+  /// The unique name of the tool instance: <fToolType>_<fInstanceName>
   std::string fFQName;
 
+  /// \brief A suggested seed
+  ///
+  /// Should be used by tool implementations to seed any RNGs to allow
+  /// deterministic random numbers across separate executions.
   uint64_t fSeedSuggestion;
 
-  SystMetaData fMetaData;
+  ///\brief Whether this instance successfully configured itself
+  ///
+  /// Tools may be configured either from a "tool configuration" file, or from a
+  /// "parameter headers" file.
   bool fIsFullyConfigured;
 
 private:
-  bool fHaveMetaData;
+  /// Whether this instance has generated/loaded its parameter set.
+  bool fHaveSystMetaData;
+  /// \brief The SystMetaData describing the parameters handled by this tool.
+  ///
+  /// \note Only the base class is allowed to alter the SystMetaData after the
+  /// original generation. Subclasses and external callers may use
+  /// GetSystMetaData to inspect it.
+  SystMetaData fSystMetaData;
 };
 
 } // namespace larsyst

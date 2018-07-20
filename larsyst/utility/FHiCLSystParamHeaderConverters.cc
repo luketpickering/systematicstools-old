@@ -1,4 +1,9 @@
-#include "load_parameter_headers.hh"
+#include "FHiCLSystParamHeaderConverters.hh"
+
+#include "larsyst/interface/SystMetaData.hh"
+#include "larsyst/interface/types.hh"
+
+#include "fhiclcpp/ParameterSet.h"
 
 #ifndef NO_ART
 #include "fhiclcpp/types/Atom.h"
@@ -11,13 +16,11 @@
 
 #include <iomanip>
 #include <iostream>
-#include <map>
 #include <vector>
 
 namespace larsyst {
 
 #ifndef NO_ART
-namespace {
 struct FHICLSystMetaData {
   fhicl::Atom<std::string> prettyName{
       fhicl::Name("prettyName"),
@@ -120,11 +123,10 @@ struct FHICLSystMetaData {
                      "further syst-provider configuration. {Default == {}}"),
       std::vector<std::string>{}};
 };
-} // namespace
 #endif
 
 SystParamHeader
-build_header_from_parameter_set(fhicl::ParameterSet const &paramset) {
+FHiCLToSystParamHeader(fhicl::ParameterSet const &paramset) {
 #ifndef NO_ART
   fhicl::Table<FHICLSystMetaData> const result{paramset};
 
@@ -169,51 +171,67 @@ build_header_from_parameter_set(fhicl::ParameterSet const &paramset) {
   return sph;
 }
 
-param_header_map_t
-load_syst_provider_headers(fhicl::ParameterSet const &paramset,
-                           std::string const &key) {
+fhicl::ParameterSet SystParamHeaderToFHiCL(SystParamHeader const &sph) {
+  fhicl::ParameterSet ps;
 
-  param_header_map_t loaded_headers;
-
-  std::cout << "[INFO]: Loading configured syst providers:" << std::endl;
-  auto const &providers = paramset.get<std::vector<std::string>>(key);
-  for (auto const &provider_name : providers) {
-    // Get fhicl config for provider
-    std::cout << "[INFO]:\t Retrieving meta data for: \"" << provider_name
-              << "\"..." << std::endl;
-    auto const &provider_cfg = paramset.get<fhicl::ParameterSet>(provider_name);
-    std::cout << " found!" << std::endl;
-
-    std::vector<std::string> const &paramHeadersToRead =
-        provider_cfg.get<std::vector<std::string>>("parameterHeaders");
-
-    for (auto const &ph : paramHeadersToRead) {
-      SystParamHeader hdr = build_header_from_parameter_set(
-          provider_cfg.get<fhicl::ParameterSet>(ph));
-
-      // check that this unique name hasn't been used before.
-      if (loaded_headers.find(hdr.systParamId) != loaded_headers.end()) {
-        std::cout << "[ERROR]:\t Header describing parameter "
-                  << hdr.systParamId << " already exists (provider: "
-                  << std::quoted(loaded_headers[hdr.systParamId].first)
-                  << ", prettyName: "
-                  << std::quoted(
-                         loaded_headers[hdr.systParamId].second.prettyName)
-                  << ")"
-                  << ", this parameter: { provider: " << std::quoted(ph)
-                  << ", prettyName: " << std::quoted(hdr.prettyName)
-                  << "} cannot be added. " << std::endl;
-        throw;
-      }
-
-      loaded_headers.emplace(param_header_map_t::key_type{hdr.systParamId},
-                             param_header_map_t::mapped_type{ph, hdr});
-    }
+  if (!Validate(sph)) {
+    (void)Validate(sph, false);
+    std::cout << "[ERROR]: Parameter set (" << sph.systParamId << ":"
+              << std::quoted(sph.prettyName) << ") failed validation."
+              << std::endl;
+    throw;
   }
-  std::cout << "[INFO]: Loaded " << loaded_headers.size()
-            << " systematic parameter headers from " << providers.size()
-            << " providers." << std::endl;
 
-  return loaded_headers;
+  ps.put("prettyName", sph.prettyName);
+  ps.put("systParamId", sph.systParamId);
+  if (!sph.isWeightSystematicVariation) {
+    ps.put("isWeightSystematicVariation", sph.isWeightSystematicVariation);
+  }
+  if (sph.unitsAreNatural) {
+    ps.put("unitsAreNatural", sph.unitsAreNatural);
+  }
+  if (!sph.differsEventByEvent) {
+    ps.put("differsEventByEvent", sph.differsEventByEvent);
+  }
+  if (sph.centralParamValue != 0xdeadb33f) {
+    ps.put("centralParamValue", sph.centralParamValue);
+  }
+  if (sph.isCorrection) {
+    ps.put("isCorrection", sph.isCorrection);
+  }
+  if (sph.oneSigmaShifts[0] != 0xdeadb33f) {
+    ps.put("oneSigmaShifts",
+           std::vector<double>{sph.oneSigmaShifts[0], sph.oneSigmaShifts[1]});
+  }
+  if ((sph.paramValidityRange[0] != 0xdeadb33f) ||
+      (sph.paramValidityRange[1] != 0xdeadb33f)) {
+    ps.put("paramValidityRange",
+           std::vector<double>{sph.paramValidityRange[0],
+                               sph.paramValidityRange[1]});
+  }
+  if (sph.isSplineable) {
+    ps.put("isSplineable", sph.isSplineable);
+  }
+  if (sph.isRandomlyThrown) {
+    ps.put("isRandomlyThrown", sph.isRandomlyThrown);
+  }
+  if (sph.paramVariations.size()) {
+    ps.put("paramVariations", sph.paramVariations);
+  }
+  if (sph.isResponselessParam) {
+    ps.put("isResponselessParam", sph.isResponselessParam);
+  }
+  if (sph.responseParamId != kParamUnhandled<paramId_t>) {
+    ps.put("responseParamId", sph.responseParamId);
+  }
+  if (sph.responses.size()) {
+    ps.put("responses", sph.responses);
+  }
+  if (sph.opts.size()) {
+    ps.put("opts", sph.opts);
+  }
+
+  return ps;
 }
+
 } // namespace larsyst

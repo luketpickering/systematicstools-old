@@ -67,15 +67,17 @@ else()
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_ART -std=c++1y ${ROOT_CXX_FLAGS_SCRUBBED}")
 endif()
 
-####### Util library
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_INSTALL_PREFIX}/include)
 
+####### Util library
 SET(UTIL_IMPLFILES
-  ${CMAKE_SOURCE_DIR}/larsyst/utility/build_parameter_set_from_header.cc
+  ${CMAKE_SOURCE_DIR}/larsyst/utility/FHiCLSystParamHeaderConverters.cc
+  ${CMAKE_SOURCE_DIR}/larsyst/utility/ParameterAndProviderConfigurationUtility.cc
   ${CMAKE_SOURCE_DIR}/larsyst/utility/md5.cc)
 SET(UTIL_HDRFILES
-  ${CMAKE_SOURCE_DIR}/larsyst/utility/build_parameter_set_from_header.hh
+  ${CMAKE_SOURCE_DIR}/larsyst/utility/FHiCLSystParamHeaderConverters.cc
+  ${CMAKE_SOURCE_DIR}/larsyst/utility/ParameterAndProviderConfigurationUtility.cc
   ${CMAKE_SOURCE_DIR}/larsyst/utility/md5.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/printers.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/ROOTUtility.hh
@@ -93,26 +95,37 @@ add_dependencies(larsyst_utility fhiclcpp-simple)
 INSTALL(TARGETS larsyst_utility DESTINATION lib)
 INSTALL(FILES ${UTIL_HDRFILES} DESTINATION include/larsyst/utility)
 
-####### Interface headers
+####### Interface library
+SET(IFCE_IMPLFILES
+  ${CMAKE_SOURCE_DIR}/larsyst/interface/EventResponse_product.cc
+  ${CMAKE_SOURCE_DIR}/larsyst/interface/ISystProvider_tool.cc
+  ${CMAKE_SOURCE_DIR}/larsyst/interface/SystMetaData.cc
+${CMAKE_SOURCE_DIR}/larsyst/interface/SystParamHeader.cc)
 SET(IFCE_HDRFILES
   ${CMAKE_SOURCE_DIR}/larsyst/interface/EventResponse_product.hh
   ${CMAKE_SOURCE_DIR}/larsyst/interface/ISystProvider_tool.hh
   ${CMAKE_SOURCE_DIR}/larsyst/interface/SystMetaData.hh
-  ${CMAKE_SOURCE_DIR}/larsyst/interface/ParamResponses.hh
   ${CMAKE_SOURCE_DIR}/larsyst/interface/SystParamHeader.hh
   ${CMAKE_SOURCE_DIR}/larsyst/interface/types.hh)
 
+if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+  add_library(larsyst_interface STATIC ${IFCE_IMPLFILES})
+else(CMAKE_BUILD_TYPE MATCHES RELEASE)
+  add_library(larsyst_interface SHARED ${IFCE_IMPLFILES})
+endif()
+
+add_dependencies(larsyst_interface fhiclcpp-simple)
+
+INSTALL(TARGETS larsyst_interface DESTINATION lib)
 INSTALL(FILES ${IFCE_HDRFILES} DESTINATION include/larsyst/interface)
 
-####### Interpreters
+####### Interpreter library
 SET(INTR_IMPLFILES
-  ${CMAKE_SOURCE_DIR}/larsyst/interpreters/load_parameter_headers.cc
   ${CMAKE_SOURCE_DIR}/larsyst/interpreters/ParamHeaderHelper.cc
   ${CMAKE_SOURCE_DIR}/larsyst/interpreters/ParamValidationAndErrorResponse.cc)
 
 SET(INTR_HDRFILES
   ${CMAKE_SOURCE_DIR}/larsyst/interpreters/EventSplineCacheHelper.hh
-  ${CMAKE_SOURCE_DIR}/larsyst/interpreters/load_parameter_headers.hh
   ${CMAKE_SOURCE_DIR}/larsyst/interpreters/ParamHeaderHelper.hh
   ${CMAKE_SOURCE_DIR}/larsyst/interpreters/ParamValidationAndErrorResponse.hh)
 
