@@ -1,12 +1,7 @@
 #include "larsyst/utility/ParameterAndProviderConfigurationUtility.hh"
 
-#include "larsyst/interface/ISystProvider_tool.hh"
-#include "larsyst/interface/SystParamHeader.hh"
-
 #include "larsyst/utility/FHiCLSystParamHeaderUtility.hh"
-#include "larsyst/utility/exceptions.hh"
 
-#include <chrono>
 #include <iomanip>
 #include <iostream>
 #include <map>
@@ -74,99 +69,5 @@ BuildParameterHeaders(provider_list_t const &ConfiguredProviders) {
 
   return headers;
 }
-
-provider_list_t ConfigureISystProvidersFromToolConfig(
-    fhicl::ParameterSet const &paramset,
-    std::function<std::unique_ptr<larsyst::ISystProvider_tool>(
-        fhicl::ParameterSet const &)>
-        InstanceBuilder,
-    std::string const &key, paramId_t syst_param_id) {
-
-  // Instantiate RNGs for seed suggestion.
-  std::mt19937_64 generator(
-      std::chrono::steady_clock::now().time_since_epoch().count());
-  std::uniform_int_distribution<uint64_t> distribution(0, 1E6);
-  auto RNJesus = std::bind(distribution, generator);
-
-  provider_list_t providers;
-
-  for (auto const &provkey : paramset.get<std::vector<std::string>>(key)) {
-    // Get fhicl config for provider
-    auto const &provider_cfg = paramset.get<fhicl::ParameterSet>(provkey);
-
-    // Make an instance of the plugin
-    std::unique_ptr<larsyst::ISystProvider_tool> is =
-        InstanceBuilder(provider_cfg);
-
-    // Suggest a seed
-    is->SuggestSeed(RNJesus());
-    // Configure the instance
-    is->ConfigureFromToolConfig(provider_cfg, syst_param_id);
-    SystMetaData md = is->GetSystMetaData();
-    syst_param_id += md.size();
-
-    // build unique name
-    std::string FQName = is->GetFullyQualifiedName();
-
-    // check that this unique name hasn't been used before.
-    for (auto const &prov : providers) {
-      if (prov->GetFullyQualifiedName() == FQName) {
-        throw ISystProvider_FQName_collision()
-            << "[ERROR]:\t Provider with that name already exists, please "
-               "correct provider set (Hint: Use the 'unique_name' property "
-               "of the tool configuration table to disambiguate multiple "
-               "uses of the same tool).";
-      }
-    }
-    providers.emplace_back(std::move(is));
-  }
-  return providers;
-}
-
-provider_list_t ConfigureISystProvidersFromParameterHeaders(
-    fhicl::ParameterSet const &paramset,
-    std::function<std::unique_ptr<larsyst::ISystProvider_tool>(
-        fhicl::ParameterSet const &)>
-        InstanceBuilder,
-    std::string const &key, paramId_t syst_param_id) {
-
-  provider_list_t providers;
-
-  for (auto const &provkey : paramset.get<std::vector<std::string>>(key)) {
-    // Get fhicl config for provider
-    auto const &provider_cfg = paramset.get<fhicl::ParameterSet>(provkey);
-
-    // Make an instance of the plugin
-    std::unique_ptr<larsyst::ISystProvider_tool> is =
-        InstanceBuilder(provider_cfg);
-
-    is->ConfigureFromParameterHeaders(provider_cfg);
-    SystMetaData md = is->GetSystMetaData();
-
-    // build unique name
-    std::string FQName = is->GetFullyQualifiedName();
-
-    // check that this unique name hasn't been used before.
-    for (auto const &prov : providers) {
-      if (prov->GetFullyQualifiedName() == FQName) {
-        throw ISystProvider_FQName_collision()
-            << "[ERROR]:\t Provider with that name already exists, please "
-               "correct provider set (Hint: Use the 'unique_name' property "
-               "of the tool configuration table to disambiguate multiple "
-               "uses of the same tool).";
-      }
-    }
-    providers.emplace_back(std::move(is));
-  }
-  return providers;
-}
-
-void ParseVariationDescriptor(fhicl::ParameterSet const &paramset,
-                              std::string const &CV_key,
-                              std::string const &vardescriptor_key,
-                              SystParamHeader &hdr);
-void MakeRandomVariations(fhicl::ParameterSet const &paramset,
-                          std::string const &nthrows_key, SystParamHeader &hdr,
-                          std::function<double()> &rngen);
 
 } // namespace larsyst

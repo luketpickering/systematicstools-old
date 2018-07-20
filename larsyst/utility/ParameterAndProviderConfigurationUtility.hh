@@ -1,10 +1,15 @@
 #ifndef LARSYST_INTERPRETERS_LOADPARAMETERHEADERS_SEEN
 #define LARSYST_INTERPRETERS_LOADPARAMETERHEADERS_SEEN
 
+#include "larsyst/interface/ISystProvider_tool.hh"
+#include "larsyst/interface/SystParamHeader.hh"
 #include "larsyst/interface/types.hh"
+
+#include "larsyst/utility/exceptions.hh"
 
 #include "fhiclcpp/ParameterSet.h"
 
+#include <chrono>
 #include <functional>
 #include <memory>
 #include <string>
@@ -12,7 +17,7 @@
 namespace larsyst {
 
 ///\brief Exception thrown when two ISystProvider_tools have identical fully
-///qualified (tool_name + instance_name) names.
+/// qualified (tool_name + instance_name) names.
 NEW_LARSYST_EXCEPT(ISystProvider_FQName_collision);
 
 ///\brief Builds map of SystProvider instances and handled parameters from a
@@ -45,16 +50,57 @@ BuildParameterHeaders(provider_list_t const &ConfiguredProviders);
 /// ART support this will default to
 /// art::make_tool<larsyst::ISystProvider_tool>, but when running outside of
 /// art, other instantiators must be used.
-provider_list_t ConfigureISystProvidersFromToolConfig(
+template <typename T = larsyst::ISystProvider_tool>
+std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromToolConfig(
     fhicl::ParameterSet const &paramset,
-    std::function<std::unique_ptr<larsyst::ISystProvider_tool>(
-        fhicl::ParameterSet const &)>
+    std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)>
         InstanceBuilder
 #ifndef NO_ART
-    = art::make_tool<larsyst::ISystProvider_tool>
+    = art::make_tool<T>
 #endif
     ,
-    std::string const &key = "syst_providers", paramId_t offset = 0);
+    std::string const &key = "syst_providers", paramId_t syst_param_id = 0) {
+
+  // Instantiate RNGs for seed suggestion.
+  std::mt19937_64 generator(
+      std::chrono::steady_clock::now().time_since_epoch().count());
+  std::uniform_int_distribution<uint64_t> distribution(0, 1E6);
+  auto RNJesus = std::bind(distribution, generator);
+
+  std::vector<std::unique_ptr<T>> providers;
+
+  for (auto const &provkey : paramset.get<std::vector<std::string>>(key)) {
+    // Get fhicl config for provider
+    auto const &provider_cfg = paramset.get<fhicl::ParameterSet>(provkey);
+
+    // Make an instance of the plugin
+    std::unique_ptr<larsyst::ISystProvider_tool> is =
+        InstanceBuilder(provider_cfg);
+
+    // Suggest a seed
+    is->SuggestSeed(RNJesus());
+    // Configure the instance
+    is->ConfigureFromToolConfig(provider_cfg, syst_param_id);
+    SystMetaData md = is->GetSystMetaData();
+    syst_param_id += md.size();
+
+    // build unique name
+    std::string FQName = is->GetFullyQualifiedName();
+
+    // check that this unique name hasn't been used before.
+    for (auto const &prov : providers) {
+      if (prov->GetFullyQualifiedName() == FQName) {
+        throw ISystProvider_FQName_collision()
+            << "[ERROR]:\t Provider with that name already exists, please "
+               "correct provider set (Hint: Use the 'unique_name' property "
+               "of the tool configuration table to disambiguate multiple "
+               "uses of the same tool).";
+      }
+    }
+    providers.emplace_back(std::move(is));
+  }
+  return providers;
+}
 
 ///\brief Configures the set of ISystProviders from a Parameter Headers
 /// document.
@@ -67,16 +113,47 @@ provider_list_t ConfigureISystProvidersFromToolConfig(
 /// ART support this will default to
 /// art::make_tool<larsyst::ISystProvider_tool>, but when running outside of
 /// art, other instantiators must be used.
-provider_list_t ConfigureISystProvidersFromParameterHeaders(
+template <typename T = larsyst::ISystProvider_tool>
+std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromParameterHeaders(
     fhicl::ParameterSet const &paramset,
-    std::function<std::unique_ptr<larsyst::ISystProvider_tool>(
-        fhicl::ParameterSet const &)>
+    std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)>
         InstanceBuilder
 #ifndef NO_ART
-    = art::make_tool<larsyst::ISystProvider_tool>
+    = art::make_tool<T>
 #endif
     ,
-    std::string const &key = "syst_providers");
+    std::string const &key = "syst_providers") {
+
+  std::vector<std::unique_ptr<T>> providers;
+
+  for (auto const &provkey : paramset.get<std::vector<std::string>>(key)) {
+    // Get fhicl config for provider
+    auto const &provider_cfg = paramset.get<fhicl::ParameterSet>(provkey);
+
+    // Make an instance of the plugin
+    std::unique_ptr<larsyst::ISystProvider_tool> is =
+        InstanceBuilder(provider_cfg);
+
+    is->ConfigureFromParameterHeaders(provider_cfg);
+    SystMetaData md = is->GetSystMetaData();
+
+    // build unique name
+    std::string FQName = is->GetFullyQualifiedName();
+
+    // check that this unique name hasn't been used before.
+    for (auto const &prov : providers) {
+      if (prov->GetFullyQualifiedName() == FQName) {
+        throw ISystProvider_FQName_collision()
+            << "[ERROR]:\t Provider with that name already exists, please "
+               "correct provider set (Hint: Use the 'unique_name' property "
+               "of the tool configuration table to disambiguate multiple "
+               "uses of the same tool).";
+      }
+    }
+    providers.emplace_back(std::move(is));
+  }
+  return providers;
+}
 
 } // namespace larsyst
 

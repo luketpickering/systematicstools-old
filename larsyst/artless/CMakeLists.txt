@@ -164,10 +164,10 @@ INSTALL(FILES ${SPV_HDRFILES} DESTINATION include/larsyst/systproviders)
 
 add_executable(GenerateSystProviderConfig ${CMAKE_SOURCE_DIR}/larsyst/app/GenerateSystProviderConfig.cc)
 
-target_link_libraries(GenerateSystProviderConfig larsyst_utility)
 target_link_libraries(GenerateSystProviderConfig larsyst_interface)
 target_link_libraries(GenerateSystProviderConfig larsyst_interpreters)
 target_link_libraries(GenerateSystProviderConfig larsyst_systproviders)
+target_link_libraries(GenerateSystProviderConfig larsyst_utility)
 add_dependencies(GenerateSystProviderConfig fhiclcpp-simple)
 
 INSTALL(TARGETS GenerateSystProviderConfig DESTINATION bin)
