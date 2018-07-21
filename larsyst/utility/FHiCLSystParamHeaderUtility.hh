@@ -1,5 +1,5 @@
-#ifndef LARSYST_UTILITY_BUILDPARAMETERSETFROMHEADER_SEEN
-#define LARSYST_UTILITY_BUILDPARAMETERSETFROMHEADER_SEEN
+#ifndef LARSYST_UTILITY_FHICLSYSTPARAMHEADERUTILITY_SEEN
+#define LARSYST_UTILITY_FHICLSYSTPARAMHEADERUTILITY_SEEN
 
 #include "larsyst/utility/exceptions.hh"
 
@@ -66,14 +66,23 @@ bool ParseFHiCLVariationDescriptor(fhicl::ParameterSet const &paramset,
 /// to be thrown.
 ///
 /// If SystParamHeader::isRandomlyThrown is not true, or nthrows_key cannot be
-/// found in paramset, hdr is not modified.
+/// found in paramset and the NThrows argument is 0, hdr is not modified.
 ///
 /// If no seed is passed, the current time will be used.
 bool MakeFHiCLDefinedRandomVariations(fhicl::ParameterSet const &paramset,
                                       std::string const &nthrows_key,
                                       SystParamHeader &hdr,
                                       std::string const &distribution_key = "",
-                                      uint64_t seed = 0);
+                                      uint64_t seed = 0, size_t NThrows = 0);
+
+///\brief Checks if paramset appears to provide standardized Tool Configuration
+/// for a named parameter
+///
+/// If either "<parameter_name>_central_value" or
+/// "<parameter_name>_variation_descriptor" exist, the parameter named
+/// <parameter_name> is considered to exist in the configuration.
+bool FHiCLSimpleToolConfigurationParameterExists(
+    fhicl::ParameterSet const &paramset, std::string const &parameter_name);
 
 ///\brief Builds SystParamHeader from standardized FHiCL that can be used to
 /// write Tool Configuration files.
@@ -94,7 +103,7 @@ bool MakeFHiCLDefinedRandomVariations(fhicl::ParameterSet const &paramset,
 /// Uses ParseFHiCLVariationDescriptor and MakeFHiCLDefinedRandomVariations
 bool ParseFHiCLSimpleToolConfigurationParameter(
     fhicl::ParameterSet const &paramset, std::string const &parameter_name,
-    SystParamHeader &hdr, uint64_t seed = 0);
+    SystParamHeader &hdr, uint64_t seed = 0, size_t NThrows = 0);
 
 } // namespace larsyst
 #endif

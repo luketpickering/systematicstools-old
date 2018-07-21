@@ -1,5 +1,5 @@
-#ifndef LARSYST_INTERPRETERS_LOADPARAMETERHEADERS_SEEN
-#define LARSYST_INTERPRETERS_LOADPARAMETERHEADERS_SEEN
+#ifndef LARSYST_INTERPRETERS_PARAMETERANDPROVIDERCONFIGURATIONUTILITY_SEEN
+#define LARSYST_INTERPRETERS_PARAMETERANDPROVIDERCONFIGURATIONUTILITY_SEEN
 
 #include "larsyst/interface/ISystProvider_tool.hh"
 #include "larsyst/interface/SystParamHeader.hh"
@@ -33,8 +33,21 @@ BuildParameterHeaders(fhicl::ParameterSet const &paramset,
 /// set of pre-configured providers
 ///
 /// Avoids reading the same FHiCL twice!
-param_header_map_t
-BuildParameterHeaders(provider_list_t const &ConfiguredProviders);
+template <typename T = larsyst::ISystProvider_tool>
+param_header_map_t BuildParameterHeaders(
+    std::vector<std::unique_ptr<T>> const &ConfiguredProviders) {
+  param_header_map_t headers;
+
+  for (auto const &provider : ConfiguredProviders) {
+    for (auto const &hdr : provider->GetSystMetaData()) {
+      headers.emplace(param_header_map_t::key_type{hdr.systParamId},
+                      param_header_map_t::mapped_type{
+                          provider->GetFullyQualifiedName(), hdr});
+    }
+  }
+
+  return headers;
+}
 
 ///\brief Configures the set of ISystProviders from a Tool Configuration
 /// document.

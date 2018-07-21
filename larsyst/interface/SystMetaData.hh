@@ -46,6 +46,10 @@ size_t GetParamIndex(SystMetaData const &md, std::string const &name);
 ///\brief Checks if named parameter exists in header list.
 bool HasParam(SystMetaData const &md, std::string const &name);
 
+///\brief Checks if any of the named parameters exists in header list.
+bool HasAnyParams(SystMetaData const &md, std::vector<std::string> const &names);
+
+
 ///\brief Checks if parameter with given Id exists in header list.
 bool HasParam(SystMetaData const &md, paramId_t pid);
 

@@ -74,10 +74,12 @@ include_directories(${CMAKE_INSTALL_PREFIX}/include)
 SET(UTIL_IMPLFILES
   ${CMAKE_SOURCE_DIR}/larsyst/utility/FHiCLSystParamHeaderUtility.cc
   ${CMAKE_SOURCE_DIR}/larsyst/utility/ParameterAndProviderConfigurationUtility.cc
+  ${CMAKE_SOURCE_DIR}/larsyst/utility/ResponselessParamUtility.cc
   ${CMAKE_SOURCE_DIR}/larsyst/utility/md5.cc)
 SET(UTIL_HDRFILES
-  ${CMAKE_SOURCE_DIR}/larsyst/utility/FHiCLSystParamHeaderUtility.cc
-  ${CMAKE_SOURCE_DIR}/larsyst/utility/ParameterAndProviderConfigurationUtility.cc
+  ${CMAKE_SOURCE_DIR}/larsyst/utility/FHiCLSystParamHeaderUtility.hh
+  ${CMAKE_SOURCE_DIR}/larsyst/utility/ParameterAndProviderConfigurationUtility.hh
+  ${CMAKE_SOURCE_DIR}/larsyst/utility/ResponselessParamUtility.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/md5.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/printers.hh
   ${CMAKE_SOURCE_DIR}/larsyst/utility/ROOTUtility.hh

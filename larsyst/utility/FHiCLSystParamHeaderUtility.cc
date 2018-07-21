@@ -203,16 +203,12 @@ bool MakeFHiCLDefinedRandomVariations(fhicl::ParameterSet const &paramset,
                                       std::string const &nthrows_key,
                                       SystParamHeader &hdr,
                                       std::string const &distribution_key,
-                                      uint64_t seed) {
+                                      uint64_t seed, size_t NThrows) {
   if (!hdr.isRandomlyThrown) {
     return false;
   }
 
-  if (!paramset.has_key(nthrows_key)) {
-    return false;
-  }
-
-  size_t NThrows = paramset.get<size_t>(nthrows_key);
+  paramset.get_if_present<size_t>(nthrows_key, NThrows);
 
   if (!NThrows) {
     return false;
@@ -253,9 +249,24 @@ bool MakeFHiCLDefinedRandomVariations(fhicl::ParameterSet const &paramset,
   return true;
 }
 
+bool FHiCLSimpleToolConfigurationParameterExists(
+    fhicl::ParameterSet const &paramset, std::string const &parameter_name) {
+
+  std::string CV_key = parameter_name + "_central_value";
+  std::string Tweak_key = parameter_name + "_variation_descriptor";
+
+  bool has_cv = paramset.has_key(CV_key);
+  bool has_var = paramset.has_key(Tweak_key);
+
+  if (has_cv || has_var) {
+    return true;
+  }
+  return false;
+}
+
 bool ParseFHiCLSimpleToolConfigurationParameter(
     fhicl::ParameterSet const &paramset, std::string const &parameter_name,
-    SystParamHeader &hdr, uint64_t seed) {
+    SystParamHeader &hdr, uint64_t seed, size_t NThrows) {
 
   std::string CV_key = parameter_name + "_central_value";
   std::string Tweak_key = parameter_name + "_variation_descriptor";
@@ -264,11 +275,13 @@ bool ParseFHiCLSimpleToolConfigurationParameter(
     return false;
   }
 
+  hdr.prettyName = parameter_name;
+
   std::string NThrows_key = parameter_name + "_nthrows";
   std::string RandDist_key = parameter_name + "_random_distribution";
 
   MakeFHiCLDefinedRandomVariations(paramset, NThrows_key, hdr, RandDist_key,
-                                   seed);
+                                   seed, NThrows);
 
   return true;
 }

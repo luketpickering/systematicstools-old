@@ -34,12 +34,22 @@ bool HasParam(SystMetaData const &md, std::string const &name) {
   return IndexIsHandled(md, GetParamIndex(md, name));
 }
 
+bool HasAnyParams(SystMetaData const &md,
+                  std::vector<std::string> const &names) {
+  for (std::string const &n : names) {
+    if (HasParam(md, n)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool HasParam(SystMetaData const &md, paramId_t pid) {
   return IndexIsHandled(md, GetParamIndex(md, pid));
 }
 
 SystParamHeader const &GetParam(SystMetaData const &md,
-                                       std::string const &name) {
+                                std::string const &name) {
   size_t idx = GetParamIndex(md, name);
   if (IndexIsHandled(md, idx)) {
     return md[idx];

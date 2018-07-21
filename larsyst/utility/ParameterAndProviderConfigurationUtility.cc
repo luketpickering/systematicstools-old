@@ -54,20 +54,4 @@ param_header_map_t BuildParameterHeaders(fhicl::ParameterSet const &paramset,
 
   return headers;
 }
-
-param_header_map_t
-BuildParameterHeaders(provider_list_t const &ConfiguredProviders) {
-  param_header_map_t headers;
-
-  for (auto const &provider : ConfiguredProviders) {
-    for (auto const &hdr : provider->GetSystMetaData()) {
-      headers.emplace(param_header_map_t::key_type{hdr.systParamId},
-                      param_header_map_t::mapped_type{
-                          provider->GetFullyQualifiedName(), hdr});
-    }
-  }
-
-  return headers;
-}
-
 } // namespace larsyst
