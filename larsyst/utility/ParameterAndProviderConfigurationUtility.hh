@@ -87,8 +87,7 @@ std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromToolConfig(
     auto const &provider_cfg = paramset.get<fhicl::ParameterSet>(provkey);
 
     // Make an instance of the plugin
-    std::unique_ptr<larsyst::ISystProvider_tool> is =
-        InstanceBuilder(provider_cfg);
+    std::unique_ptr<T> is = InstanceBuilder(provider_cfg);
 
     // Suggest a seed
     is->SuggestSeed(RNJesus());
@@ -144,8 +143,7 @@ std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromParameterHeaders(
     auto const &provider_cfg = paramset.get<fhicl::ParameterSet>(provkey);
 
     // Make an instance of the plugin
-    std::unique_ptr<larsyst::ISystProvider_tool> is =
-        InstanceBuilder(provider_cfg);
+    std::unique_ptr<T> is = InstanceBuilder(provider_cfg);
 
     is->ConfigureFromParameterHeaders(provider_cfg);
     SystMetaData md = is->GetSystMetaData();
