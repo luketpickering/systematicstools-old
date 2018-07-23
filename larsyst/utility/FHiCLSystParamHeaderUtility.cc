@@ -152,8 +152,8 @@ bool ParseFHiCLVariationDescriptor(fhicl::ParameterSet const &paramset,
     var_descriptor = var_descriptor.substr(1, var_descriptor.length() - 2);
     trim(var_descriptor);
     if (fchar == '(') { // Spline knots
-      std::vector<double> range_step_values = ParseToVect<double>(
-          var_descriptor.substr(1, var_descriptor.size() - 2), ",");
+      std::vector<double> range_step_values =
+          ParseToVect<double>(var_descriptor, ",");
       if (range_step_values.size() != 3) {
         throw invalid_FHiCL_variation_descriptor()
             << "[ERROR]: When parsing spline knot descriptor found "
