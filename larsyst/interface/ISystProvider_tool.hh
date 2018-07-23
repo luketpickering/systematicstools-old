@@ -25,6 +25,7 @@ NEW_LARSYST_EXCEPT(ISystProvider_tool_seed_suggestion_post_configure);
 NEW_LARSYST_EXCEPT(ISystProvider_tool_noncontiguous_parameter_Ids);
 NEW_LARSYST_EXCEPT(ISystProvider_tool_metadata_not_generated);
 NEW_LARSYST_EXCEPT(invalid_ToolConfigurationFHiCL);
+NEW_LARSYST_EXCEPT(invalid_ToolOptions);
 
 /// ABC defining the interface to systematic response syst_providers
 class ISystProvider_tool {

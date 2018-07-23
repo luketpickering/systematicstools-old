@@ -149,29 +149,31 @@ bool ParseFHiCLVariationDescriptor(fhicl::ParameterSet const &paramset,
 
   if (var_descriptor.size()) {
     char fchar = var_descriptor.front();
-    var_descriptor = var_descriptor.substr(1, var_descriptor.length() - 2);
-    trim(var_descriptor);
+    std::string var_descriptor_trimmed =
+        var_descriptor.substr(1, var_descriptor.length() - 2);
+    trim(var_descriptor_trimmed);
     if (fchar == '(') { // Spline knots
       std::vector<double> range_step_values =
-          ParseToVect<double>(var_descriptor, ",");
+          ParseToVect<double>(var_descriptor_trimmed, ",");
       if (range_step_values.size() != 3) {
         throw invalid_FHiCL_variation_descriptor()
             << "[ERROR]: When parsing spline knot descriptor found "
-            << std::quoted(var_descriptor)
+            << std::quoted(var_descriptor_trimmed)
             << ", but the descriptor must be in the format: "
                "(<start>,<end>,<step>).";
       }
       hdr.paramVariations.push_back(range_step_values[0]);
-      while ((hdr.paramVariations.back() + range_step_values[2]) <
-             range_step_values[1]) {
+      while ((hdr.paramVariations.back() + range_step_values[2]) <=
+             (range_step_values[1] + std::numeric_limits<double>::epsilon())) {
         hdr.paramVariations.push_back(hdr.paramVariations.back() +
                                       range_step_values[2]);
       }
       hdr.isSplineable = true;
     } else if (fchar == '[') { // Discrete tweaks
-      hdr.paramVariations = ParseToVect<double>(var_descriptor, ",");
+      hdr.paramVariations = ParseToVect<double>(var_descriptor_trimmed, ",");
     } else if (fchar == '{') { // OneSigmaShifts
-      std::vector<double> sigShifts = ParseToVect<double>(var_descriptor, ",");
+      std::vector<double> sigShifts =
+          ParseToVect<double>(var_descriptor_trimmed, ",");
       if (sigShifts.size() == 1) {
         hdr.oneSigmaShifts[0] = -sigShifts.front();
         hdr.oneSigmaShifts[1] = sigShifts.front();
@@ -181,7 +183,7 @@ bool ParseFHiCLVariationDescriptor(fhicl::ParameterSet const &paramset,
       } else {
         throw invalid_FHiCL_variation_descriptor()
             << "[ERROR]: When parsing sigma shifts found "
-            << std::quoted(var_descriptor)
+            << std::quoted(var_descriptor_trimmed)
             << ", but expected {sigma_both_natural_units}, or "
                "{sigma_low_natural_units, sigma_up_natural_units}.";
       }
@@ -192,6 +194,20 @@ bool ParseFHiCLVariationDescriptor(fhicl::ParameterSet const &paramset,
           << ", but expected to find either, \"{sigma_low_natural_units, "
              "sigma_up_natural_units}\" or \"[spline knot 1, spline knot "
              "2, spline knot 3,...]\"";
+    }
+
+    // If there is only one variation, set it as the central value correction
+    // instead.
+    if (!hdr.isRandomlyThrown) {
+      if (hdr.paramVariations.size() == 1) {
+        hdr.centralParamValue = hdr.paramVariations.front();
+        hdr.paramVariations.clear();
+        hdr.isCorrection = true;
+      } else if (!hdr.paramVariations.size()) {
+        throw invalid_FHiCL_variation_descriptor()
+            << "[ERROR]: When parsing " << var_descriptor
+            << ", failed to determine any parameter variations.";
+      }
     }
   } else { // Just use the central value every time
     hdr.isCorrection = true;
