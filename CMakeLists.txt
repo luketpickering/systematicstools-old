@@ -1,8 +1,8 @@
 # ======================================================================
-#  larsyst main build file
+#  systematicstools main build file
 #
 #  cd .../path/to/build/directory
-#  source .../path/to/larsyst/ups/setup_for_development <-d|-p>
+#  source .../path/to/systematicstools/ups/setup_for_development <-d|-p>
 #  cmake [-DCMAKE_INSTALL_PREFIX=/install/path]
 #        -DCMAKE_BUILD_TYPE=$CETPKG_TYPE
 #        $CETPKG_SOURCE
@@ -16,7 +16,7 @@
 # use cmake 2.8 or later
 cmake_minimum_required (VERSION 2.8)
 
-project(larsyst)
+project(systematicstools)
 
 if(NOT DEFINED USEART) #by default build in ART mode
   SET(USEART TRUE)
@@ -56,7 +56,7 @@ include(ArtMake)
 include(BuildPlugins)
 
 # ADD SOURCE CODE SUBDIRECTORIES HERE
-add_subdirectory(larsyst)
+add_subdirectory(systematicstools)
 
 # tests
 add_subdirectory(test)
@@ -79,6 +79,6 @@ else() #
   endif()
   message(STATUS "Installing to: ${CMAKE_INSTALL_PREFIX}")
 
-  add_subdirectory(larsyst/artless)
+  add_subdirectory(systematicstools/artless)
 
 endif()

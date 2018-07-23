@@ -1,6 +1,0 @@
-<lcgdict>
-  <class name="std::map<uint,std::vector<double> >"/>
-  <class name="std::vector<map<uint,std::vector<double> > >"/>
-  <class name="larsyst::EventResponse"/>
-  <class name="art::Wrapper<larsyst::EventResponse>"/>
-</lcgdict>

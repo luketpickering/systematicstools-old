@@ -1,0 +1,23 @@
+art_make(LIBRARY_NAME systematicstools
+  LIB_LIBRARIES
+    systematicstools_utility
+    ${ART_FRAMEWORK_CORE}
+    ${ART_FRAMEWORK_PRINCIPAL}
+    art_Utilities
+    canvas
+    ${FHICLCPP}
+    cetlib
+    cetlib_except
+    ${MF_MESSAGELOGGER}
+    ${MF_UTILITIES}
+    ${Boost_SYSTEM_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY}
+  MODULE_LIBRARIES
+    systematicstools_utility
+    ${ART_PERSISTENCY_COMMON}
+    ${ART_FRAMEWORK_SERVICES_REGISTRY}
+    ${ART_FRAMEWORK_SERVICES_OPTIONAL}
+    ${ART_FRAMEWORK_SERVICES_OPTIONAL_TFILESERVICE_SERVICE}
+    systematicstools_interpreters
+    ${ROOT_BASIC_LIB_LIST}
+)
