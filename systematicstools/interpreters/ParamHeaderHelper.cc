@@ -7,6 +7,8 @@
 
 namespace systtools {
 
+// #define DEBUG_PARAMHEADERHELPER
+
 SystParamHeader ParamHeaderHelper::nullheader = SystParamHeader();
 
 SystParamHeader const &ParamHeaderHelper::GetHeader(paramId_t i) const {
@@ -252,8 +254,7 @@ ParamHeaderHelper::CheckParamValueList(param_value_list_t ivlist) const {
                             : "WARN")
                     << "]: Requested total response for a map of "
                        "parameter-value pairs, but parameter "
-                    << iv_it->pid << ", "
-                    << GetHeader(iv_it->pid).prettyName
+                    << iv_it->pid << ", " << GetHeader(iv_it->pid).prettyName
                     << " is not a weight systematic. " << std::endl;
           if (fChkErr.fPedantry ==
               ParamValidationAndErrorResponse::kNotOnMyWatch) {
@@ -447,11 +448,13 @@ TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
   scratch_spline_t2 = hdr.paramVariations;
   scratch_spline_t1 = hdr.differsEventByEvent ? event_responses : hdr.responses;
 
+#ifdef DEBUG_PARAMHEADERHELPER
   std::cout << "[INFO]: Building spline for parameter " << hdr.systParamId
             << ", " << hdr.prettyName << " from " << scratch_spline_t2.size()
             << ", shift values and " << scratch_spline_t1.size()
-            << " responses (isGlobal ? " << hdr.differsEventByEvent << ")."
+            << " responses (isGlobal ? " << !hdr.differsEventByEvent << ")."
             << std::endl;
+#endif
 
   return TSpline3("", scratch_spline_t2.data(), scratch_spline_t1.data(),
                   scratch_spline_t2.size());

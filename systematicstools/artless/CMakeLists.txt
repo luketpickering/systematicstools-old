@@ -63,9 +63,9 @@ foreach(OBJ ${NEUT_ROOT_LIBS})
 endforeach()
 
 if(CMAKE_CXX_FLAGS STREQUAL "")
-  SET(CMAKE_CXX_FLAGS " -DNO_ART -std=c++1y -g -O0 ${ROOT_CXX_FLAGS_SCRUBBED}")
+  SET(CMAKE_CXX_FLAGS " -DNO_ART -std=c++1y ${ROOT_CXX_FLAGS_SCRUBBED}")
 else()
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_ART -std=c++1y -g -O0 ${ROOT_CXX_FLAGS_SCRUBBED}")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_ART -std=c++1y ${ROOT_CXX_FLAGS_SCRUBBED}")
 endif()
 
 include_directories(${CMAKE_SOURCE_DIR})
@@ -130,6 +130,8 @@ SET(INTR_IMPLFILES
 SET(INTR_HDRFILES
   ${CMAKE_SOURCE_DIR}/systematicstools/interpreters/EventSplineCacheHelper.hh
   ${CMAKE_SOURCE_DIR}/systematicstools/interpreters/ParamHeaderHelper.hh
+  ${CMAKE_SOURCE_DIR}/systematicstools/interpreters/PolyResponse.hh
+  ${CMAKE_SOURCE_DIR}/systematicstools/interpreters/PrecalculatedResponseReader.hh
   ${CMAKE_SOURCE_DIR}/systematicstools/interpreters/ParamValidationAndErrorResponse.hh)
 
 if(CMAKE_BUILD_TYPE MATCHES DEBUG)

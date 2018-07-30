@@ -4,7 +4,9 @@
 #include "systematicstools/interface/SystMetaData.hh"
 #include "systematicstools/interface/types.hh"
 
-#include "ParamValidationAndErrorResponse.hh"
+#include "systematicstools/interpreters/PolyResponse.hh"
+
+#include "systematicstools/interpreters/ParamValidationAndErrorResponse.hh"
 
 #include "TSpline.h"
 
@@ -49,7 +51,7 @@ public:
   ///\brief Whether parameter named, name, is handled by this helper.
   bool HaveHeader(std::string const &) const;
   ///\brief Get the paramId_t for for parameter named, name, if it doesn't
-  ///exist, kParamUnhandled<paramId_t> is returned.
+  /// exist, kParamUnhandled<paramId_t> is returned.
   paramId_t GetHeaderId(std::string const &name) const;
 
   ///\brief Get list of all handled parameter Ids.
@@ -137,6 +139,19 @@ public:
   ///\note At higher care levels, the passing of non-spline parameters will
   /// checked for.
   TSpline3 GetSpline(paramId_t, event_unit_response_t const &) const;
+  ///\brief Get a PolyResponse object for a given parameter, for a given event
+  /// from the passed event unit response.
+  ///
+  ///\note Performs very few checks.
+  template <size_t n>
+  PolyResponse<n> GetPolyResponse(paramId_t i,
+                                  event_unit_response_t const &eur) const {
+    if (!IsSplineParam(i)) {
+      throw;
+    }
+    return PolyResponse<n>(GetHeader(i).paramVariations,
+                           GetParamElementFromContainer(eur, i).responses);
+  }
   ///\brief Get all of the splines for parameter i from the passed event
   /// responses.
   ///
@@ -445,6 +460,6 @@ private:
   mutable spline_t scratch_spline_t1;
   mutable spline_t scratch_spline_t2;
   mutable discrete_variation_list_t scratch_discrete_variation_list_t1;
-};
+}; // namespace systtools
 } // namespace systtools
 #endif

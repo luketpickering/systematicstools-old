@@ -47,12 +47,19 @@ NEW_SYSTTOOLS_EXCEPT(incompatible_number_of_event_units);
 void ExtendEventResponse(std::unique_ptr<EventResponse> &e1,
                          std::unique_ptr<EventResponse> &&e2);
 
-/// \brief Removes systtools::ParamResponses from event_unit_response_ts contained
-/// within an EventResponse that contain only unity responses.
+/// \brief Removes systtools::ParamResponses from event_unit_response_ts
+/// contained within an EventResponse that contain only unity responses.
 ///
 /// \note that this is intended to be applied to weight systematics that do not
 /// affect a given event
 void ScrubUnityEventResponses(std::unique_ptr<EventResponse> &er);
+
+/// \brief Removes systtools::ParamResponses from event_unit_response_t that
+/// contain only unity responses.
+///
+/// \note that this is intended to be applied to weight systematics that do not
+/// affect a given event
+void ScrubUnityEventResponses(event_unit_response_t &er);
 
 } // namespace systtools
 

@@ -3,10 +3,13 @@
 
 #include "systematicstools/utility/exceptions.hh"
 
-#include "TFile.h"
 #include "TAxis.h"
+#include "TF1.h"
+#include "TFile.h"
+#include "TGraph.h"
 
 #include <string>
+#include <memory>
 
 NEW_SYSTTOOLS_EXCEPT(invalid_tfile);
 NEW_SYSTTOOLS_EXCEPT(invalid_hist_name);
@@ -52,12 +55,57 @@ inline TH *GetHistogram(std::string const &fname, std::string const &hname) {
 }
 
 inline bool IsFlowBin(TAxis *ax, Int_t bin_it) {
-  return ((bin_it == 0) || (bin_it == (ax->GetNbins()+1)));
+  return ((bin_it == 0) || (bin_it == (ax->GetNbins() + 1)));
 }
 
 inline bool IsInHistogramRange(TAxis *ax, double v) {
   Int_t bin_it = ax->FindFixBin(v);
-  return !IsFlowBin(ax,bin_it);
+  return !IsFlowBin(ax, bin_it);
+}
+
+template <size_t n>
+inline std::array<double, n + 1>
+GetPolyFitCoeffs(std::vector<double> const &xvals,
+                 std::vector<double> const &yvals) {
+
+  size_t nd = std::min(xvals.size(), yvals.size());
+  TGraph g(nd);
+  for (size_t i = 0; i < nd; ++i) {
+    g.SetPoint(i, xvals[i], yvals[i]);
+  }
+
+  static std::stringstream ss;
+  static bool first = true;
+  if (first) {
+    std::stringstream x("");
+    for (size_t i = 0; i < n + 1; ++i) {
+      ss << '[' << i << "]" << (i ? "*" : "") << x.str();
+      x << (i ? "*x" : "x");
+      if (i < n) {
+        ss << " + ";
+      }
+    }
+    first = false;
+  }
+
+  static std::unique_ptr<TF1> f(
+      new TF1("f", ss.str().c_str(), xvals.front(), xvals.back()));
+  if (f->IsZombie()) {
+    throw;
+  }
+
+  if (f->GetNpar() != (n + 1)) {
+    throw;
+  }
+
+  g.Fit(f.get(), "Q0");
+
+  std::array<double, n + 1> rtn;
+  for (size_t i = 0; i < (n + 1); ++i) {
+    rtn[i] = f->GetParameter(i);
+  }
+
+  return rtn;
 }
 
 #endif
