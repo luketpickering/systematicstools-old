@@ -1,6 +1,6 @@
 #include "systematicstools/utility/ParameterAndProviderConfigurationUtility.hh"
 
-#include "systematicstools/utility/FHiCLSystParamHeaderUtility.hh"
+#include "systematicstools/interface/FHiCLSystParamHeaderConverters.hh"
 
 #include <iomanip>
 #include <iostream>

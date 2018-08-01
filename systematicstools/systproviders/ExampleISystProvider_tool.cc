@@ -1,4 +1,6 @@
-#include "systematicstools/systproviders/ExampleISystProviderTool.hh"
+#include "systematicstools/systproviders/ExampleISystProvider_tool.hh"
+
+#include "systematicstools/utility/FHiCLSystParamHeaderUtility.hh"
 
 #include "systematicstools/utility/printers.hh"
 #include "systematicstools/utility/string_parsers.hh"

@@ -8,7 +8,7 @@
 #include "systematicstools/utility/string_parsers.hh"
 
 #ifdef NO_ART
-#include "systematicstools/systproviders/ExampleISystProviderTool.hh"
+#include "systematicstools/systproviders/ExampleISystProvider_tool.hh"
 #endif
 
 #include "fhiclcpp/ParameterSet.h"

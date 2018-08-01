@@ -2,15 +2,14 @@
 #define SYSTTOOLS_UTILITY_PRINTERS_SEEN
 
 #include "systematicstools/interface/EventResponse_product.hh"
+#include "systematicstools/interface/FHiCLSystParamHeaderConverters.hh"
 #include "systematicstools/interface/SystParamHeader.hh"
-
-#include "systematicstools/utility/FHiCLSystParamHeaderUtility.hh"
 
 #include "fhiclcpp/ParameterSet.h"
 
 #include <iomanip>
-#include <string>
 #include <sstream>
+#include <string>
 
 namespace systtools {
 inline std::string to_str(SystParamHeader const &sph, bool indent = true) {

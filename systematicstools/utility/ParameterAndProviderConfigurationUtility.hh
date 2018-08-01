@@ -7,7 +7,9 @@
 
 #include "systematicstools/utility/exceptions.hh"
 
+#ifndef NO_ART
 #include "art/Utilities/make_tool.h"
+#endif
 
 #include "fhiclcpp/ParameterSet.h"
 

@@ -3,8 +3,8 @@
 
 #include "systematicstools/interface/EventResponse_product.hh"
 #include "systematicstools/interface/SystMetaData.hh"
+#include "systematicstools/interface/FHiCLSystParamHeaderConverters.hh"
 
-#include "systematicstools/utility/FHiCLSystParamHeaderUtility.hh"
 #include "systematicstools/utility/exceptions.hh"
 
 #ifndef NO_ART
