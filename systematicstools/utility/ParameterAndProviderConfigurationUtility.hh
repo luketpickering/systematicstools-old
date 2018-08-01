@@ -1,11 +1,13 @@
 #ifndef SYSTTOOLS_INTERPRETERS_PARAMETERANDPROVIDERCONFIGURATIONUTILITY_SEEN
 #define SYSTTOOLS_INTERPRETERS_PARAMETERANDPROVIDERCONFIGURATIONUTILITY_SEEN
 
-#include "systematicstools/interface/ISystProvider_tool.hh"
+#include "systematicstools/interface/ISystProviderTool.hh"
 #include "systematicstools/interface/SystParamHeader.hh"
 #include "systematicstools/interface/types.hh"
 
 #include "systematicstools/utility/exceptions.hh"
+
+#include "art/Utilities/make_tool.h"
 
 #include "fhiclcpp/ParameterSet.h"
 
@@ -13,10 +15,11 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <random>
 
 namespace systtools {
 
-///\brief Exception thrown when two ISystProvider_tools have identical fully
+///\brief Exception thrown when two ISystProviderTools have identical fully
 /// qualified (tool_name + instance_name) names.
 NEW_SYSTTOOLS_EXCEPT(ISystProvider_FQName_collision);
 
@@ -33,7 +36,7 @@ BuildParameterHeaders(fhicl::ParameterSet const &paramset,
 /// set of pre-configured providers
 ///
 /// Avoids reading the same FHiCL twice!
-template <typename T = systtools::ISystProvider_tool>
+template <typename T = systtools::ISystProviderTool>
 param_header_map_t BuildParameterHeaders(
     std::vector<std::unique_ptr<T>> const &ConfiguredProviders) {
   param_header_map_t headers;
@@ -59,11 +62,11 @@ param_header_map_t BuildParameterHeaders(
 /// structure document.
 ///
 /// The InstanceBuilder function argument is used to instantiate
-/// ISystProvider_tool instances held by std::unique_ptrs. When running with
+/// ISystProviderTool instances held by std::unique_ptrs. When running with
 /// ART support this will default to
-/// art::make_tool<systtools::ISystProvider_tool>, but when running outside of
+/// art::make_tool<systtools::ISystProviderTool>, but when running outside of
 /// art, other instantiators must be used.
-template <typename T = systtools::ISystProvider_tool>
+template <typename T = systtools::ISystProviderTool>
 std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromToolConfig(
     fhicl::ParameterSet const &paramset,
     std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)>
@@ -121,11 +124,11 @@ std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromToolConfig(
 /// described in systematicstools/doc/ParameterHeaders.md
 ///
 /// The InstanceBuilder function argument is used to instantiate
-/// ISystProvider_tool instances held by std::unique_ptrs. When running with
+/// ISystProviderTool instances held by std::unique_ptrs. When running with
 /// ART support this will default to
-/// art::make_tool<systtools::ISystProvider_tool>, but when running outside of
+/// art::make_tool<systtools::ISystProviderTool>, but when running outside of
 /// art, other instantiators must be used.
-template <typename T = systtools::ISystProvider_tool>
+template <typename T = systtools::ISystProviderTool>
 std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromParameterHeaders(
     fhicl::ParameterSet const &paramset,
     std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)>

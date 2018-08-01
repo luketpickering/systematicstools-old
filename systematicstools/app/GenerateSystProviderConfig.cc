@@ -1,4 +1,4 @@
-#include "systematicstools/interface/ISystProvider_tool.hh"
+#include "systematicstools/interface/ISystProviderTool.hh"
 #include "systematicstools/interface/SystMetaData.hh"
 #include "systematicstools/interface/types.hh"
 
@@ -8,7 +8,7 @@
 #include "systematicstools/utility/string_parsers.hh"
 
 #ifdef NO_ART
-#include "systematicstools/systproviders/ExampleISystProvider_tool.hh"
+#include "systematicstools/systproviders/ExampleISystProviderTool.hh"
 #endif
 
 #include "fhiclcpp/ParameterSet.h"
@@ -155,14 +155,14 @@ int main(int argc, char const *argv[]) {
 
   fhicl::ParameterSet in_ps = ReadParameterSet(argv);
 
-  std::function<std::unique_ptr<systtools::ISystProvider_tool>(
+  std::function<std::unique_ptr<systtools::ISystProviderTool>(
       fhicl::ParameterSet const &)>
       InstanceBuilder;
 #ifndef NO_ART
-  InstanceBuilder = art::make_tool<systtools::ISystProvider_tool>
+  InstanceBuilder = art::make_tool<systtools::ISystProviderTool>
 #else
   InstanceBuilder = [](fhicl::ParameterSet const &paramset)
-      -> std::unique_ptr<systtools::ISystProvider_tool> {
+      -> std::unique_ptr<systtools::ISystProviderTool> {
     std::string tool_type = "";
     paramset.get_if_present("tool_type", tool_type);
     if (tool_type == "ExampleISystProvider") {

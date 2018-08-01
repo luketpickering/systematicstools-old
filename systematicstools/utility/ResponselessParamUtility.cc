@@ -1,6 +1,6 @@
 #include "systematicstools/utility/ResponselessParamUtility.hh"
 
-#include "systematicstools/interface/ISystProvider_tool.hh"
+#include "systematicstools/interface/ISystProviderTool.hh"
 
 #include <iomanip>
 

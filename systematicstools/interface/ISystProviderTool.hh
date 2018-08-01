@@ -20,18 +20,18 @@
 
 namespace systtools {
 
-NEW_SYSTTOOLS_EXCEPT(ISystProvider_tool_method_unimplemented);
-NEW_SYSTTOOLS_EXCEPT(ISystProvider_tool_seed_suggestion_post_configure);
-NEW_SYSTTOOLS_EXCEPT(ISystProvider_tool_noncontiguous_parameter_Ids);
-NEW_SYSTTOOLS_EXCEPT(ISystProvider_tool_metadata_not_generated);
+NEW_SYSTTOOLS_EXCEPT(ISystProviderTool_method_unimplemented);
+NEW_SYSTTOOLS_EXCEPT(ISystProviderTool_seed_suggestion_post_configure);
+NEW_SYSTTOOLS_EXCEPT(ISystProviderTool_noncontiguous_parameter_Ids);
+NEW_SYSTTOOLS_EXCEPT(ISystProviderTool_metadata_not_generated);
 NEW_SYSTTOOLS_EXCEPT(invalid_ToolConfigurationFHiCL);
 NEW_SYSTTOOLS_EXCEPT(invalid_ToolOptions);
 
 /// ABC defining the interface to systematic response syst_providers
-class ISystProvider_tool {
+class ISystProviderTool {
 public:
   /// ABC constructor required for art::make_tool
-  ISystProvider_tool(fhicl::ParameterSet const &ps);
+  ISystProviderTool(fhicl::ParameterSet const &ps);
 
   ///\brief Check if instance handles parameter
   ///
@@ -114,7 +114,7 @@ public:
 
   virtual std::string AsString() = 0;
 
-  virtual ~ISystProvider_tool(){};
+  virtual ~ISystProviderTool(){};
 
 protected:
   ///\brief Convert tool-specific configuration fhicl parameter set into generic

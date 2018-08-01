@@ -1,5 +1,7 @@
 #include "systematicstools/interface/EventResponse_product.hh"
 
+#include <cmath>
+
 namespace systtools {
 
 void ExtendEventResponse(std::unique_ptr<EventResponse> &e1,

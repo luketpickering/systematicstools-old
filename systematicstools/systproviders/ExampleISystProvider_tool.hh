@@ -1,13 +1,13 @@
 #ifndef SYSTTOOLS_SYSTPROVIDERS_EXAMPLEISYSTPROVIDER_SEEN
 #define SYSTTOOLS_SYSTPROVIDERS_EXAMPLEISYSTPROVIDER_SEEN
 
-#include "systematicstools/interface/ISystProvider_tool.hh"
+#include "systematicstools/interface/ISystProviderTool.hh"
 
 #include <memory>
 #include <random>
 #include <string>
 
-class ExampleISystProvider : public systtools::ISystProvider_tool {
+class ExampleISystProvider : public systtools::ISystProviderTool {
 public:
   explicit ExampleISystProvider(fhicl::ParameterSet const &);
 

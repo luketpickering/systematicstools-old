@@ -155,7 +155,7 @@ struct SystParamHeader {
   std::vector<double> responses;
 
   ///\brief Arbitrary string options stored in the metadata for further
-  /// `ISystProvider_tool` configuration.
+  /// `ISystProviderTool` configuration.
   std::vector<std::string> opts;
 };
 

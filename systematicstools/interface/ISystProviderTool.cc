@@ -1,8 +1,8 @@
-#include "systematicstools/interface/ISystProvider_tool.hh"
+#include "systematicstools/interface/ISystProviderTool.hh"
 
 namespace systtools {
 
-ISystProvider_tool::ISystProvider_tool(fhicl::ParameterSet const &ps)
+ISystProviderTool::ISystProviderTool(fhicl::ParameterSet const &ps)
     : fToolType{ps.get<std::string>("tool_type")}, fSeedSuggestion{0},
       fIsFullyConfigured{false}, fHaveSystMetaData{false} {
   if (!ps.has_key("instance_name")) {
@@ -14,28 +14,28 @@ ISystProvider_tool::ISystProvider_tool(fhicl::ParameterSet const &ps)
   }
 }
 
-paramId_t ISystProvider_tool::GetParameterId(std::string const &prettyName) {
+paramId_t ISystProviderTool::GetParameterId(std::string const &prettyName) {
   return GetParamId(fSystMetaData, prettyName);
 }
 
-void ISystProvider_tool::SuggestSeed(uint64_t seed) {
+void ISystProviderTool::SuggestSeed(uint64_t seed) {
   if (fHaveSystMetaData) {
-    throw ISystProvider_tool_seed_suggestion_post_configure()
+    throw ISystProviderTool_seed_suggestion_post_configure()
         << "[ERROR]: Seed was suggested to ISystProvider: "
         << std::quoted(GetFullyQualifiedName()) << " after configuration.";
   }
   fSeedSuggestion = seed;
 }
 
-void ISystProvider_tool::SuggestParameterThrows(
+void ISystProviderTool::SuggestParameterThrows(
     parameter_throws_list_t &&throws, bool Check) {
-  throw ISystProvider_tool_method_unimplemented()
+  throw ISystProviderTool_method_unimplemented()
       << "[ERROR]: Attempted to suggest parameter throws to provider tool "
       << std::quoted(GetToolType())
       << ", but it doesn't handle suggested throws.";
 }
 
-void ISystProvider_tool::ConfigureFromToolConfig(fhicl::ParameterSet const &ps,
+void ISystProviderTool::ConfigureFromToolConfig(fhicl::ParameterSet const &ps,
                                                  paramId_t firstId) {
   fSystMetaData = this->BuildSystMetaData(ps, firstId);
 
@@ -48,7 +48,7 @@ void ISystProvider_tool::ConfigureFromToolConfig(fhicl::ParameterSet const &ps,
 
   for (auto &hdr : fSystMetaData) {
     if (hdr.systParamId != firstId) {
-      throw ISystProvider_tool_noncontiguous_parameter_Ids()
+      throw ISystProviderTool_noncontiguous_parameter_Ids()
           << "[ERROR]: Provider " << std::quoted(GetFullyQualifiedName())
           << " failed to set parameter " << std::quoted(hdr.prettyName)
           << " to firstId " << firstId << " != " << hdr.systParamId;
@@ -58,12 +58,12 @@ void ISystProvider_tool::ConfigureFromToolConfig(fhicl::ParameterSet const &ps,
   fHaveSystMetaData = true;
 }
 
-SystMetaData const &ISystProvider_tool::GetSystMetaData() {
+SystMetaData const &ISystProviderTool::GetSystMetaData() {
   CheckHaveMetaData();
   return fSystMetaData;
 }
 
-fhicl::ParameterSet ISystProvider_tool::GetParameterHeadersDocument() {
+fhicl::ParameterSet ISystProviderTool::GetParameterHeadersDocument() {
 
   CheckHaveMetaData();
 
@@ -86,7 +86,7 @@ fhicl::ParameterSet ISystProvider_tool::GetParameterHeadersDocument() {
   return ParamHeadersDoc;
 }
 
-bool ISystProvider_tool::ConfigureFromParameterHeaders(
+bool ISystProviderTool::ConfigureFromParameterHeaders(
     fhicl::ParameterSet const &ps) {
   std::vector<std::string> const &ParamHeaderNames =
       ps.get<std::vector<std::string>>("parameter_headers");
@@ -109,15 +109,15 @@ bool ISystProvider_tool::ConfigureFromParameterHeaders(
   return fIsFullyConfigured;
 }
 
-void ISystProvider_tool::CheckHaveMetaData(paramId_t i) {
+void ISystProviderTool::CheckHaveMetaData(paramId_t i) {
   if (!fHaveSystMetaData) {
-    throw ISystProvider_tool_metadata_not_generated()
+    throw ISystProviderTool_metadata_not_generated()
         << "[ERROR]: Requested syst set configuration from syst provider "
         << GetFullyQualifiedName() << ", but it has not been generated yet.";
   }
   if (i != kParamUnhandled<paramId_t>) {
     if (!ParamIsHandled(i)) {
-      throw ISystProvider_tool_metadata_not_generated()
+      throw ISystProviderTool_metadata_not_generated()
           << "[ERROR]: SuggestParameterThrows Check failed. Parameter "
              "with id \""
           << i << "\", is not handled by this systematic provider: \""

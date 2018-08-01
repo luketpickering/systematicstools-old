@@ -1,4 +1,4 @@
-#include "systematicstools/interface/ISystProvider_tool.hh"
+#include "systematicstools/interface/ISystProviderTool.hh"
 #include "systematicstools/interface/SystMetaData.hh"
 
 #include "systematicstools/utility/configure_syst_providers.hh"

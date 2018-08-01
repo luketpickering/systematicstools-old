@@ -1,4 +1,4 @@
-#include "systematicstools/interface/ISystProvider_tool.hh"
+#include "systematicstools/interface/ISystProviderTool.hh"
 #include "systematicstools/utility/CovMatThrower.hh"
 #include "systematicstools/utility/append_event_response.hh"
 #include "systematicstools/utility/configure_syst_providers.hh"
@@ -52,7 +52,7 @@ struct Config {
 };
 } // namespace
 
-class CorrelatedMultisimProvider : public systtools::ISystProvider_tool {
+class CorrelatedMultisimProvider : public systtools::ISystProviderTool {
 public:
   explicit CorrelatedMultisimProvider(ParameterSet const &);
 
@@ -71,7 +71,7 @@ private:
 
 CorrelatedMultisimProvider::CorrelatedMultisimProvider(
     ParameterSet const &params)
-    : ISystProvider_tool(params), RNgine{nullptr}, RNJesus{nullptr} {}
+    : ISystProviderTool(params), RNgine{nullptr}, RNJesus{nullptr} {}
 
 std::string CorrelatedMultisimProvider::AsString() {
   return to_str(fMetaData[0]);

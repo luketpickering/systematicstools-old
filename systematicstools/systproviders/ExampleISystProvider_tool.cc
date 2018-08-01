@@ -1,4 +1,4 @@
-#include "systematicstools/systproviders/ExampleISystProvider_tool.hh"
+#include "systematicstools/systproviders/ExampleISystProviderTool.hh"
 
 #include "systematicstools/utility/printers.hh"
 #include "systematicstools/utility/string_parsers.hh"
@@ -16,7 +16,7 @@ double default_lowsigmavalue_nu = 5;
 double default_upsigmavalue_nu = 5;
 
 ExampleISystProvider::ExampleISystProvider(ParameterSet const &params)
-    : ISystProvider_tool(params), RNgine{nullptr}, RNJesus{nullptr} {}
+    : ISystProviderTool(params), RNgine{nullptr}, RNJesus{nullptr} {}
 
 double GetNormResponse(double param_val_nu) { return 1 + param_val_nu * 0.01; }
 
@@ -93,7 +93,7 @@ SystMetaData ExampleISystProvider::BuildSystMetaData(ParameterSet const &params,
       throw invalid_ToolConfigurationFHiCL()
           << "[ERROR]: Tool configuration: { " << params.to_indented_string()
           << " } did not contain enough information to configure. See "
-             "systematicstools/systproviders/ExampleISystProvider_tool.hh for minimal "
+             "systematicstools/systproviders/ExampleISystProviderTool.hh for minimal "
              "configuration.";
     }
   }

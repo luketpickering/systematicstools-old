@@ -7,7 +7,7 @@
 // from cetlib version v3_02_00.
 ////////////////////////////////////////////////////////////////////////
 
-#include "systematicstools/interface/ISystProvider_tool.hh"
+#include "systematicstools/interface/ISystProviderTool.hh"
 #include "systematicstools/utility/append_event_response.hh"
 #include "systematicstools/utility/configure_syst_providers.hh"
 #include "systematicstools/utility/md5.hh"

@@ -101,12 +101,12 @@ INSTALL(FILES ${UTIL_HDRFILES} DESTINATION include/systematicstools/utility)
 ####### Interface library
 SET(IFCE_IMPLFILES
   ${CMAKE_SOURCE_DIR}/systematicstools/interface/EventResponse_product.cc
-  ${CMAKE_SOURCE_DIR}/systematicstools/interface/ISystProvider_tool.cc
+  ${CMAKE_SOURCE_DIR}/systematicstools/interface/ISystProviderTool.cc
   ${CMAKE_SOURCE_DIR}/systematicstools/interface/SystMetaData.cc
 ${CMAKE_SOURCE_DIR}/systematicstools/interface/SystParamHeader.cc)
 SET(IFCE_HDRFILES
   ${CMAKE_SOURCE_DIR}/systematicstools/interface/EventResponse_product.hh
-  ${CMAKE_SOURCE_DIR}/systematicstools/interface/ISystProvider_tool.hh
+  ${CMAKE_SOURCE_DIR}/systematicstools/interface/ISystProviderTool.hh
   ${CMAKE_SOURCE_DIR}/systematicstools/interface/SystMetaData.hh
   ${CMAKE_SOURCE_DIR}/systematicstools/interface/SystParamHeader.hh
   ${CMAKE_SOURCE_DIR}/systematicstools/interface/types.hh)
@@ -148,10 +148,10 @@ INSTALL(FILES ${INTR_HDRFILES} DESTINATION include/systematicstools/interpreters
 ####### SystProviders library
 
 SET(SPV_IMPLFILES
-${CMAKE_SOURCE_DIR}/systematicstools/systproviders/ExampleISystProvider_tool.cc)
+${CMAKE_SOURCE_DIR}/systematicstools/systproviders/ExampleISystProviderTool.cc)
 
 SET(SPV_HDRFILES
-${CMAKE_SOURCE_DIR}/systematicstools/systproviders/ExampleISystProvider_tool.hh)
+${CMAKE_SOURCE_DIR}/systematicstools/systproviders/ExampleISystProviderTool.hh)
 
 
 if(CMAKE_BUILD_TYPE MATCHES DEBUG)

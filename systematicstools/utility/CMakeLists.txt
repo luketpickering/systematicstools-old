@@ -1,6 +1,6 @@
 art_make(LIBRARY_NAME systematicstools_utility
   LIB_LIBRARIES
-    systematicstools_interpreters
+    systematicstools_interface
     ${ART_FRAMEWORK_CORE}
     ${ART_FRAMEWORK_PRINCIPAL}
     art_Persistency_Common

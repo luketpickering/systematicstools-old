@@ -13,7 +13,7 @@
 
 namespace systtools {
 
-class ISystProvider_tool;
+class ISystProviderTool;
 
 /// Struct for holding parameter--value associations
 ///
@@ -47,10 +47,10 @@ struct ParamThrows {
 /// approaches.
 typedef std::vector<ParamThrows> parameter_throws_list_t;
 
-typedef std::vector<std::unique_ptr<ISystProvider_tool>>
+typedef std::vector<std::unique_ptr<ISystProviderTool>>
     provider_list_t;
 
-///\brief Struct for holding ISystProvider_tool unique name--handled parameter
+///\brief Struct for holding ISystProviderTool unique name--handled parameter
 /// header pairs.
 ///
 /// Gives semantic meaning to what might otherwise be implemented as a
@@ -61,7 +61,7 @@ struct ParamHeaderProviderName {
 };
 
 ///\brief  Map of parameter Identifiers to the relevant metadata and the unique
-/// name of the ISystProvider_tool responsible for generating them.
+/// name of the ISystProviderTool responsible for generating them.
 typedef std::map<paramId_t, ParamHeaderProviderName> param_header_map_t;
 
 ///\brief Gets the index of a parameter--X association with a given paramId_t
