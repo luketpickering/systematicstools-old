@@ -58,9 +58,6 @@ message (STATUS "[ROOT]: libs in use          : ${ROOT_LIBS} ")
   else()
     SET(CMAKE_LINK_FLAGS "${CMAKE_LINK_FLAGS} -L${ROOT_LIBDIR}")
   endif()
-foreach(OBJ ${NEUT_ROOT_LIBS})
-  SET(CMAKE_LINK_FLAGS " -l${OBJ}")
-endforeach()
 
 if(CMAKE_CXX_FLAGS STREQUAL "")
   SET(CMAKE_CXX_FLAGS " -DNO_ART -std=c++1y ${ROOT_CXX_FLAGS_SCRUBBED}")
@@ -170,6 +167,7 @@ INSTALL(FILES ${SPV_HDRFILES} DESTINATION include/systematicstools/systproviders
 ####### GenerateSystProvider app
 
 add_executable(GenerateSystProviderConfig ${CMAKE_SOURCE_DIR}/systematicstools/app/GenerateSystProviderConfig.cc)
+set_target_properties(GenerateSystProviderConfig PROPERTIES LINK_FLAGS ${CMAKE_LINK_FLAGS})
 
 target_link_libraries(GenerateSystProviderConfig systematicstools_interface)
 target_link_libraries(GenerateSystProviderConfig systematicstools_interpreters)
