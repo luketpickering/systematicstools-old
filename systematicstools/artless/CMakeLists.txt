@@ -175,6 +175,7 @@ target_link_libraries(GenerateSystProviderConfig systematicstools_interface)
 target_link_libraries(GenerateSystProviderConfig systematicstools_interpreters)
 target_link_libraries(GenerateSystProviderConfig systematicstools_systproviders)
 target_link_libraries(GenerateSystProviderConfig systematicstools_utility)
+target_link_libraries(GenerateSystProviderConfig ${ROOT_LIBS})
 add_dependencies(GenerateSystProviderConfig fhiclcpp-simple)
 
 INSTALL(TARGETS GenerateSystProviderConfig DESTINATION bin)
