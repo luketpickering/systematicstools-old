@@ -1,6 +1,6 @@
 <lcgdict>
-  <class name="std::map<uint,std::vector<double> >"/>
-  <class name="std::vector<map<uint,std::vector<double> > >"/>
+  <class name="systtools::ParamResponses"/>
+  <class name="systtools::event_unit_response_t"/>
   <class name="systtools::EventResponse"/>
   <class name="art::Wrapper<systtools::EventResponse>"/>
 </lcgdict>

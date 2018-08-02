@@ -16,8 +16,8 @@
 #include <chrono>
 #include <functional>
 #include <memory>
-#include <string>
 #include <random>
+#include <string>
 
 namespace systtools {
 
@@ -58,8 +58,8 @@ param_header_map_t BuildParameterHeaders(
 /// document.
 ///
 /// Some structure over the paramset is neccessary (and is described in
-/// systematicstools/doc/ToolConfiguration.md ), but the FHiCL document passed to
-/// InstanceBuild is tool sub-class-specific. This is as opposed to
+/// systematicstools/doc/ToolConfiguration.md ), but the FHiCL document passed
+/// to InstanceBuild is tool sub-class-specific. This is as opposed to
 /// ConfigureISystProvidersFromParameterHeaders which requires a rigidly
 /// structure document.
 ///
@@ -74,7 +74,9 @@ std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromToolConfig(
     std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)>
         InstanceBuilder
 #ifndef NO_ART
-    = art::make_tool<T>
+    = [](fhicl::ParameterSet const &paramset) -> std::unique_ptr<T> {
+      return art::make_tool<T>(paramset);
+    }
 #endif
     ,
     std::string const &key = "syst_providers", paramId_t syst_param_id = 0) {
@@ -136,7 +138,9 @@ std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromParameterHeaders(
     std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)>
         InstanceBuilder
 #ifndef NO_ART
-    = art::make_tool<T>
+    = [](fhicl::ParameterSet const &paramset) -> std::unique_ptr<T> {
+      return art::make_tool<T>(paramset);
+    }
 #endif
     ,
     std::string const &key = "syst_providers") {

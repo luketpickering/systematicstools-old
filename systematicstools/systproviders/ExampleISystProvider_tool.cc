@@ -95,7 +95,8 @@ SystMetaData ExampleISystProvider::BuildSystMetaData(ParameterSet const &params,
       throw invalid_ToolConfigurationFHiCL()
           << "[ERROR]: Tool configuration: { " << params.to_indented_string()
           << " } did not contain enough information to configure. See "
-             "systematicstools/systproviders/ExampleISystProviderTool.hh for minimal "
+             "systematicstools/systproviders/ExampleISystProviderTool.hh for "
+             "minimal "
              "configuration.";
     }
   }
@@ -140,24 +141,24 @@ ExampleISystProvider::GetEventResponse(art::Event &e) {
   if (!applyToAll) {
     // If we aren't applying it to all events, randomly select events to give
     // weights to.
-    if (RNJesus(RNgine) > 0) {
+    if ((*RNJesus)(*RNgine) > 0) {
       std::unique_ptr<EventResponse> er = std::make_unique<EventResponse>();
-      er->responses.push_back(std::map<uint, std::vector<double>>{});
+      er->push_back({{ParamResponses()}});
       return er;
     }
   }
 
   std::unique_ptr<EventResponse> er = std::make_unique<EventResponse>();
   if (!GetSystMetaData().front().differsEventByEvent) {
-    er->responses.push_back(std::map<uint, std::vector<double>>{
-        {GetSystMetaData().front().systParamId, std::vector<double>{}}});
+    er->push_back({{ParamResponses{GetSystMetaData().front().systParamId,
+                                 std::vector<double>{}}}});
   } else {
     std::vector<double> responses;
     for (auto psv : GetSystMetaData().front().paramVariations) {
       responses.push_back(GetResponse(psv, GetSystMetaData().front()));
     }
-    er->responses.push_back(std::map<uint, std::vector<double>>{
-        {GetSystMetaData().front().systParamId, responses}});
+    er->push_back(
+        {{ParamResponses{GetSystMetaData().front().systParamId, responses}}});
   }
   return er;
 }

@@ -159,7 +159,10 @@ int main(int argc, char const *argv[]) {
       fhicl::ParameterSet const &)>
       InstanceBuilder;
 #ifndef NO_ART
-  InstanceBuilder = art::make_tool<systtools::ISystProviderTool>
+  InstanceBuilder = [](fhicl::ParameterSet const &paramset)
+      -> std::unique_ptr<systtools::ISystProviderTool> {
+    return art::make_tool<systtools::ISystProviderTool>(paramset);
+  };
 #else
   InstanceBuilder = [](fhicl::ParameterSet const &paramset)
       -> std::unique_ptr<systtools::ISystProviderTool> {
@@ -176,9 +179,9 @@ int main(int argc, char const *argv[]) {
     }
   };
 #endif
-      systtools::provider_list_t tools =
-          systtools::ConfigureISystProvidersFromToolConfig(in_ps, InstanceBuilder,
-                                                         cliopts::fhicl_key);
+  systtools::provider_list_t tools =
+      systtools::ConfigureISystProvidersFromToolConfig(in_ps, InstanceBuilder,
+                                                       cliopts::fhicl_key);
 
   fhicl::ParameterSet out_ps;
   std::vector<std::string> providerNames;
