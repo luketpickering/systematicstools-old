@@ -46,7 +46,8 @@ execute_process (COMMAND root-config
 SET(ROOT_LIBS)
 LIST(APPEND ROOT_LIBS
   Core
-  MathCore)
+  MathCore
+  Hist)
 
 message (STATUS "[ROOT]: root-config --version: ${ROOT_VERSION} ")
 message (STATUS "[ROOT]: root-config --cflags : ${ROOT_CXX_FLAGS_SCRUBBED} ")
