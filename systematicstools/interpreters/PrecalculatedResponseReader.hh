@@ -60,7 +60,6 @@ private:
   }
 
 public:
-  const size_t kMaxIds = 50;
   PrecalculatedResponseReader() : file(nullptr), tree(nullptr) {}
 
   ///\brief Constructor for instantiating a PrecalculatedResponseReader in read
@@ -132,27 +131,19 @@ public:
   static std::unique_ptr<PrecalculatedResponseReader<Order>>
   MakeTreeWriter(param_header_map_t headers, TTree *tree) {
 
-    if (header.size() > kMaxIds) {
-      throw too_many_headers()
-          << "[ERROR]: Attempted to stash " << headers.size()
-          << " headers, but can only stash a maximum of " << kMaxIds;
-    }
-
     std::unique_ptr<PrecalculatedResponseReader<Order>> wrtr =
         std::make_unique<PrecalculatedResponseReader<Order>>();
 
     wrtr->fHeaders = headers;
 
-    wrtr->AllocateVectors(wrtr->fHeaders.size());
+    wrtr->AllocateVectors(headers.size());
     wrtr->tree = tree;
 
     wrtr->tree->Branch("nids", &wrtr->NIds, "nids/I");
-    wrtr->tree->Branch("ids", wrtr->ids.data(),
-                       "ids[" + std::to_string(kMaxIds) + "]/I");
-    wrtr->tree->Branch("responses", wrtr->coeffs_1D.data()),
-        (std::string("responses[" + std::to_string(kMaxIds) + "][") +
-         std::to_string(NCoeffs) + "]/D")
-            .c_str();
+    wrtr->tree->Branch("ids", wrtr->ids.data(), "ids[nids]/I");
+    std::string rspb = std::string("responses[nids][") +
+                       std::to_string(NCoeffs) + "]/D";
+    wrtr->tree->Branch("responses", wrtr->coeffs_1D.data(), rspb.c_str());
 
     return wrtr;
   }
@@ -166,7 +157,7 @@ public:
              "PrecalculatedResponseReader::MakeTreeWriter.";
     }
 
-    std::fill_n(coeffs_1D, kMaxIds * NCoeffs, 0);
+    std::fill_n(coeffs_1D.data(), fHeaders.size() * NCoeffs, 0);
 
     ScrubUnityEventResponses(eur);
     NIds = 0;
