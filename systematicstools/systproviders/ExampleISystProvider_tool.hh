@@ -17,7 +17,7 @@ public:
   bool SetupResponseCalculator(fhicl::ParameterSet const &);
 
 #ifndef NO_ART
-  std::unique_ptr<systtools::EventResponse> GetEventResponse(art::Event &);
+  std::unique_ptr<systtools::EventResponse> GetEventResponse(art::Event const &);
 #endif
 
   std::string AsString();

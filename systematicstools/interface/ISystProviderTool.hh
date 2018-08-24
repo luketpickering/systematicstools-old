@@ -105,7 +105,7 @@ public:
   bool ConfigureFromParameterHeaders(fhicl::ParameterSet const &ps);
 
 #ifndef NO_ART
-  virtual std::unique_ptr<EventResponse> GetEventResponse(art::Event &) = 0;
+  virtual std::unique_ptr<EventResponse> GetEventResponse(art::Event const &) = 0;
 #endif
 
   std::string const &GetToolType() const { return fToolType; }
