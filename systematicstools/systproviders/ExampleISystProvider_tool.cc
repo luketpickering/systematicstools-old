@@ -137,7 +137,7 @@ bool ExampleISystProvider::SetupResponseCalculator(
 
 #ifndef NO_ART
 std::unique_ptr<EventResponse>
-ExampleISystProvider::GetEventResponse(art::Event &e) {
+ExampleISystProvider::GetEventResponse(art::Event const &e) {
   if (!applyToAll) {
     // If we aren't applying it to all events, randomly select events to give
     // weights to.
