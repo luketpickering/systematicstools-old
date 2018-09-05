@@ -23,6 +23,7 @@ defaultqual e15
 # gdmldir -
 # fwdir   -
 #
+
 incdir product_dir include
 libdir fq_dir      lib
 bindir fq_dir      bin
