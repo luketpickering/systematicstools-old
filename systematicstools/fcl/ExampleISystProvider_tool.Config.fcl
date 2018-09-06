@@ -1,72 +1,12 @@
-ExampleGlobalWeightProvider_multisim: {
+ExampleWeightProvider_multiuniverse_centershift: {
   tool_type: "ExampleISystProvider"
-  instance_name: "multisim"
+  instance_name: "multiuniverse_centershift"
 
-  number_of_throws: 50
-}
-
-ExampleGlobalWeightProvider_multisim_applyall: {
-  tool_type: "ExampleISystProvider"
-  instance_name: "multisim_applyall"
-
-  number_of_throws: 50
-  apply_to_all: true
-}
-
-ExampleGlobalWeightProvider_multisim_smalleruncert: {
-  tool_type: "ExampleISystProvider"
-  instance_name: "multisim_smalleruncert"
-
-  use_natural_units: true
-  variation_descriptor: "{-1,1}"
-
-  number_of_throws: 50
-}
-
-ExampleGlobalWeightProvider_multisim_centreshift: {
-  tool_type: "ExampleISystProvider"
-  instance_name: "multisim_centreshift"
-
-  use_natural_units: true
-  central_value: 10
-  variation_descriptor: "{-2,2}"
-
-  number_of_throws: 50
-}
-
-ExampleGlobalWeightProvider_multisim_centreshift_uniform: {
-  tool_type: "ExampleISystProvider"
-  instance_name: "multisim_centreshift"
-
-  use_natural_units: true
-  central_value: 10
+  central_value: 1
   variation_descriptor: "{-2,2}"
   rand_dist: "uniform"
 
-  number_of_throws: 50
+  number_of_throws: 10
 }
 
-ExampleGlobalWeightProvider_spline: {
-  tool_type: "ExampleISystProvider"
-  instance_name: "global_spline"
-
-  variation_descriptor: "(-2,2,0.1)"
-}
-
-ExampleEventByEventWeightProvider_spline: {
-  tool_type: "ExampleISystProvider"
-  instance_name: "ev_spline"
-
-  variation_descriptor: "(-2,2,0.1)"
-  is_global: false
-}
-
-ExampleEventByEventLateralProvider_spline: {
-  tool_type: "ExampleISystProvider"
-  instance_name: "lateral_ev_spline"
-
-  provide_lateral: true
-
-  variation_descriptor: "(-2,2,0.1)"
-  is_global: false
-}
+syst_providers: [ExampleWeightProvider_multiuniverse_centershift]

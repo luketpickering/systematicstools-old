@@ -123,7 +123,7 @@ protected:
                                          paramId_t) = 0;
 
   ///\brief Gets any extra tool options generated during
-  /// ConfigureFromToolConfig that aren't serializable to the SystParamHeader
+  /// ConfigureFromToolConfig that aren't de-serializable to the SystParamHeader
   /// format.
   virtual fhicl::ParameterSet GetExtraToolOptions() {
     return fhicl::ParameterSet();

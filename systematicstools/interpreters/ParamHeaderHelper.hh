@@ -22,6 +22,11 @@ public:
   typedef std::map<paramId_t, TSpline3> param_tspline_map_t;
   typedef std::vector<double> discrete_variation_list_t;
 
+  ///\brief Constructor for parameter header meta-data helper class.
+  ///
+  ///\note a param_header_map_t instance can be retrieved from a parameter headers FHiCL document by systtools::BuildParameterHeaders, found in utility/ParameterAndProviderConfigurationUtility.hh
+  ///
+  /// Headers can be set/overriden after construction by ParamHeaderHelper::SetHeaders.
   ParamHeaderHelper(param_header_map_t headers = {},
                     ParamValidationAndErrorResponse chkerrs =
                         ParamValidationAndErrorResponse())

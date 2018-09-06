@@ -1,0 +1,39 @@
+BEGIN_PROLOG
+generated_systematic_provider_configuration: {
+   ExampleISystProvider_multiuniverse_centershift: {
+      ExampleSystToolsEventByEventLateral_all: {
+         centralParamValue: 1
+         isRandomlyThrown: true
+         oneSigmaShifts: [
+            -2,
+            2
+         ]
+         paramVariations: [
+            -2.42704620044744023843e-1,
+            6.72229221295147727488e-1,
+            -2.87007100337361986675e-1,
+            -5.20900882170851398101e-1,
+            4.2953405500459318489e-1,
+            -9.3603670495511770433e-1,
+            -8.81928152648805196989e-1,
+            -6.56415778953291617626e-1,
+            2.25181981400627417855,
+            2.42714699282725065999
+         ]
+         prettyName: "ExampleSystToolsEventByEventLateral_all"
+         systParamId: 0
+      }
+      instance_name: "multiuniverse_centershift"
+      parameter_headers: [
+         "ExampleSystToolsEventByEventLateral_all"
+      ]
+      tool_options: {
+         apply_to_all: true
+      }
+      tool_type: "ExampleISystProvider"
+   }
+   syst_providers: [
+      "ExampleISystProvider_multiuniverse_centershift"
+   ]
+}
+END_PROLOG

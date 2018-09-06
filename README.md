@@ -20,10 +20,12 @@
 
 ## Where to start
 
-  For a short primer on the main moving parts within `systematicstools`, see [doc/MovingParts](systematicstools/doc/MovingParts.md).
+  For a short primer on the main moving parts within `systematicstools`, see [Moving parts](systematicstools/doc/MovingParts.md).
 
-  For a description of the two levels of configuration file, see [doc/ToolConfiguration](systematicstools/doc/ToolConfiguration.md) and [doc/ParameterHeaders](systematicstools/doc/ParameterHeaders.md).
+  For a detailed description of the `ISystProviderTool`, see [ISystProviderTool](systematicstools/doc/ISystProviderTool.md) -- incomplete.
 
-  For an end-to-end example of how to configure, generate, and interpret some example event responses, see [doc/ExampleSystProvider](systematicstools/doc/ExampleSystProvider.md).
+  For a description of the two levels of configuration file, see [Tool Configuration](systematicstools/doc/ToolConfiguration.md) and [Parameter Headers](systematicstools/doc/ParameterHeaders.md).
 
-  For tips on how to begin writing a new systematic provider, see [doc/WritingAProvider](systematicstools/doc/WritingAProvider.md).
+  For an end-to-end example of how to configure, generate, and interpret some example event responses, see [ExampleSystProvider](systematicstools/doc/ExampleSystProvider.md) -- incomplete.
+
+  For tips on how to begin writing a new systematic provider, see [Writing A Provider](systematicstools/doc/WritingAProvider.md) -- incomplete.
