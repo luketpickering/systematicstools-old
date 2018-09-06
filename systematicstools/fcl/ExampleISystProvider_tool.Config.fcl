@@ -1,0 +1,12 @@
+ExampleWeightProvider_multiuniverse_centershift: {
+  tool_type: "ExampleISystProvider"
+  instance_name: "multiuniverse_centershift"
+
+  central_value: 1
+  variation_descriptor: "{-2,2}"
+  rand_dist: "uniform"
+
+  number_of_throws: 10
+}
+
+syst_providers: [ExampleWeightProvider_multiuniverse_centershift]
