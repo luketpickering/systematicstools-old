@@ -1,4 +1,4 @@
-# `systematictools`
+# `systematicstools`
 
   This package provides a framework for writing, using, and interpreting the output of modular tools for propagating systematic uncertainties within an experimental simulation tool chain.
 
@@ -20,10 +20,10 @@
 
 ## Where to start
 
-  For a short primer on the main moving parts within `systematicstools`, see [doc/MovingParts](sytematicstools/doc/MovingParts.md).
+  For a short primer on the main moving parts within `systematicstools`, see [doc/MovingParts](systematicstools/doc/MovingParts.md).
 
-  For a description of the two levels of configuration file, see [doc/ToolConfiguration](sytematicstools/doc/ToolConfiguration.md) and [doc/ParameterHeaders](sytematicstools/doc/ParameterHeaders.md).
+  For a description of the two levels of configuration file, see [doc/ToolConfiguration](systematicstools/doc/ToolConfiguration.md) and [doc/ParameterHeaders](systematicstools/doc/ParameterHeaders.md).
 
-  For an end-to-end example of how to configure, generate, and interpret some example event responses, see [doc/ExampleSystProvider](sytematicstools/doc/ExampleSystProvider.md).
+  For an end-to-end example of how to configure, generate, and interpret some example event responses, see [doc/ExampleSystProvider](systematicstools/doc/ExampleSystProvider.md).
 
-  For tips on how to begin writing a new systematic provider, see [doc/WritingAProvider](sytematicstools/doc/WritingAProvider.md).
+  For tips on how to begin writing a new systematic provider, see [doc/WritingAProvider](systematicstools/doc/WritingAProvider.md).
