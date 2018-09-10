@@ -13,8 +13,8 @@
 # ======================================================================
 
 
-# use cmake 2.8 or later
-cmake_minimum_required (VERSION 2.8)
+# use cmake 3.3 or later
+cmake_minimum_required (VERSION 3.3)
 
 project(systematicstools)
 
@@ -30,9 +30,9 @@ IF (NOT CETBUILDTOOLS_VERSION)
     MESSAGE (FATAL_ERROR "ERROR: setup cetbuildtools to get the cmake modules")
 ENDIF()
 
-set(CMAKE_MODULE_PATH $ENV{ART_DIR}/Modules
-		      $ENV{CETBUILDTOOLS_DIR}/Modules
-		      ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH $ENV{CANVAS_ROOT_IO_DIR}/Modules
+                      $ENV{CETBUILDTOOLS_DIR}/Modules
+                      ${CMAKE_MODULE_PATH})
 
 include(CetCMakeEnv)
 cet_cmake_env()
@@ -40,8 +40,7 @@ cet_cmake_env()
 cet_set_compiler_flags(DIAGS CAUTIOUS
   WERROR
   NO_UNDEFINED
-  EXTRA_FLAGS -pedantic
-  EXTRA_CXX_FLAGS -std=c++17 )
+  EXTRA_FLAGS -pedantic )
 
 cet_report_compiler_flags()
 
