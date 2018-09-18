@@ -100,10 +100,10 @@ void HandleOpts(int argc, char const *argv[]) {
   }
 }
 
-fhicl::ParameterSet ReadParameterSet(char const *argv[]) {
-  char const *ev = nullptr;
+fhicl::ParameterSet ReadParameterSet(char const *[]) {
 
 #ifndef NO_ART
+  char const *ev = nullptr;
   if (cliopts::lookup_policy != 0) {
     ev = getenv(cliopts::envvar.c_str());
     if (!ev) {

@@ -28,7 +28,7 @@ void ISystProviderTool::SuggestSeed(uint64_t seed) {
 }
 
 void ISystProviderTool::SuggestParameterThrows(
-    parameter_throws_list_t &&throws, bool Check) {
+    parameter_throws_list_t &&, bool) {
   throw ISystProviderTool_method_unimplemented()
       << "[ERROR]: Attempted to suggest parameter throws to provider tool "
       << std::quoted(GetToolType())

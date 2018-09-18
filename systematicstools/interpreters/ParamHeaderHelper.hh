@@ -30,11 +30,11 @@ public:
   ParamHeaderHelper(param_header_map_t headers = {},
                     ParamValidationAndErrorResponse chkerrs =
                         ParamValidationAndErrorResponse())
-      : fHeaders(headers), fChkErr() {}
+      : fHeaders(headers), fChkErr(chkerrs) {}
   ParamHeaderHelper(param_header_map_t &&headers,
                     ParamValidationAndErrorResponse chkerrs =
                         ParamValidationAndErrorResponse())
-      : fHeaders(std::move(headers)), fChkErr() {}
+      : fHeaders(std::move(headers)), fChkErr(chkerrs) {}
 
   void SetHeaders(param_header_map_t const &headers) { fHeaders = headers; }
   void SetHeaders(param_header_map_t &&headers) {

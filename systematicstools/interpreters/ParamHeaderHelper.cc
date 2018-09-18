@@ -461,7 +461,7 @@ TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
 }
 TSpline3 ParamHeaderHelper::GetSpline(paramId_t i,
                                       event_unit_response_t const &eur,
-                                      SystParamHeader const &hdr) const {
+                                      SystParamHeader const &) const {
 
   if (fChkErr.fCare <= ParamValidationAndErrorResponse::kFrog) {
     if (!ContainterHasParam(eur, i)) {
