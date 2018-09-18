@@ -73,6 +73,7 @@ public:
   virtual fhicl::ParameterSet GetExampleToolConfiguration() {
     fhicl::ParameterSet ex_cfg;
     ex_cfg.put<std::string>("tool_type", GetToolType());
+    return ex_cfg;
   }
 
 

@@ -61,9 +61,9 @@ message (STATUS "[ROOT]: libs in use          : ${ROOT_LIBS} ")
   endif()
 
 if(CMAKE_CXX_FLAGS STREQUAL "")
-  SET(CMAKE_CXX_FLAGS " -DNO_ART -std=c++1y ${ROOT_CXX_FLAGS_SCRUBBED}")
+  SET(CMAKE_CXX_FLAGS " -DNO_ART -std=c++1y -Wall -Wextra -Werror ${ROOT_CXX_FLAGS_SCRUBBED}")
 else()
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_ART -std=c++1y ${ROOT_CXX_FLAGS_SCRUBBED}")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_ART -std=c++1y -Wall -Wextra -Werror ${ROOT_CXX_FLAGS_SCRUBBED}")
 endif()
 
 include_directories(${CMAKE_SOURCE_DIR})
