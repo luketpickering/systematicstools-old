@@ -11,6 +11,10 @@ struct exception {};
 
 #include "fhiclcpp/ParameterSet.h"
 
+#ifndef NO_ART
+#include "art/Utilities/make_tool.h"
+#endif
+
 #include <iomanip>
 #include <iostream>
 
