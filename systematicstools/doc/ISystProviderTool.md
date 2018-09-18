@@ -1,3 +1,0 @@
-# `ISystProviderTool`
-
-## Interface

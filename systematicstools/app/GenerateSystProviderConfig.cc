@@ -175,7 +175,7 @@ int main(int argc, char const *argv[]) {
     if (tool_type == "ExampleISystProvider") {
       return std::make_unique<ExampleISystProvider>(paramset);
     } else {
-      std::cerr << "[ERROR]: When build artless can only instantiate "
+      std::cerr << "[ERROR]: When built artless can only instantiate "
                    "ExampleISystProvider instances. A "
                 << std::quoted(tool_type) << " instance was requested."
                 << std::endl;

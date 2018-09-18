@@ -69,6 +69,13 @@ public:
   virtual void SuggestParameterThrows(parameter_throws_list_t &&throws,
                                       bool Check = false);
 
+  ///\brief Sub-classes may override this method to provide an example Tool Configuration FHiCL document.
+  virtual fhicl::ParameterSet GetExampleToolConfiguration() {
+    fhicl::ParameterSet ex_cfg;
+    ex_cfg.put<std::string>("tool_type", GetToolType());
+  }
+
+
   ///\brief Configure an ISystProvider instance with tool-specific FHiCL
   ///
   /// Takes the tool-specific FHiCL configuration and the paramId_t of the first
@@ -88,7 +95,7 @@ public:
   SystMetaData const &GetSystMetaData();
 
   ///\brief Build the Parameter Headers FHiCL document that can be used to
-  /// re-configure an instances of this tool via ConfigureFromParameterHeaders
+  /// re-configure an instance of this tool via ConfigureFromParameterHeaders
   ///
   /// If a sub-class requires extra configuration options they should be exposed
   /// through GetExtraToolOptions
@@ -112,7 +119,10 @@ public:
   std::string const &GetFullyQualifiedName() const { return fFQName; }
   std::string const &GetInstanceName() const { return fInstanceName; }
 
-  virtual std::string AsString() = 0;
+  ///\brief Sub-classes may override this method to provide string-representations of their state.
+  virtual std::string AsString() {
+    return "";
+  }
 
   virtual ~ISystProviderTool(){};
 

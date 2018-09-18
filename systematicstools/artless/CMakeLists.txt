@@ -170,14 +170,28 @@ INSTALL(FILES ${SPV_HDRFILES} DESTINATION include/systematicstools/systproviders
 add_executable(GenerateSystProviderConfig ${CMAKE_SOURCE_DIR}/systematicstools/app/GenerateSystProviderConfig.cc)
 set_target_properties(GenerateSystProviderConfig PROPERTIES LINK_FLAGS ${CMAKE_LINK_FLAGS})
 
+target_link_libraries(GenerateSystProviderConfig systematicstools_systproviders)
 target_link_libraries(GenerateSystProviderConfig systematicstools_interface)
 target_link_libraries(GenerateSystProviderConfig systematicstools_interpreters)
-target_link_libraries(GenerateSystProviderConfig systematicstools_systproviders)
 target_link_libraries(GenerateSystProviderConfig systematicstools_utility)
 target_link_libraries(GenerateSystProviderConfig ${ROOT_LIBS})
 add_dependencies(GenerateSystProviderConfig fhiclcpp-simple)
 
 INSTALL(TARGETS GenerateSystProviderConfig DESTINATION bin)
+
+####### FindISystProvider app
+
+add_executable(FindISystProvider ${CMAKE_SOURCE_DIR}/systematicstools/app/FindISystProvider.cc)
+set_target_properties(FindISystProvider PROPERTIES LINK_FLAGS ${CMAKE_LINK_FLAGS})
+
+target_link_libraries(FindISystProvider systematicstools_systproviders)
+target_link_libraries(FindISystProvider systematicstools_interface)
+target_link_libraries(FindISystProvider systematicstools_interpreters)
+target_link_libraries(FindISystProvider systematicstools_utility)
+target_link_libraries(FindISystProvider ${ROOT_LIBS})
+add_dependencies(FindISystProvider fhiclcpp-simple)
+
+INSTALL(TARGETS FindISystProvider DESTINATION bin)
 
 ####### fhicl files
 file(GLOB FCL ${CMAKE_SOURCE_DIR}/systematicstools/fcl/*.fcl)

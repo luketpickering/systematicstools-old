@@ -14,3 +14,10 @@ cet_make_exec(CheckSystProviderConfigmd5
     cetlib
     cetlib_except
   )
+
+cet_make_exec(FindISystProvider
+  LIBRARIES
+    ${FHICLCPP}
+    cetlib
+    cetlib_except
+  )
