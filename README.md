@@ -24,6 +24,6 @@
 
   For a description of the two levels of configuration file, with examples, see [Tool Configuration](systematicstools/doc/ToolConfiguration.md) and [Parameter Headers](systematicstools/doc/ParameterHeaders.md).
 
-  For tips on how to begin writing a new systematic provider, and a short description of the ISystProvider abstract base class, see [Writing A Provider](systematicstools/doc/WritingAProvider.md).
+  For tips on how to begin writing a new systematic provider, and a short description of the ISystProviderTool abstract base class, see [Writing A Provider](systematicstools/doc/WritingAProvider.md).
 
-  For an example, and recommended documentation structure, of an ISystProvider implementation, see [ExampleSystProvider](systematicstools/doc/ExampleSystProvider.md).
+  For an example, and recommended documentation structure, of an ISystProviderTool implementation, see [ExampleSystProvider](systematicstools/doc/ExampleSystProvider.md).
