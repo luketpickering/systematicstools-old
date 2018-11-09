@@ -100,7 +100,7 @@ void HandleOpts(int argc, char const *argv[]) {
   }
 }
 
-fhicl::ParameterSet ReadParameterSet(char const *[]) {
+fhicl::ParameterSet ReadParameterSet(char const *argv[]) {
 
 #ifndef NO_ART
   char const *ev = nullptr;
@@ -144,6 +144,7 @@ fhicl::ParameterSet ReadParameterSet(char const *[]) {
   }
   fhicl::make_ParameterSet(cliopts::fclname, *fm, ps);
 #else
+  (void)argv;
   ps = fhicl::make_ParameterSet(cliopts::fclname);
 #endif
   return ps;
