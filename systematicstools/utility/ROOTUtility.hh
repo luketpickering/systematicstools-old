@@ -7,9 +7,13 @@
 #include "TF1.h"
 #include "TFile.h"
 #include "TGraph.h"
+#include "TH1.h"
+#include "TH2.h"
+#include "TH3.h"
 
-#include <string>
+#include <limits>
 #include <memory>
+#include <string>
 
 NEW_SYSTTOOLS_EXCEPT(invalid_tfile);
 NEW_SYSTTOOLS_EXCEPT(invalid_hist_name);
@@ -54,11 +58,11 @@ inline TH *GetHistogram(std::string const &fname, std::string const &hname) {
   return h;
 }
 
-inline bool IsFlowBin(TAxis *ax, Int_t bin_it) {
-  return ((bin_it == 0) || (bin_it == (ax->GetNbins() + 1)));
+inline bool IsFlowBin(TAxis const *ax, Int_t bin_it) {
+  return ((bin_it <= 0) || (bin_it >= (ax->GetNbins() + 1)));
 }
 
-inline bool IsInHistogramRange(TAxis *ax, double v) {
+inline bool IsInHistogramRange(TAxis const *ax, double v) {
   Int_t bin_it = ax->FindFixBin(v);
   return !IsFlowBin(ax, bin_it);
 }
@@ -107,5 +111,91 @@ GetPolyFitCoeffs(std::vector<double> const &xvals,
 
   return rtn;
 }
+
+static Int_t const kBinOutsideRange = std::numeric_limits<Int_t>::max();
+
+template <size_t N> struct THType {};
+template <> struct THType<1> {
+  typedef TH1 type;
+  static size_t GetNbins(type const *H, bool inc_flow = false) {
+    return inc_flow ? (H->GetNbinsX() + 2) : H->GetNbinsX();
+  }
+  static size_t GetNbins(std::unique_ptr<type> const &H,
+                         bool inc_flow = false) {
+    return GetNbins(H.get(), inc_flow);
+  }
+  static bool IsFlowBin(type const *H, Int_t bin) {
+    return ::IsFlowBin(H->GetXaxis(), bin);
+  }
+  static bool IsFlowBin(std::unique_ptr<type> const &H, Int_t bin) {
+    return IsFlowBin(H.get(), bin);
+  }
+  static Int_t GetBin(type const *H, std::array<double, 1> const &vals) {
+    Int_t bin = H->GetXaxis()->FindFixBin(vals[0]);
+    if (IsFlowBin(H, bin)) {
+      return kBinOutsideRange;
+    }
+    return bin;
+  }
+};
+template <> struct THType<2> {
+  typedef TH2 type;
+  static size_t GetNbins(type const *H, bool inc_flow = false) {
+    return inc_flow ? ((H->GetNbinsX() + 2) * (H->GetNbinsY() + 2))
+                    : (H->GetNbinsX() * H->GetNbinsY());
+  }
+  static size_t GetNbins(std::unique_ptr<type> const &H,
+                         bool inc_flow = false) {
+    return GetNbins(H.get(), inc_flow);
+  }
+  static bool IsFlowBin(type const *H, Int_t bin) {
+    Int_t xbin, ybin, zbin;
+    H->GetBinXYZ(bin, xbin, ybin, zbin);
+    return ::IsFlowBin(H->GetXaxis(), xbin) || ::IsFlowBin(H->GetYaxis(), ybin);
+  }
+  static bool IsFlowBin(std::unique_ptr<type> const &H, Int_t bin) {
+    return IsFlowBin(H.get(), bin);
+  }
+  static Int_t GetBin(type const *H, std::array<double, 2> const &vals) {
+    Int_t xbin = H->GetXaxis()->FindFixBin(vals[0]);
+    Int_t ybin = H->GetYaxis()->FindFixBin(vals[1]);
+    Int_t gbin = H->GetBin(xbin, ybin);
+    if (IsFlowBin(H, gbin)) {
+      return kBinOutsideRange;
+    }
+    return gbin;
+  }
+};
+template <> struct THType<3> {
+  typedef TH3 type;
+  static size_t GetNbins(type const *H, bool inc_flow = false) {
+    return inc_flow ? ((H->GetNbinsX() + 2) * (H->GetNbinsY() + 2) *
+                       (H->GetNbinsZ() + 2))
+                    : (H->GetNbinsX() * H->GetNbinsY() * H->GetNbinsZ());
+  }
+  static size_t GetNbins(std::unique_ptr<type> const &H,
+                         bool inc_flow = false) {
+    return GetNbins(H.get(), inc_flow);
+  }
+  static bool IsFlowBin(type const *H, Int_t bin) {
+    Int_t xbin, ybin, zbin;
+    H->GetBinXYZ(bin, xbin, ybin, zbin);
+    return ::IsFlowBin(H->GetXaxis(), xbin) ||
+           ::IsFlowBin(H->GetYaxis(), ybin) || ::IsFlowBin(H->GetZaxis(), zbin);
+  }
+  static bool IsFlowBin(std::unique_ptr<type> const &H, Int_t bin) {
+    return IsFlowBin(H.get(), bin);
+  }
+  static Int_t GetBin(type const *H, std::array<double, 3> const &vals) {
+    Int_t xbin = H->GetXaxis()->FindFixBin(vals[0]);
+    Int_t ybin = H->GetYaxis()->FindFixBin(vals[1]);
+    Int_t zbin = H->GetYaxis()->FindFixBin(vals[2]);
+    Int_t gbin = H->GetBin(xbin, ybin, zbin);
+    if (IsFlowBin(H, gbin)) {
+      return kBinOutsideRange;
+    }
+    return gbin;
+  }
+};
 
 #endif
