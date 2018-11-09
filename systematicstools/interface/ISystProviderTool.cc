@@ -121,13 +121,6 @@ ISystProviderTool::GetEventVariationAndCVResponse(art::Event const &evt) {
     // Get CV resp
     SystParamHeader const &hdr = GetParam(GetSystMetaData(), pr.pid);
 
-    if (pr.responses.size() != hdr.paramVariations.size()) {
-      throw invalid_response()
-          << "[ERROR]: Parameter: " << hdr.prettyName << ", with "
-          << hdr.paramVariations.size() << " parameter variations, returned "
-          << pr.responses.size() << " responses.";
-    }
-
     double CVResp = hdr.isWeightSystematicVariation ? 1 : 0;
     size_t NVars = hdr.paramVariations.size();
 
