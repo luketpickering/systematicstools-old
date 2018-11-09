@@ -22,7 +22,6 @@ struct ParamResponses {
   paramId_t pid;
   std::vector<double> responses;
 };
-
 typedef std::vector<ParamResponses> event_unit_response_t;
 
 ///\brief The systematic parameter responses calculated for an ART event.
@@ -33,6 +32,15 @@ typedef std::vector<ParamResponses> event_unit_response_t;
 ///\note Use systtools::SystParamHeader and systtools::ParamHeaderHelper for
 /// response interpretation tools
 typedef std::vector<event_unit_response_t> EventResponse;
+
+struct VarAndCVResponse {
+  systtools::paramId_t pid;
+  double CV_response;
+  std::vector<double> responses;
+};
+typedef std::vector<VarAndCVResponse> event_unit_response_w_cv_t;
+
+typedef std::vector<event_unit_response_w_cv_t> EventAndCVResponse;
 
 ///\brief Exception raised when attempting to merge two event responses with
 /// differing number of event units.
