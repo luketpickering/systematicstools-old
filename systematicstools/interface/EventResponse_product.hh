@@ -52,8 +52,33 @@ NEW_SYSTTOOLS_EXCEPT(incompatible_number_of_event_units);
 /// incompatible_number_of_event_units exception will be raised.
 ///
 /// The event_unit_response_ts from e2 are moved into e1.
-void ExtendEventResponse(std::unique_ptr<EventResponse> &e1,
-                         std::unique_ptr<EventResponse> &&e2);
+template <class ER>
+void ExtendEventResponse(std::unique_ptr<ER> &e1,
+                         std::unique_ptr<ER> &&e2){
+
+  if (!e2) {
+    return;
+  }
+
+  if (e1->size() != e2->size()) {
+    throw incompatible_number_of_event_units()
+        << "[ERROR]: The number of responses from two systematic "
+           "providers differs, Provider 1 has "
+        << e1->size() << ", and 2 has " << e2->size();
+    throw;
+  }
+  size_t NResponses = e1->size();
+  for (size_t eur_it = 0; eur_it < NResponses; ++eur_it) {
+    for (ParamResponses &resps : e2->at(eur_it)) {
+      if (ContainterHasParam(e1->at(eur_it), resps.pid)) {
+        throw systParamId_collision()
+            << "[ERROR]: Failed to insert response of parameter ID = "
+            << resps.pid << ", it already exists.";
+      }
+      e1->at(eur_it).push_back(std::move(resps));
+    }
+  }
+}
 
 /// \brief Removes systtools::ParamResponses from event_unit_response_ts
 /// contained within an EventResponse that contain only unity responses.

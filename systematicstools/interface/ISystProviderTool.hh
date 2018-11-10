@@ -70,7 +70,7 @@ public:
                                       bool Check = false);
 
   ///\brief Sub-classes may override this method to provide an example Tool
-  ///Configuration FHiCL document.
+  /// Configuration FHiCL document.
   virtual fhicl::ParameterSet GetExampleToolConfiguration() {
     fhicl::ParameterSet ex_cfg;
     ex_cfg.put<std::string>("tool_type", GetToolType());
@@ -115,7 +115,8 @@ public:
 #ifndef NO_ART
   virtual std::unique_ptr<EventResponse>
   GetEventResponse(art::Event const &) = 0;
-  event_unit_response_w_cv_t GetEventVariationAndCVResponse(art::Event const &);
+  std::unique_ptr<EventAndCVResponse>
+  GetEventVariationAndCVResponse(art::Event const &);
 #endif
 
   std::string const &GetToolType() const { return fToolType; }
@@ -123,7 +124,7 @@ public:
   std::string const &GetInstanceName() const { return fInstanceName; }
 
   ///\brief Sub-classes may override this method to provide
-  ///string-representations of their state.
+  /// string-representations of their state.
   virtual std::string AsString() { return ""; }
 
   virtual ~ISystProviderTool(){};
@@ -154,7 +155,7 @@ protected:
   virtual bool SetupResponseCalculator(fhicl::ParameterSet const &) = 0;
 
   ///\brief Checks if internal parameter metadata has been generated or loaded
-  ///from a Parameter Headers file.
+  /// from a Parameter Headers file.
   ///
   /// If i is passed then it only checks for that specific paramId_t.
   ///

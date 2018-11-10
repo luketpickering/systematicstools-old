@@ -110,43 +110,48 @@ bool ISystProviderTool::ConfigureFromParameterHeaders(
 }
 
 #ifndef NO_ART
-event_unit_response_w_cv_t
+std::unique_ptr<EventAndCVResponse>
 ISystProviderTool::GetEventVariationAndCVResponse(art::Event const &evt) {
-  event_unit_response_w_cv_t responseandCV;
+  std::unique_ptr<EventAndCVResponse> responseandCV =
+      std::make_unique<EventAndCVResponse>();
 
-  event_unit_response_t prov_response = GetEventResponse(evt);
+  std::unique_ptr<EventResponse> prov_response = GetEventResponse(evt);
 
-  // Foreach param
-  for (ParamResponses &pr : prov_response) {
-    // Get CV resp
-    SystParamHeader const &hdr = GetParam(GetSystMetaData(), pr.pid);
+  for (event_unit_response_t eur : (*prov_response)) {
+    // Foreach param
+    event_unit_response_w_cv_t eur_cv;
+    for (ParamResponses &pr : prov_response) {
+      // Get CV resp
+      SystParamHeader const &hdr = GetParam(GetSystMetaData(), pr.pid);
 
-    double CVResp = hdr.isWeightSystematicVariation ? 1 : 0;
-    size_t NVars = hdr.paramVariations.size();
+      double CVResp = hdr.isWeightSystematicVariation ? 1 : 0;
+      size_t NVars = hdr.paramVariations.size();
 
-    double cv_param_val = 0;
-    if (hdr.centralParamValue != kDefaultDouble) {
-      cv_param_val = hdr.centralParamValue;
-    }
-    for (size_t idx = 0; idx < NVars; ++idx) {
-      if (fabs(cv_param_val - hdr.paramVariations[idx]) <=
-          std::numeric_limits<float>::epsilon()) {
-        CVResp = pr.responses[idx];
-        break;
+      double cv_param_val = 0;
+      if (hdr.centralParamValue != kDefaultDouble) {
+        cv_param_val = hdr.centralParamValue;
       }
-    }
-    // if we didn't find it, the CVResp stays as 1/0 depending on whether it
-    // is a weight or not.
-    for (size_t idx = 0; idx < NVars; ++idx) {
-      if (hdr.isWeightSystematicVariation) {
-        pr.responses[idx] /= CVResp;
-      } else {
-        pr.responses[idx] -= CVResp;
+      for (size_t idx = 0; idx < NVars; ++idx) {
+        if (fabs(cv_param_val - hdr.paramVariations[idx]) <=
+            std::numeric_limits<float>::epsilon()) {
+          CVResp = pr.responses[idx];
+          break;
+        }
       }
-    }
+      // if we didn't find it, the CVResp stays as 1/0 depending on whether it
+      // is a weight or not.
+      for (size_t idx = 0; idx < NVars; ++idx) {
+        if (hdr.isWeightSystematicVariation) {
+          pr.responses[idx] /= CVResp;
+        } else {
+          pr.responses[idx] -= CVResp;
+        }
+      }
 
-    responseandCV.push_back({pr.pid, CVResp, pr.responses});
-  } // end for parameter response
+      eur_cv.push_back({pr.pid, CVResp, std::move(pr.responses)});
+    } // end for each parameter response
+    responseandCV.push_back(std::move(eur_cv));
+  } // end for each event unit
 
   return responseandCV;
 }
