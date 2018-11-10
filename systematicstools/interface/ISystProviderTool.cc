@@ -120,7 +120,7 @@ ISystProviderTool::GetEventVariationAndCVResponse(art::Event const &evt) {
   for (event_unit_response_t eur : (*prov_response)) {
     // Foreach param
     event_unit_response_w_cv_t eur_cv;
-    for (ParamResponses &pr : prov_response) {
+    for (ParamResponses &pr : eur) {
       // Get CV resp
       SystParamHeader const &hdr = GetParam(GetSystMetaData(), pr.pid);
 
@@ -150,7 +150,7 @@ ISystProviderTool::GetEventVariationAndCVResponse(art::Event const &evt) {
 
       eur_cv.push_back({pr.pid, CVResp, std::move(pr.responses)});
     } // end for each parameter response
-    responseandCV.push_back(std::move(eur_cv));
+    responseandCV->push_back(std::move(eur_cv));
   } // end for each event unit
 
   return responseandCV;

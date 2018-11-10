@@ -56,6 +56,12 @@ include(BuildPlugins)
 # ADD SOURCE CODE SUBDIRECTORIES HERE
 add_subdirectory(systematicstools)
 
+SET(SYSTTOOLS_LIBS
+  systematicstools_interface
+  systematicstools_interpreters
+  systematicstools_utility PARENT_SCOPE)
+
+
 # tests
 add_subdirectory(test)
 
