@@ -17,6 +17,17 @@ cet_make_exec(CheckSystProviderConfigmd5
     cetlib_except
   )
 
+cet_make_exec(DumpSystToolsParameters
+  LIBRARIES
+    systematicstools_utility
+    systematicstools_interface
+    ${FHICLCPP}
+    art_Utilities
+    cetlib
+    cetlib_except
+  )
+
+
 cet_make_exec(FindISystProvider
   LIBRARIES
     ${FHICLCPP}

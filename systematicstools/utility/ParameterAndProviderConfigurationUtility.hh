@@ -25,8 +25,8 @@ namespace systtools {
 /// qualified (tool_name + instance_name) names.
 NEW_SYSTTOOLS_EXCEPT(ISystProvider_FQName_collision);
 
-///\brief Builds map of SystProvider instances and handled parameters from a
-/// ParameterHeaders FHiCL document.
+///\brief Builds map of SystProvider instance names and handled parameters from
+/// a ParameterHeaders FHiCL document.
 ///
 /// Used by standalone interpreters to read response interpretation metadata
 /// from input FHiCL
