@@ -1,5 +1,4 @@
 SET(SYSTTOOLS_LIBS 
-  systematicstools_systproviders
   systematicstools_utility
   systematicstools_interface)
 
