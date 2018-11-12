@@ -1,37 +1,22 @@
-cet_make_exec(GenerateSystProviderConfig
+SET(SYSTTOOLS_LIBS 
+  systematicstools_systproviders
+  systematicstools_utility
+  systematicstools_interface)
+
+SET(SYSTTOOLS_APPS
+  GenerateSystProviderConfig
+  CheckSystProviderConfigmd5
+  DumpSystToolsParameters
+  FindISystProvider)
+
+foreach(APPNAME ${SYSTTOOLS_APPS})
+  cet_make_exec(${APPNAME}
+  SOURCE ${APPNAME}.cc
   LIBRARIES
-    systematicstools_utility
-    systematicstools_interpreters
+    ${SYSTTOOLS_LIBS}
     ${FHICLCPP}
     art_Utilities
     cetlib
     cetlib_except
   )
-
-cet_make_exec(CheckSystProviderConfigmd5
-  LIBRARIES
-    systematicstools_utility
-    ${FHICLCPP}
-    art_Utilities
-    cetlib
-    cetlib_except
-  )
-
-cet_make_exec(DumpSystToolsParameters
-  LIBRARIES
-    systematicstools_utility
-    systematicstools_interface
-    ${FHICLCPP}
-    art_Utilities
-    cetlib
-    cetlib_except
-  )
-
-
-cet_make_exec(FindISystProvider
-  LIBRARIES
-    ${FHICLCPP}
-    art_Utilities
-    cetlib
-    cetlib_except
-  )
+endforeach()
