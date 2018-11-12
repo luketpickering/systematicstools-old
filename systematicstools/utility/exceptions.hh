@@ -5,6 +5,17 @@
 #include <stdexcept>
 #include <string>
 
+#ifndef NO_ART
+#include "cetlib/exception.h"
+
+#define NEW_SYSTTOOLS_EXCEPT(EXCEPT_NAME)                                      \
+  struct EXCEPT_NAME : public cet::exception {                                 \
+    EXCEPT_NAME(std::string const &mesg = "")                                  \
+        : cet::exception(##EXCEPT_NAME, mesg) {}                               \
+  }
+
+#else
+
 namespace systtools {
 struct systematicstools_except : public std::exception {
   std::stringstream msgstrm;
@@ -36,6 +47,8 @@ struct systematicstools_except : public std::exception {
       return (*this);                                                          \
     }                                                                          \
   }
+
+#endif
 
 namespace systtools {
 
