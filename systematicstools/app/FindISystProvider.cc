@@ -17,6 +17,7 @@ struct exception {};
 
 #include <iomanip>
 #include <iostream>
+#include <functional>
 
 namespace cliopts {
 std::string provider_name = "";
