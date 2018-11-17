@@ -27,7 +27,7 @@ std::string fclname = "";
 std::string outputfile = "";
 std::string envvar = "FHICL_FILE_PATH";
 std::string fhicl_key = "syst_providers";
-bool WrapWithPROLOG = false;
+bool WrapWithPROLOG = true;
 #ifndef NO_ART
 int lookup_policy = 1;
 #endif
@@ -50,7 +50,6 @@ void SayUsage(char const *argv[]) {
                "\t-o <output.fcl>  : fhicl file to write, stdout by default.\n"
                "\t-k <list key>    : fhicl key to look for list of providers,\n"
                "\t                   \"syst_providers\" by default.\n"
-               "\t-P               : Wrap output file in {BEGIN,END}_PROLOG."
             << std::endl;
 }
 
