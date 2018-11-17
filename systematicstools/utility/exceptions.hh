@@ -6,12 +6,12 @@
 #include <string>
 
 #ifndef NO_ART
-#include "cetlib/exception.h"
+#include "cetlib_except/exception.h"
 
 #define NEW_SYSTTOOLS_EXCEPT(EXCEPT_NAME)                                      \
   struct EXCEPT_NAME : public cet::exception {                                 \
     EXCEPT_NAME(std::string const &mesg = "")                                  \
-        : cet::exception(##EXCEPT_NAME, mesg) {}                               \
+        : cet::exception(#EXCEPT_NAME, mesg) {}                               \
   }
 
 #else

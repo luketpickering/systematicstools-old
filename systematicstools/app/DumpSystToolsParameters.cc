@@ -1,6 +1,7 @@
 #include "systematicstools/interface/types.hh"
 
 #include "systematicstools/utility/ParameterAndProviderConfigurationUtility.hh"
+#include "systematicstools/utility/string_parsers.hh"
 
 #include "fhiclcpp/ParameterSet.h"
 #include "fhiclcpp/make_ParameterSet.h"
@@ -106,7 +107,7 @@ void HandleOpts(int argc, char const *argv[]) {
   }
 }
 
-fhicl::ParameterSet ReadParameterSet(char const *[]) {
+fhicl::ParameterSet ReadParameterSet(char const * argv[]) {
 
 #ifndef NO_ART
   char const *ev = nullptr;
@@ -150,6 +151,7 @@ fhicl::ParameterSet ReadParameterSet(char const *[]) {
   }
   fhicl::make_ParameterSet(cliopts::fclname, *fm, ps);
 #else
+  (void)argv;
   ps = fhicl::make_ParameterSet(cliopts::fclname);
 #endif
   return ps;
