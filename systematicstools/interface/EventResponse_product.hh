@@ -46,6 +46,21 @@ typedef std::vector<event_unit_response_w_cv_t> EventAndCVResponse;
 /// differing number of event units.
 NEW_SYSTTOOLS_EXCEPT(incompatible_number_of_event_units);
 
+///\brief Extends one EventUnitResponse with the parameter responses of another.
+///
+/// The parameter responses from e2 are moved into e1.
+template <class EUR> void ExtendEventUnitResponse(EUR &e1, EUR &&e2) {
+
+  for (typename EUR::value_type &resps : e2) {
+    if (ContainterHasParam(e1, resps.pid)) {
+      throw systParamId_collision()
+          << "[ERROR]: Failed to insert response of parameter ID = "
+          << resps.pid << ", it already exists.";
+    }
+    e1.push_back(std::move(resps));
+  }
+}
+
 ///\brief Extends one EventResponse with the event_unit_response_ts of another.
 ///
 /// The sizes of each EventResponse must be the same or a
@@ -53,10 +68,9 @@ NEW_SYSTTOOLS_EXCEPT(incompatible_number_of_event_units);
 ///
 /// The event_unit_response_ts from e2 are moved into e1.
 template <class ER>
-void ExtendEventResponse(std::unique_ptr<ER> &e1,
-                         std::unique_ptr<ER> &&e2){
+void ExtendEventResponse(std::unique_ptr<ER> &e1, std::unique_ptr<ER> &&e2) {
 
-  if (!e2) {
+  if (!e1 || !e2) {
     return;
   }
 
@@ -69,14 +83,7 @@ void ExtendEventResponse(std::unique_ptr<ER> &e1,
   }
   size_t NResponses = e1->size();
   for (size_t eur_it = 0; eur_it < NResponses; ++eur_it) {
-    for (ParamResponses &resps : e2->at(eur_it)) {
-      if (ContainterHasParam(e1->at(eur_it), resps.pid)) {
-        throw systParamId_collision()
-            << "[ERROR]: Failed to insert response of parameter ID = "
-            << resps.pid << ", it already exists.";
-      }
-      e1->at(eur_it).push_back(std::move(resps));
-    }
+    ExtendEventUnitResponse(e1->at(eur_it), std::move(e2->at(eur_it)));
   }
 }
 
