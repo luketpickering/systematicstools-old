@@ -1,15 +1,7 @@
-#include "systematicstools/interface/ISystProviderTool.hh"
-#include "systematicstools/interface/SystMetaData.hh"
 #include "systematicstools/interface/types.hh"
 
 #include "systematicstools/utility/ParameterAndProviderConfigurationUtility.hh"
-#include "systematicstools/utility/md5.hh"
-#include "systematicstools/utility/printers.hh"
 #include "systematicstools/utility/string_parsers.hh"
-
-#ifdef NO_ART
-#include "systematicstools/systproviders/ExampleISystProvider_tool.hh"
-#endif
 
 #include "fhiclcpp/ParameterSet.h"
 #include "fhiclcpp/make_ParameterSet.h"
@@ -18,19 +10,23 @@
 #include "cetlib/filepath_maker.h"
 #endif
 
-#include <fstream>
-#include <iomanip>
 #include <iostream>
+#include <string>
+#include <vector>
+
+using namespace systtools;
 
 namespace cliopts {
 std::string fclname = "";
-std::string outputfile = "";
 std::string envvar = "FHICL_FILE_PATH";
-std::string fhicl_key = "syst_providers";
-bool WrapWithPROLOG = true;
+std::string fhicl_key = "generated_systematic_provider_configuration";
 #ifndef NO_ART
 int lookup_policy = 1;
 #endif
+bool ShowCorrections = true;
+bool ShowVariations = true;
+bool ShowTweaks = false;
+bool ShowDetails = false;
 } // namespace cliopts
 
 void SayUsage(char const *argv[]) {
@@ -47,9 +43,15 @@ void SayUsage(char const *argv[]) {
                "\t                   FHICL_FILE_PATH by default.\n"
 #endif
                "\t-c <config.fcl>  : fhicl file to read.\n"
-               "\t-o <output.fcl>  : fhicl file to write, stdout by default.\n"
-               "\t-k <list key>    : fhicl key to look for list of providers,\n"
-               "\t                   \"syst_providers\" by default.\n"
+               "\t-k <list key>    : fhicl key to look for parameter headers,\n"
+               "\t                   "
+               "\"generated_systematic_provider_configuration\"\n"
+               "\t                   by default.\n"
+               "\t-C               : Display only corrections.\n"
+               "\t-V               : Display only variations.\n"
+               "\t-T               : Display the configured tweaks of each\n"
+               "\t                   parameter.\n"
+               "\t-D               : Display details about each parameter.\n"
             << std::endl;
 }
 
@@ -84,12 +86,18 @@ void HandleOpts(int argc, char const *argv[]) {
 #endif
     } else if (std::string(argv[opt]) == "-c") {
       cliopts::fclname = argv[++opt];
-    } else if (std::string(argv[opt]) == "-o") {
-      cliopts::outputfile = argv[++opt];
     } else if (std::string(argv[opt]) == "-k") {
       cliopts::fhicl_key = argv[++opt];
-    } else if (std::string(argv[opt]) == "-P") {
-      cliopts::WrapWithPROLOG = true;
+    } else if (std::string(argv[opt]) == "-C") {
+      cliopts::ShowCorrections = true;
+      cliopts::ShowVariations = false;
+    } else if (std::string(argv[opt]) == "-V") {
+      cliopts::ShowCorrections = false;
+      cliopts::ShowVariations = true;
+    } else if (std::string(argv[opt]) == "-T") {
+      cliopts::ShowTweaks = true;
+    } else if (std::string(argv[opt]) == "-D") {
+      cliopts::ShowDetails = true;
     } else {
       std::cout << "[ERROR]: Unknown option: " << argv[opt] << std::endl;
       SayUsage(argv);
@@ -99,7 +107,7 @@ void HandleOpts(int argc, char const *argv[]) {
   }
 }
 
-fhicl::ParameterSet ReadParameterSet(char const *argv[]) {
+fhicl::ParameterSet ReadParameterSet(char const * argv[]) {
 
 #ifndef NO_ART
   char const *ev = nullptr;
@@ -154,90 +162,81 @@ int main(int argc, char const *argv[]) {
   if (!cliopts::fclname.size()) {
     std::cout << "[ERROR]: Expected to be passed a -c option." << std::endl;
     SayUsage(argv);
-    exit(1);
+    return 1;
   }
 
-  fhicl::ParameterSet in_ps = ReadParameterSet(argv);
+  fhicl::ParameterSet ps = ReadParameterSet(argv);
 
-  std::function<std::unique_ptr<systtools::ISystProviderTool>(
-      fhicl::ParameterSet const &)>
-      InstanceBuilder;
-#ifndef NO_ART
-  InstanceBuilder = [](fhicl::ParameterSet const &paramset)
-      -> std::unique_ptr<systtools::ISystProviderTool> {
-    return art::make_tool<systtools::ISystProviderTool>(paramset);
-  };
-#else
-  InstanceBuilder = [](fhicl::ParameterSet const &paramset)
-      -> std::unique_ptr<systtools::ISystProviderTool> {
-    std::string tool_type = "";
-    paramset.get_if_present("tool_type", tool_type);
-    if (tool_type == "ExampleISystProvider") {
-      return std::make_unique<ExampleISystProvider>(paramset);
+  systtools::param_header_map_t configuredParameterHeaders =
+      systtools::BuildParameterHeaders(
+          ps.get<fhicl::ParameterSet>(cliopts::fhicl_key));
+
+  if (!configuredParameterHeaders.size()) {
+    std::cout << "[ERROR]: Expected systematric providers loaded from input: "
+              << std::quoted(cliopts::fclname)
+              << " to provide some parameter headers." << std::endl;
+    return 2;
+  }
+
+  size_t found = 0;
+  for (auto idhdr : configuredParameterHeaders) {
+    systtools::SystParamHeader const &hdr = idhdr.second.Header;
+
+    if (!cliopts::ShowCorrections && hdr.isCorrection) {
+      continue;
+    }
+    if (!cliopts::ShowVariations && !hdr.isCorrection) {
+      continue;
+    }
+    found++;
+  }
+  std::cout << "[INFO]: Found " << found << " parameters:" << std::endl;
+  for (auto idhdr : configuredParameterHeaders) {
+    systtools::SystParamHeader const &hdr = idhdr.second.Header;
+
+    if (!cliopts::ShowCorrections && hdr.isCorrection) {
+      continue;
+    }
+    if (!cliopts::ShowVariations && !hdr.isCorrection) {
+      continue;
+    }
+
+    std::cout << hdr.prettyName;
+    if (cliopts::ShowDetails || cliopts::ShowTweaks) {
+      std::cout << ":" << std::endl;
     } else {
-      std::cerr << "[ERROR]: When built artless can only instantiate "
-                   "ExampleISystProvider instances. A "
-                << std::quoted(tool_type) << " instance was requested."
+      std::cout << std::endl;
+    }
+    if (cliopts::ShowDetails) {
+
+      std::cout << "\tSyst provider: " << idhdr.second.ProviderFQName
                 << std::endl;
-      throw;
+      std::cout << "\tId: " << hdr.systParamId << std::endl;
+      std::cout << "\tType: "
+                << (hdr.isWeightSystematicVariation ? "" : "lateral ")
+                << (hdr.isCorrection ? "correction" : "variation") << " "
+                << (hdr.isWeightSystematicVariation ? "weight " : "")
+                << std::endl;
+
+      if (hdr.centralParamValue != systtools::kDefaultDouble) {
+        std::cout << "\tCentral value: " << hdr.centralParamValue << std::endl;
+      }
+      if (hdr.isResponselessParam) {
+        std::cout << "\t Responds via parameter id: " << hdr.responseParamId
+                  << std::endl;
+      }
     }
-  };
-#endif
-  systtools::provider_list_t tools =
-      systtools::ConfigureISystProvidersFromToolConfig(in_ps, InstanceBuilder,
-                                                       cliopts::fhicl_key);
-
-  fhicl::ParameterSet out_ps;
-  std::vector<std::string> providerNames;
-  for (auto &prov : tools) {
-    if (!systtools::Validate(prov->GetSystMetaData(), false)) {
-      throw systtools::invalid_SystMetaData()
-          << "[ERROR]: A parameter handled by provider: "
-          << std::quoted(prov->GetFullyQualifiedName())
-          << " failed validation.";
+    if (cliopts::ShowTweaks) {
+      std::cout << "\tVariations: [";
+      for (size_t i = 0; i < hdr.paramVariations.size(); ++i) {
+        std::cout << hdr.paramVariations[i]
+                  << (((i + 1) == hdr.paramVariations.size()) ? "]" : ", ");
+        ;
+      }
+      std::cout << std::endl;
     }
-    fhicl::ParameterSet tool_ps = prov->GetParameterHeadersDocument();
-    out_ps.put(prov->GetFullyQualifiedName(), tool_ps);
-    providerNames.push_back(prov->GetFullyQualifiedName());
-  }
-  out_ps.put("syst_providers", providerNames);
-
-  fhicl::ParameterSet wrapped_out_ps;
-  wrapped_out_ps.put("generated_systematic_provider_configuration", out_ps);
-
-  std::ostream *os(nullptr);
-
-  if (cliopts::outputfile.size()) {
-    std::ofstream *fs = new std::ofstream(cliopts::outputfile);
-    if (!fs->is_open()) {
-      std::cout << "[ERROR]: Failed to open " << cliopts::outputfile
-                << " for writing." << std::endl;
-      exit(1);
+    if (cliopts::ShowDetails || cliopts::ShowTweaks) {
+      std::cout << std::endl;
     }
-    os = fs;
-  } else {
-    os = &std::cout;
   }
-
-  if (cliopts::WrapWithPROLOG) {
-    (*os) << "BEGIN_PROLOG" << std::endl;
-  }
-
-  (*os) << wrapped_out_ps.to_indented_string() << std::endl;
-
-  if (cliopts::WrapWithPROLOG) {
-    (*os) << "END_PROLOG" << std::endl;
-  }
-  if (cliopts::outputfile.size()) {
-    static_cast<std::ofstream *>(os)->close();
-    delete os;
-  }
-
-  std::cout << (cliopts::outputfile.size() ? "Wrote" : "Built")
-            << " systematic provider configuration with md5: "
-            << std::quoted(md5(out_ps.to_compact_string())) << std::flush;
-  if (cliopts::outputfile.size()) {
-    std::cout << " to " << std::quoted(cliopts::outputfile) << std::flush;
-  }
-  std::cout << std::endl;
 }

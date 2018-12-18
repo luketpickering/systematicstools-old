@@ -103,5 +103,31 @@ ParseToVect(std::string const &inp, std::string const &delim,
   return outV;
 }
 
+inline std::string str_replace(std::string const &inp, std::string const &from,
+                           std::string const &to) {
+  std::stringstream ss("");
+
+  size_t nextOccurence = 0;
+  size_t prevOccurence = 0;
+  bool AtEnd = false;
+  while (!AtEnd) {
+    nextOccurence = inp.find(from, prevOccurence);
+    if (nextOccurence == std::string::npos) {
+      if (prevOccurence == inp.length()) {
+        break;
+      }
+      AtEnd = true;
+    }
+    if ((nextOccurence != prevOccurence) || (nextOccurence == 0)) {
+      ss << inp.substr(prevOccurence, (nextOccurence - prevOccurence));
+      if (!AtEnd) {
+        ss << to;
+      }
+    }
+    prevOccurence = nextOccurence + from.size();
+  }
+  return ss.str();
+}
+
 } // namespace systtools
 #endif

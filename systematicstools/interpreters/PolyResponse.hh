@@ -20,6 +20,9 @@ template <size_t n> struct PolyResponse : std::array<double, n + 1> {
       this->at(i) = coeffs[i];
     }
   }
+  
+  PolyResponse(PolyResponse &&other)
+      : std::array<double, n + 1>(std::move(other)) {}
 
   double eval(double x) const {
     double val = 0;

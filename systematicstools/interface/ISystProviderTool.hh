@@ -2,8 +2,8 @@
 #define SYSTTOOLS_INTERFACE_ISYSTPROVIDERTOOL_SEEN
 
 #include "systematicstools/interface/EventResponse_product.hh"
-#include "systematicstools/interface/SystMetaData.hh"
 #include "systematicstools/interface/FHiCLSystParamHeaderConverters.hh"
+#include "systematicstools/interface/SystMetaData.hh"
 
 #include "systematicstools/utility/exceptions.hh"
 
@@ -35,8 +35,8 @@ public:
 
   ///\brief Check if instance handles parameter
   ///
-  /// Uses helper methods in systematicstools/interface/SystMetaData.hh to check for
-  /// parameters identified by paramId_t or std::string
+  /// Uses helper methods in systematicstools/interface/SystMetaData.hh to check
+  /// for parameters identified by paramId_t or std::string
   template <typename T> bool ParamIsHandled(T ident) {
     return HasParam(fSystMetaData, ident);
   }
@@ -69,6 +69,14 @@ public:
   virtual void SuggestParameterThrows(parameter_throws_list_t &&throws,
                                       bool Check = false);
 
+  ///\brief Sub-classes may override this method to provide an example Tool
+  /// Configuration FHiCL document.
+  virtual fhicl::ParameterSet GetExampleToolConfiguration() {
+    fhicl::ParameterSet ex_cfg;
+    ex_cfg.put<std::string>("tool_type", GetToolType());
+    return ex_cfg;
+  }
+
   ///\brief Configure an ISystProvider instance with tool-specific FHiCL
   ///
   /// Takes the tool-specific FHiCL configuration and the paramId_t of the first
@@ -88,7 +96,7 @@ public:
   SystMetaData const &GetSystMetaData();
 
   ///\brief Build the Parameter Headers FHiCL document that can be used to
-  /// re-configure an instances of this tool via ConfigureFromParameterHeaders
+  /// re-configure an instance of this tool via ConfigureFromParameterHeaders
   ///
   /// If a sub-class requires extra configuration options they should be exposed
   /// through GetExtraToolOptions
@@ -105,14 +113,19 @@ public:
   bool ConfigureFromParameterHeaders(fhicl::ParameterSet const &ps);
 
 #ifndef NO_ART
-  virtual std::unique_ptr<EventResponse> GetEventResponse(art::Event const &) = 0;
+  virtual std::unique_ptr<EventResponse>
+  GetEventResponse(art::Event const &) = 0;
+  std::unique_ptr<EventAndCVResponse>
+  GetEventVariationAndCVResponse(art::Event const &);
 #endif
 
   std::string const &GetToolType() const { return fToolType; }
   std::string const &GetFullyQualifiedName() const { return fFQName; }
   std::string const &GetInstanceName() const { return fInstanceName; }
 
-  virtual std::string AsString() = 0;
+  ///\brief Sub-classes may override this method to provide
+  /// string-representations of their state.
+  virtual std::string AsString() { return ""; }
 
   virtual ~ISystProviderTool(){};
 
@@ -141,7 +154,8 @@ protected:
   /// ConfigureFromParameterHeaders
   virtual bool SetupResponseCalculator(fhicl::ParameterSet const &) = 0;
 
-  ///\brief Checks if internal parameter metadata has been generated or loaded from a Parameter Headers file.
+  ///\brief Checks if internal parameter metadata has been generated or loaded
+  /// from a Parameter Headers file.
   ///
   /// If i is passed then it only checks for that specific paramId_t.
   ///
