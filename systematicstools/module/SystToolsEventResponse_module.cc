@@ -59,7 +59,7 @@ private:
 };
 
 SystToolsEventResponse::SystToolsEventResponse(fhicl::ParameterSet const &p)
-    : syst_providers{}, sp_config_hash("") {
+    : EDProducer(p), syst_providers{}, sp_config_hash("") {
 
   if (!p.has_key("generated_systematic_provider_configuration")) {
     throw no_systprovider_key()
