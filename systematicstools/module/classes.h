@@ -4,4 +4,3 @@
 
 #include <vector>
 
-template class art::Wrapper<systtools::EventResponse>;
