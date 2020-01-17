@@ -28,8 +28,7 @@ execute_process (COMMAND root-config
 string(REPLACE " " ";" ROOT_CXX_FLAGS_PREPARSE "${ROOT_CXX_FLAGS_RAW}")
 set(ROOT_CXX_FLAGS "")
 foreach(FLG ${ROOT_CXX_FLAGS_PREPARSE})
-  string(REGEX MATCH "-std=c++11" ISSTDFLAG ${FLG})
-  if(NOT ISSTDFLAG) #ignore -std=c++11 flags from ROOT config
+    if(NOT "-std=c++11" STREQUAL ${FLG}) #ignore -std=c++11 flags from ROOT config
     SET(ROOT_CXX_FLAGS "${ROOT_CXX_FLAGS} ${FLG}")
   endif()
 endforeach()
