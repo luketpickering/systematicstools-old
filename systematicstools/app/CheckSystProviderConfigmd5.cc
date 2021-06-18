@@ -2,7 +2,6 @@
 #include "systematicstools/utility/string_parsers.hh"
 
 #include "fhiclcpp/ParameterSet.h"
-#include "fhiclcpp/make_ParameterSet.h"
 
 #include "cetlib/filepath_maker.h"
 
@@ -121,7 +120,8 @@ fhicl::ParameterSet ReadParameterSet(char const *argv[]) {
   default: {}
   }
   fhicl::ParameterSet ps;
-  fhicl::make_ParameterSet(cliopts::fclname, *fm, ps);
+  //fhicl::make_ParameterSet(cliopts::fclname, *fm, ps);
+  ps = fhicl::ParameterSet::make(cliopts::fclname, *fm);
   return ps;
 }
 

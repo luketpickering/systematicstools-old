@@ -4,7 +4,6 @@
 #include "systematicstools/utility/string_parsers.hh"
 
 #include "fhiclcpp/ParameterSet.h"
-#include "fhiclcpp/make_ParameterSet.h"
 
 #ifndef NO_ART
 #include "cetlib/filepath_maker.h"
@@ -149,10 +148,11 @@ fhicl::ParameterSet ReadParameterSet(char const * argv[]) {
   }
   default: {}
   }
-  fhicl::make_ParameterSet(cliopts::fclname, *fm, ps);
+  //fhicl::make_ParameterSet(cliopts::fclname, *fm, ps);
+  ps = fhicl::ParameterSet::make(cliopts::fclname, *fm);
 #else
   (void)argv;
-  ps = fhicl::make_ParameterSet(cliopts::fclname);
+  ps = fhicl::ParameterSet::make(cliopts::fclname);
 #endif
   return ps;
 }
