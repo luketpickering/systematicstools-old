@@ -2,8 +2,8 @@
 
 # The *parent* line must the first non-commented line and defines this product and version
 # The version should be of the form vxx_yy_zz (e.g. v01_02_03)
-parent systematicstools v01_00_00
-defaultqual e19
+parent systematicstools v01_00_01
+defaultqual e20
 
 # These optional lines define the installed directories where headers,
 # libraries, and executables will be found.
@@ -33,8 +33,8 @@ fcldir product_dir fcl
 # Add the dependent product and version
 
 product          version
-art_root_io      v1_07_00
-cetbuildtools    v8_07_00 - only_for_build
+art_root_io      v1_08_01
+cetbuildtools    v8_08_02 - only_for_build
 end_product_list
 
 # We now define allowed qualifiers and the corresponding qualifiers for the depdencies.
