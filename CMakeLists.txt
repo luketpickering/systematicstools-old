@@ -16,50 +16,71 @@
 # use cmake 3.3 or later
 cmake_minimum_required (VERSION 3.12...3.18 FATAL_ERROR)
 
-project(systematicstools LANGUAGES CXX)
+project(systematicstools LANGUAGES CXX C)
 
-# cetbuildtools contains our cmake modules
-find_package(cetbuildtools REQUIRED)
+if(NOT DEFINED USEART) #by default build in ART mode
+  SET(USEART TRUE)
+endif()
 
-list(APPEND CMAKE_MODULE_PATH $ENV{CANVAS_ROOT_IO_DIR}/Modules $ENV{ART_DIR}/Modules)
+if(USEART) # This is the standard, CET-empowered build for building the art module and associated tools
 
-include(CetCMakeEnv)
-cet_cmake_env()
+  # cetbuildtools contains our cmake modules
+  find_package(cetbuildtools REQUIRED)
 
-cet_set_compiler_flags(DIAGS CAUTIOUS
-  WERROR
-  NO_UNDEFINED
-  EXTRA_FLAGS -pedantic )
+  list(APPEND CMAKE_MODULE_PATH $ENV{CANVAS_ROOT_IO_DIR}/Modules $ENV{ART_DIR}/Modules)
 
-cet_report_compiler_flags()
+  include(CetCMakeEnv)
+  cet_cmake_env()
 
-# these are minimum required versions, not the actual product versions
-find_ups_product( canvas )
-find_ups_product( canvas_root_io )
-find_ups_product( art )
-find_ups_product(art_root_io)
-find_ups_root()
+  cet_set_compiler_flags(DIAGS CAUTIOUS
+    WERROR
+    NO_UNDEFINED
+    EXTRA_FLAGS -pedantic )
 
-# macros for dictionary and simple_plugin
-include(ArtDictionary)
-include(ArtMake)
-include(BuildPlugins)
+  cet_report_compiler_flags()
 
-# ADD SOURCE CODE SUBDIRECTORIES HERE
-add_subdirectory(systematicstools)
+  # these are minimum required versions, not the actual product versions
+  find_ups_product( canvas )
+  find_ups_product( canvas_root_io )
+  find_ups_product( art )
+  find_ups_product(art_root_io)
+  find_ups_root()
 
-SET(SYSTTOOLS_LIBS
-  systematicstools_interface
-  systematicstools_interpreters
-  systematicstools_utility)
+  # macros for dictionary and simple_plugin
+  include(ArtDictionary)
+  include(ArtMake)
+  include(BuildPlugins)
+
+  # ADD SOURCE CODE SUBDIRECTORIES HERE
+  add_subdirectory(systematicstools)
+
+  SET(SYSTTOOLS_LIBS
+    systematicstools_interface
+    systematicstools_interpreters
+    systematicstools_utility)
 
 
-# tests
-add_subdirectory(test)
+  # tests
+  add_subdirectory(test)
 
-# ups - table and config files
-add_subdirectory(ups)
+  # ups - table and config files
+  add_subdirectory(ups)
 
-# packaging utility
-include(UseCPack)
+  # packaging utility
+  include(UseCPack)
 
+else() # built without art/cet
+
+  #Changes default install path to be a subdirectory of the build dir.
+  #Can set build dir at configure time with -DCMAKE_INSTALL_PREFIX=/install/path
+  if(CMAKE_INSTALL_PREFIX STREQUAL "" OR CMAKE_INSTALL_PREFIX STREQUAL
+    "/usr/local")
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
+  elseif(NOT DEFINED CMAKE_INSTALL_PREFIX)
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
+  endif()
+  message(STATUS "Installing to: ${CMAKE_INSTALL_PREFIX}")
+
+  add_subdirectory(systematicstools/artless)
+
+endif()
