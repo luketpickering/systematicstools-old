@@ -72,7 +72,7 @@ typedef std::map<paramId_t, ParamHeaderProviderName> param_header_map_t;
 /// Useful for interacting with: param_value_list_t,
 /// parameter_throws_list_t, and
 template <typename T>
-size_t GetParamContainerIndex(std::vector<T> const &container, paramId_t &pid) {
+size_t GetParamContainerIndex(std::vector<T> const &container, paramId_t pid) {
   size_t NVals = container.size();
   for (size_t i = 0; i < NVals; ++i) {
     if (container[i].pid == pid) {
