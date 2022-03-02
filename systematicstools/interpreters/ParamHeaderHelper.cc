@@ -1,4 +1,4 @@
-#include "ParamHeaderHelper.hh"
+#include "systematicstools/interpreters/ParamHeaderHelper.hh"
 
 #include "systematicstools/utility/printers.hh"
 

@@ -1,8 +1,8 @@
 #ifndef SYSTTOOLS_INTERPRETERS_EVENTSPLINECACHEHELPER_SEEN
 #define SYSTTOOLS_INTERPRETERS_EVENTSPLINECACHEHELPER_SEEN
 
-#include "ParamHeaderHelper.hh"
-#include "ParamValidationAndErrorResponse.hh"
+#include "systematicstools/interpreters/ParamHeaderHelper.hh"
+#include "systematicstools/interpreters/ParamValidationAndErrorResponse.hh"
 
 #include <iostream>
 

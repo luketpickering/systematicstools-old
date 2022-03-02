@@ -18,6 +18,8 @@ cmake_minimum_required (VERSION 3.12...3.18 FATAL_ERROR)
 
 project(systematicstools LANGUAGES CXX C)
 
+SET(systematicstools_VERSION 2022.x)
+
 if(NOT DEFINED USEART) #by default build in ART mode
   SET(USEART TRUE)
 endif()
