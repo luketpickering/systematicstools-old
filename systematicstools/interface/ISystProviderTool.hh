@@ -115,6 +115,10 @@ public:
 #ifndef NO_ART
   virtual std::unique_ptr<EventResponse>
   GetEventResponse(art::Event const &) = 0;
+
+  //==== return 1-filled event_unit_response_t
+  systtools::event_unit_response_t GetDefaultEventResponse();
+
   std::unique_ptr<EventAndCVResponse>
   GetEventVariationAndCVResponse(art::Event const &);
 #endif

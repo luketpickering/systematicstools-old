@@ -110,6 +110,28 @@ bool ISystProviderTool::ConfigureFromParameterHeaders(
 }
 
 #ifndef NO_ART
+
+systtools::event_unit_response_t
+ISystProviderTool::GetDefaultEventResponse() {
+  systtools::SystMetaData const &smd = this->GetSystMetaData();
+
+  systtools::event_unit_response_t resp;
+  for( auto &sph : smd ){
+
+    resp.push_back({sph.systParamId, {}});
+    if (sph.isCorrection) {
+      resp.back().responses.push_back(1.);
+    } else {
+      for ( std::vector<double>::size_type i_var=0; i_var<sph.paramVariations.size(); i_var++) {
+        resp.back().responses.push_back(1.);
+      }
+    }
+
+  }
+  return resp;
+}
+
+
 std::unique_ptr<EventAndCVResponse>
 ISystProviderTool::GetEventVariationAndCVResponse(art::Event const &evt) {
   std::unique_ptr<EventAndCVResponse> responseandCV =
