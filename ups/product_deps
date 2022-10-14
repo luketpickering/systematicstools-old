@@ -33,7 +33,7 @@ fcldir product_dir fcl
 # Add the dependent product and version
 
 product          version
-art_root_io      v1_08_03
+art_root_io      v1_08_05
 cetbuildtools    v8_19_02 - only_for_build
 end_product_list
 
