@@ -21,4 +21,4 @@ art_make(LIBRARY_NAME systematicstools
     ${ART_ROOT_IO_TFILE_SUPPORT} ${ROOT_CORE}
     ${ART_ROOT_IO_TFILESERVICE_SERVICE}
     ${ROOT_BASIC_LIB_LIST}
-)
+) ### MIGRATE-ACTION-RECOMMENDED (migrate-3.20.00) - deprecated: use art_make_library(), art_dictonary(), and cet_build_plugin() with explicit source lists and plugin base types
