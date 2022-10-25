@@ -1,6 +1,3 @@
-SET(SYSTTOOLS_LIBS 
-  systematicstools_utility
-  systematicstools_interface)
 
 SET(SYSTTOOLS_APPS
   GenerateSystProviderConfig
@@ -9,13 +6,14 @@ SET(SYSTTOOLS_APPS
   FindISystProvider)
 
 foreach(APPNAME ${SYSTTOOLS_APPS})
-  cet_make_exec(${APPNAME}
+  cet_make_exec(NAME ${APPNAME}
   SOURCE ${APPNAME}.cc
   LIBRARIES
-    ${SYSTTOOLS_LIBS}
-    ${FHICLCPP}
-    art_Utilities
-    cetlib
-    cetlib_except
+    systematicstools::utility
+    systematicstools::interface
+    fhiclcpp::fhiclcpp
+    art::Utilities
+    cetlib::cetlib
+    cetlib_except::cetlib_except
   )
 endforeach()
