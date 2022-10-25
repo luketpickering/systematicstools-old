@@ -11,7 +11,7 @@ ExternalProject_Add(fhiclcpp-simple
   -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
   -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
   -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-  -DSETUPFILENAME=fhiclcpp.setup.sh) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid CMAKE_INSTALL_PREFIX: not necesssary for install()-like commands
+  -DSETUPFILENAME=fhiclcpp.setup.sh)
 
 ###### ROOT set up
 
@@ -59,8 +59,8 @@ else()
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_ART -std=c++1y -Wall -Wextra -Werror ${ROOT_CXX_FLAGS}")
 endif()
 
-include_directories(${CMAKE_SOURCE_DIR}) ### MIGRATE-ACTION-RECOMMENDED (migrate-3.20.00) - avoid directory-scope functions: use target_link_libraries() with target semantics or target_include_directories() whenever possible
-include_directories(${CMAKE_INSTALL_PREFIX}/include) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid CMAKE_INSTALL_PREFIX: not necesssary for install()-like commands ### MIGRATE-ACTION-RECOMMENDED (migrate-3.20.00) - avoid directory-scope functions: use target_link_libraries() with target semantics or target_include_directories() whenever possible
+include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_INSTALL_PREFIX}/include)
 
 ####### Util library
 SET(UTIL_IMPLFILES
@@ -79,9 +79,9 @@ SET(UTIL_HDRFILES
   ${CMAKE_SOURCE_DIR}/systematicstools/utility/exceptions.hh)
 
 if(CMAKE_BUILD_TYPE MATCHES DEBUG)
-  add_library(systematicstools_utility STATIC ${UTIL_IMPLFILES}) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid: use cet_make_library() or cet_build_plugin() for automatic transitivity
+  add_library(systematicstools_utility STATIC ${UTIL_IMPLFILES})
 else(CMAKE_BUILD_TYPE MATCHES RELEASE)
-  add_library(systematicstools_utility SHARED ${UTIL_IMPLFILES}) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid: use cet_make_library() or cet_build_plugin() for automatic transitivity
+  add_library(systematicstools_utility SHARED ${UTIL_IMPLFILES})
 endif()
 
 add_dependencies(systematicstools_utility fhiclcpp-simple)
@@ -105,9 +105,9 @@ SET(IFCE_HDRFILES
   ${CMAKE_SOURCE_DIR}/systematicstools/interface/types.hh)
 
 if(CMAKE_BUILD_TYPE MATCHES DEBUG)
-  add_library(systematicstools_interface STATIC ${IFCE_IMPLFILES}) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid: use cet_make_library() or cet_build_plugin() for automatic transitivity
+  add_library(systematicstools_interface STATIC ${IFCE_IMPLFILES})
 else(CMAKE_BUILD_TYPE MATCHES RELEASE)
-  add_library(systematicstools_interface SHARED ${IFCE_IMPLFILES}) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid: use cet_make_library() or cet_build_plugin() for automatic transitivity
+  add_library(systematicstools_interface SHARED ${IFCE_IMPLFILES})
 endif()
 
 add_dependencies(systematicstools_interface fhiclcpp-simple)
@@ -128,9 +128,9 @@ SET(INTR_HDRFILES
   ${CMAKE_SOURCE_DIR}/systematicstools/interpreters/ParamValidationAndErrorResponse.hh)
 
 if(CMAKE_BUILD_TYPE MATCHES DEBUG)
-  add_library(systematicstools_interpreters STATIC ${INTR_IMPLFILES}) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid: use cet_make_library() or cet_build_plugin() for automatic transitivity
+  add_library(systematicstools_interpreters STATIC ${INTR_IMPLFILES})
 else(CMAKE_BUILD_TYPE MATCHES RELEASE)
-  add_library(systematicstools_interpreters SHARED ${INTR_IMPLFILES}) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid: use cet_make_library() or cet_build_plugin() for automatic transitivity
+  add_library(systematicstools_interpreters SHARED ${INTR_IMPLFILES})
 endif()
 
 add_dependencies(systematicstools_interpreters fhiclcpp-simple)
@@ -148,9 +148,9 @@ ${CMAKE_SOURCE_DIR}/systematicstools/systproviders/ExampleISystProvider_tool.hh)
 
 
 if(CMAKE_BUILD_TYPE MATCHES DEBUG)
-  add_library(systematicstools_systproviders STATIC ${SPV_IMPLFILES}) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid: use cet_make_library() or cet_build_plugin() for automatic transitivity
+  add_library(systematicstools_systproviders STATIC ${SPV_IMPLFILES})
 else(CMAKE_BUILD_TYPE MATCHES RELEASE)
-  add_library(systematicstools_systproviders SHARED ${SPV_IMPLFILES}) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid: use cet_make_library() or cet_build_plugin() for automatic transitivity
+  add_library(systematicstools_systproviders SHARED ${SPV_IMPLFILES})
 endif()
 
 add_dependencies(systematicstools_systproviders fhiclcpp-simple)
@@ -160,7 +160,7 @@ INSTALL(FILES ${SPV_HDRFILES} DESTINATION include/systematicstools/systproviders
 
 ####### GenerateSystProvider app
 
-add_executable(GenerateSystProviderConfig ${CMAKE_SOURCE_DIR}/systematicstools/app/GenerateSystProviderConfig.cc) ### MIGRATE-ACTION-RECOMMENDED (migrate-3.20.00) - prefer cet_make_exec() for transitivity
+add_executable(GenerateSystProviderConfig ${CMAKE_SOURCE_DIR}/systematicstools/app/GenerateSystProviderConfig.cc)
 set_target_properties(GenerateSystProviderConfig PROPERTIES LINK_FLAGS ${CMAKE_LINK_FLAGS})
 
 target_link_libraries(GenerateSystProviderConfig
@@ -175,7 +175,7 @@ INSTALL(TARGETS GenerateSystProviderConfig DESTINATION bin)
 
 ####### FindISystProvider app
 
-add_executable(FindISystProvider ${CMAKE_SOURCE_DIR}/systematicstools/app/FindISystProvider.cc) ### MIGRATE-ACTION-RECOMMENDED (migrate-3.20.00) - prefer cet_make_exec() for transitivity
+add_executable(FindISystProvider ${CMAKE_SOURCE_DIR}/systematicstools/app/FindISystProvider.cc)
 set_target_properties(FindISystProvider PROPERTIES LINK_FLAGS ${CMAKE_LINK_FLAGS})
 
 target_link_libraries(FindISystProvider
@@ -189,7 +189,7 @@ INSTALL(TARGETS FindISystProvider DESTINATION bin)
 
 ####### DumpSystToolsParameters app
 
-add_executable(DumpSystToolsParameters ${CMAKE_SOURCE_DIR}/systematicstools/app/DumpSystToolsParameters.cc) ### MIGRATE-ACTION-RECOMMENDED (migrate-3.20.00) - prefer cet_make_exec() for transitivity
+add_executable(DumpSystToolsParameters ${CMAKE_SOURCE_DIR}/systematicstools/app/DumpSystToolsParameters.cc)
 set_target_properties(DumpSystToolsParameters PROPERTIES LINK_FLAGS ${CMAKE_LINK_FLAGS})
 
 target_link_libraries(DumpSystToolsParameters
@@ -204,7 +204,7 @@ INSTALL(TARGETS DumpSystToolsParameters DESTINATION bin)
 
 ####### fhicl files
 file(GLOB FCL ${CMAKE_SOURCE_DIR}/systematicstools/fcl/*.fcl)
-install(FILES ${FCL} DESTINATION ${CMAKE_INSTALL_PREFIX}/fcl) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid CMAKE_INSTALL_PREFIX: not necesssary for install()-like commands
+install(FILES ${FCL} DESTINATION ${CMAKE_INSTALL_PREFIX}/fcl)
 
 
 ####### environment scripts
@@ -213,4 +213,4 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/setup.sh.in
 
 install(FILES
   "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/systematicstools.setup.sh" DESTINATION
-  ${CMAKE_INSTALL_PREFIX}) ### MIGRATE-ACTION-REQUIRED (migrate-3.20.00) - avoid CMAKE_INSTALL_PREFIX: not necesssary for install()-like commands
+  ${CMAKE_INSTALL_PREFIX})
