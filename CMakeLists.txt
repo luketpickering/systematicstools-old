@@ -15,14 +15,11 @@
 
 # use cmake 3.3 or later
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
-# cmake_policy(VERSION 3.18) ### MIGRATE-ACTION-COMPATIBILITY (migrate-3.20.00) - Uncomment to preserve compatibility with older CMake versions
 
 find_package(cetmodules REQUIRED)
 project(systematicstools VERSION 01.01.00 LANGUAGES CXX)
 
 # cetbuildtools contains our cmake modules
-
-list(APPEND CMAKE_MODULE_PATH $ENV{CANVAS_ROOT_IO_DIR}/Modules $ENV{ART_DIR}/Modules) ### MIGRATE-ACTION-RECOMMENDED (migrate-3.20.00) - prefer find_package() to find external CMake modules
 
 include(CetCMakeEnv)
 cet_cmake_env()
@@ -32,14 +29,20 @@ cet_set_compiler_flags(DIAGS CAUTIOUS
   NO_UNDEFINED
   EXTRA_FLAGS -pedantic )
 
-cet_report_compiler_flags() ### MIGRATE-ACTION-RECOMMENDED (migrate-3.20.00) - add args: REPORT_THRESHOLD VERBOSE
+cet_report_compiler_flags(REPORT_THRESHOLD VERBOSE)
 
 # these are minimum required versions, not the actual product versions
-find_package( canvas REQUIRED )
-find_package( canvas_root_io REQUIRED )
-find_package( art REQUIRED )
-find_package(art_root_io REQUIRED)
-find_package(ROOT REQUIRED)
+find_package(art_root_io REQUIRED EXPORT)
+find_package(canvas_root_io REQUIRED EXPORT)
+find_package(art REQUIRED EXPORT)
+find_package(canvas REQUIRED EXPORT)
+find_package(messagefacility REQUIRED EXPORT)
+find_package(fhiclcpp REQUIRED EXPORT)
+find_package(cetlib REQUIRED EXPORT)
+find_package(cetlib_except REQUIRED EXPORT)
+find_package(ROOT COMPONENTS Core Hist Matrix REQUIRED EXPORT)
+find_package(Boost COMPONENTS headers filesystem REQUIRED EXPORT)
+find_package(CLHEP COMPONENTS Random REQUIRED EXPORT)
 
 # macros for dictionary and simple_plugin
 include(ArtDictionary)
