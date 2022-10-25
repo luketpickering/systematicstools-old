@@ -1,7 +1,7 @@
 
 art_dictionary()
 
-cet_build_plugin(SystToolsEventResponse art::module
+cet_build_plugin(SystToolsEventResponse art::EDProducer
   LIBRARIES
    PUBLIC
     systematicstools::utility
