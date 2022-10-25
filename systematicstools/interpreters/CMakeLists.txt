@@ -1,9 +1,13 @@
-cet_make(LIBRARY_NAME systematicstools_interpreters
+cet_make_library(LIBRARY_NAME systematicstools_interpreters
+  SOURCE
+    ParamHeaderHelper.cc
+    ParamValidationAndErrorResponse.cc
   LIBRARIES
-    ${FHICLCPP}
-    cetlib
-    cetlib_except
-    ${ROOT_BASIC_LIB_LIST}
-  ) ### MIGRATE-ACTION-RECOMMENDED (migrate-3.20.00) - deprecated: use cet_make_library(), build_dictonary(), cet_plugin() with explicit source lists and plugin base types
+    fhiclcpp::fhiclcpp
+    cetlib::cetlib
+    cetlib_except::cetlib_except
+    ROOT::Hist
+    ROOT::Core
+  )
 
 install_headers()
