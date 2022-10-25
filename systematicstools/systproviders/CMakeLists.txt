@@ -1,18 +1,21 @@
-simple_plugin(ExampleISystProvider tool
-  systematicstools_interface
-  systematicstools_utility
-  ${ART_FRAMEWORK_CORE}
-  ${ART_FRAMEWORK_PRINCIPAL}
-  ${ART_FRAMEWORK_SERVICES_REGISTRY}
-  ${ART_FRAMEWORK_SERVICES_OPTIONAL_RANDOMNUMBERGENERATOR_SERVICE}
-  ${CLHEP}
- ) ### MIGRATE-ACTION-RECOMMENDED (migrate-3.20.00) - deprecated: use cet_build_plugin() with explicit source lists and plugin base types
 
-# simple_plugin(CorrelatedMultisimProvider tool
+cet_build_plugin(ExampleISystProvider art::tool
+  LIBRARIES PRIVATE
+    systematicstools::interface
+    systematicstools::utility
+    art::Framework_Core
+    art::Framework_Principal
+    art::Framework_Services_Registry
+    art::Framework_Services_Optional_RandomNumberGenerator_service
+    CLHEP::Random
+)
+
+# cet_build_plugin(CorrelatedMultisimProvider art::tool
+#   LIBRARIES PRIVATE
 #   systematicstools_utility
-#   ${ART_FRAMEWORK_CORE}
-#   ${ART_FRAMEWORK_PRINCIPAL}
-#   ${ART_FRAMEWORK_SERVICES_REGISTRY}
-#   ${ART_FRAMEWORK_SERVICES_OPTIONAL_RANDOMNUMBERGENERATOR_SERVICE}
-#   ${CLHEP}
-#  )
+#   art::Framework_Core
+#   art::Framework_Principal
+#   art::Framework_Services_Registry
+#   art::Framework_Services_Optional_RandomNumberGenerator_service
+#   CLHEP::Random
+# )
