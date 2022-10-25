@@ -2,9 +2,11 @@
 art_dictionary()
 
 cet_build_plugin(SystToolsEventResponse art::module
-  LIBRARIES PRIVATE
+  LIBRARIES
+   PUBLIC
     systematicstools::utility
     systematicstools::interface
+   PRIVATE
     art::Persistency_Common
     art::Framework_Services_Registry
     art_root_io::tfile_support

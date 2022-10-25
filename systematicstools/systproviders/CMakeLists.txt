@@ -1,8 +1,10 @@
 
 cet_build_plugin(ExampleISystProvider art::tool
-  LIBRARIES PRIVATE
+  LIBRARIES
+   PUBLIC
     systematicstools::interface
     systematicstools::utility
+   PRIVATE
     art::Framework_Core
     art::Framework_Principal
     art::Framework_Services_Registry

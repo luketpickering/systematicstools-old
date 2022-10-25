@@ -6,7 +6,9 @@ cet_make_library(LIBRARY_NAME systematicstools_utility
     ParameterAndProviderConfigurationUtility.cc
     ResponselessParamUtility.cc
   LIBRARIES
+   PUBLIC
     systematicstools::interface
+   PRIVATE
     art::Framework_Core
     art::Framework_Principal
     art::Persistency_Common
