@@ -116,12 +116,12 @@ public:
   virtual std::unique_ptr<EventResponse>
   GetEventResponse(art::Event const &) = 0;
 
-  //==== return 1-filled event_unit_response_t
-  systtools::event_unit_response_t GetDefaultEventResponse() const;
-
   std::unique_ptr<EventAndCVResponse>
   GetEventVariationAndCVResponse(art::Event const &);
 #endif
+
+  //==== return 1-filled event_unit_response_t
+  systtools::event_unit_response_t GetDefaultEventResponse() const;
 
   std::string const &GetToolType() const { return fToolType; }
   std::string const &GetFullyQualifiedName() const { return fFQName; }
