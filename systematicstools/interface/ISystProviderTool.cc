@@ -111,15 +111,6 @@ bool ISystProviderTool::ConfigureFromParameterHeaders(
 
 #ifndef NO_ART
 
-ParamResponses 
-responses_for(SystParamHeader const& sph)
-{
-  if (sph.isCorrection) {
-    return {sph.systParamId, std::vector{1.}};
-  }
-  return {sph.systParamId, std::vector<double>(sph.paramVariations.size(), 1.)};
-}
-
 std::unique_ptr<EventAndCVResponse>
 ISystProviderTool::GetEventVariationAndCVResponse(art::Event const &evt) {
   std::unique_ptr<EventAndCVResponse> responseandCV =
@@ -194,6 +185,15 @@ void ISystProviderTool::CheckHaveMetaData(paramId_t i) const{
           << GetFullyQualifiedName() << "\".";
     }
   }
+}
+
+ParamResponses
+responses_for(SystParamHeader const& sph)
+{
+  if (sph.isCorrection) {
+    return {sph.systParamId, std::vector{1.}};
+  }
+  return {sph.systParamId, std::vector<double>(sph.paramVariations.size(), 1.)};
 }
 
 } // namespace systtools
