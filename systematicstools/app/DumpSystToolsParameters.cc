@@ -7,6 +7,8 @@
 
 #ifndef NO_ART
 #include "cetlib/filepath_maker.h"
+#else
+#include "fhiclcpp/make_ParameterSet.h"
 #endif
 
 #include <iostream>
@@ -152,7 +154,7 @@ fhicl::ParameterSet ReadParameterSet(char const * argv[]) {
   ps = fhicl::ParameterSet::make(cliopts::fclname, *fm);
 #else
   (void)argv;
-  ps = fhicl::ParameterSet::make(cliopts::fclname);
+  ps = fhicl::make_ParameterSet(cliopts::fclname);
 #endif
   return ps;
 }

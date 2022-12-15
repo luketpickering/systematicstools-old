@@ -16,53 +16,76 @@
 # use cmake 3.3 or later
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 
-find_package(cetmodules REQUIRED)
 project(systematicstools VERSION 01.02.00 LANGUAGES CXX)
 
-# cetbuildtools contains our cmake modules
+if(NOT DEFINED USEART) #by default build in ART mode
+  SET(USEART TRUE)
+endif()
 
-include(CetCMakeEnv)
-cet_cmake_env()
+if(USEART) # This is the standard, CET-empowered build for building the art module and associated tools
 
-cet_set_compiler_flags(DIAGS CAUTIOUS
-  WERROR
-  NO_UNDEFINED
-  EXTRA_FLAGS -pedantic )
+  find_package(cetmodules REQUIRED)
 
-cet_report_compiler_flags(REPORT_THRESHOLD VERBOSE)
+  # cetbuildtools contains our cmake modules
 
-# these are minimum required versions, not the actual product versions
-find_package(art_root_io REQUIRED EXPORT)
-find_package(canvas_root_io REQUIRED EXPORT)
-find_package(art REQUIRED EXPORT)
-find_package(canvas REQUIRED EXPORT)
-find_package(messagefacility REQUIRED EXPORT)
-find_package(fhiclcpp REQUIRED EXPORT)
-find_package(cetlib REQUIRED EXPORT)
-find_package(cetlib_except REQUIRED EXPORT)
-find_package(ROOT COMPONENTS Core Hist Matrix REQUIRED EXPORT)
-find_package(Boost COMPONENTS headers filesystem REQUIRED EXPORT)
-find_package(CLHEP COMPONENTS Random REQUIRED EXPORT)
+  include(CetCMakeEnv)
+  cet_cmake_env()
 
-# macros for dictionary and simple_plugin
-include(ArtDictionary)
-include(ArtMake)
-include(BuildPlugins)
+  cet_set_compiler_flags(DIAGS CAUTIOUS
+    WERROR
+    NO_UNDEFINED
+    EXTRA_FLAGS -pedantic )
 
-# ADD SOURCE CODE SUBDIRECTORIES HERE
-add_subdirectory(systematicstools)
+  cet_report_compiler_flags(REPORT_THRESHOLD VERBOSE)
 
-SET(SYSTTOOLS_LIBS
-  systematicstools_interface
-  systematicstools_interpreters
-  systematicstools_utility)
+  # these are minimum required versions, not the actual product versions
+  find_package(art_root_io REQUIRED EXPORT)
+  find_package(canvas_root_io REQUIRED EXPORT)
+  find_package(art REQUIRED EXPORT)
+  find_package(canvas REQUIRED EXPORT)
+  find_package(messagefacility REQUIRED EXPORT)
+  find_package(fhiclcpp REQUIRED EXPORT)
+  find_package(cetlib REQUIRED EXPORT)
+  find_package(cetlib_except REQUIRED EXPORT)
+  find_package(ROOT COMPONENTS Core Hist Matrix REQUIRED EXPORT)
+  find_package(Boost COMPONENTS headers filesystem REQUIRED EXPORT)
+  find_package(CLHEP COMPONENTS Random REQUIRED EXPORT)
+
+  # macros for dictionary and simple_plugin
+  include(ArtDictionary)
+  include(ArtMake)
+  include(BuildPlugins)
+
+  # ADD SOURCE CODE SUBDIRECTORIES HERE
+  add_subdirectory(systematicstools)
+
+  SET(SYSTTOOLS_LIBS
+    systematicstools_interface
+    systematicstools_interpreters
+    systematicstools_utility)
 
 
-# tests
-add_subdirectory(test)
+  # tests
+  add_subdirectory(test)
 
-# ups - table and config files
+  # ups - table and config files
 
-# packaging utility
+  # packaging utility
 
-cet_cmake_config()
+  cet_cmake_config()
+
+else() #
+
+  #Changes default install path to be a subdirectory of the build dir.
+  #Can set build dir at configure time with -DCMAKE_INSTALL_PREFIX=/install/path
+  if(CMAKE_INSTALL_PREFIX STREQUAL "" OR CMAKE_INSTALL_PREFIX STREQUAL
+    "/usr/local")
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
+  elseif(NOT DEFINED CMAKE_INSTALL_PREFIX)
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
+  endif()
+  message(STATUS "Installing to: ${CMAKE_INSTALL_PREFIX}")
+
+  add_subdirectory(systematicstools/artless)
+
+endif()
