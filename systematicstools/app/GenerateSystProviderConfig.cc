@@ -12,6 +12,9 @@
 #endif
 
 #include "fhiclcpp/ParameterSet.h"
+#ifdef NO_ART
+#include "fhiclcpp/make_ParameterSet.h"
+#endif
 
 #ifndef NO_ART
 #include "cetlib/filepath_maker.h"
@@ -142,7 +145,6 @@ fhicl::ParameterSet ReadParameterSet(char const *argv[]) {
   }
   default: {}
   }
-  //fhicl::make_ParameterSet(cliopts::fclname, *fm, ps);
   ps = fhicl::ParameterSet::make(cliopts::fclname, *fm);
 #else
   (void)argv;

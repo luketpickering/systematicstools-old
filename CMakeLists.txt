@@ -15,7 +15,6 @@
 
 # use cmake 3.3 or later
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
-
 project(systematicstools VERSION 01.02.00 LANGUAGES CXX)
 
 if(NOT DEFINED USEART) #by default build in ART mode

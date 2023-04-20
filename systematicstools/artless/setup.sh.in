@@ -1,73 +1,13 @@
-# Adapted for nusyst by L. Pickering, originally from the NUISANCE package
+if [ -z "${fhiclcpp_ROOT}" ]; then
+  echo "[INFO]: Sourcing fhiclcpp from: @fhiclcpp_CMAKE_DIR@"
+  source "@fhiclcpp_CMAKE_DIR@/../setup.sh"
+fi
 
-# Copyright 2016 L. Pickering, P Stowell, R. Terri, C. Wilkinson, C. Wret
-
-################################################################################
-#    This file is part of NUISANCE.
-#
-#    NUISANCE is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    NUISANCE is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with NUISANCE.  If not, see <http://www.gnu.org/licenses/>.
-################################################################################
-
-#!/bin/sh
-
-### Adapted from https://unix.stackexchange.com/questions/4965/keep-duplicates-out-of-path-on-source
-function add_to_PATH () {
-  for d; do
-    if [[ "$d" =~ "/usr/bin"* ]] || [[ "$d" =~ "/usr/local/bin"* ]]; then
-      case ":$PATH:" in
-        *":$d:"*) :;;
-        *) export PATH=$PATH:$d;;
-      esac
-    else
-      d=$(cd -- "$d" && { pwd -P || pwd; }) 2>/dev/null  # canonicalize symbolic links
-      if [ -z "$d" ]; then continue; fi  # skip nonexistent directory
-
-      case ":$PATH:" in
-        *":$d:"*) :;;
-        *) export PATH=$d:$PATH;;
-      esac
-    fi
-  done
-}
-
-function add_to_LD_LIBRARY_PATH () {
-  for d; do
-    if [[ "$d" =~ "/usr/lib"* ]] || [[ "$d" =~ "/usr/local/lib"* ]]; then
-      case ":$LD_LIBRARY_PATH:" in
-        *":$d:"*) :;;
-        *) export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$d;;
-      esac
-    else
-      d=$(cd -- "$d" && { pwd -P || pwd; }) 2>/dev/null  # canonicalize symbolic links
-      if [ -z "$d" ]; then continue; fi  # skip nonexistent directory
-
-      case ":$LD_LIBRARY_PATH:" in
-        *":$d:"*) :;;
-        *) export LD_LIBRARY_PATH=$d:$LD_LIBRARY_PATH;;
-      esac
-    fi
-  done
-}
-
-add_to_PATH "@CMAKE_INSTALL_PREFIX@/bin"
-add_to_LD_LIBRARY_PATH "@CMAKE_INSTALL_PREFIX@/lib"
-
-if [ ! "${ROOTSYS}" ]; then
+if [ -z "${ROOTSYS}" ]; then
   echo "[INFO]: Sourcing ROOT from: @CMAKE_ROOTSYS@"
   source "@CMAKE_ROOTSYS@/bin/thisroot.sh"
 fi
 
-source @CMAKE_INSTALL_PREFIX@/fhiclcpp.setup.sh
+export systematicstools_ROOT=@CMAKE_INSTALL_PREFIX@
 
 add_to_FHICL_FILE_PATH "@CMAKE_INSTALL_PREFIX@/fcl"
