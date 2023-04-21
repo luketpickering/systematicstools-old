@@ -17,11 +17,11 @@
 cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
 project(systematicstools VERSION 01.02.00 LANGUAGES CXX)
 
-if(NOT DEFINED USEART) #by default build in ART mode
-  SET(USEART TRUE)
+if(NOT DEFINED ART_ENABLED) #by default build in ART mode
+  SET(ART_ENABLED TRUE)
 endif()
 
-if(USEART) # This is the standard, CET-empowered build for building the art module and associated tools
+if(ART_ENABLED) # This is the standard, CET-empowered build for building the art module and associated tools
 
   find_package(cetmodules REQUIRED)
 
