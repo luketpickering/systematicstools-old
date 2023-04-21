@@ -1,4 +1,4 @@
-include(${CMAKE_CURRENT_SOURCE_DIR}/systematicstoolsConfig.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/systematicstoolsDependencies.cmake)
 
 ####### Interface library
 SET(interface_IMPLFILES
@@ -20,7 +20,7 @@ set_target_properties(systematicstools_interface PROPERTIES
   PUBLIC_HEADER "${interface_HDRFILES}"
   EXPORT_NAME interface)
 
-target_link_libraries(systematicstools_interface ROOT::ROOT fhiclcpp::Headers)
+target_link_libraries(systematicstools_interface ROOT::ROOT systematicstools_dependencies)
 
 install(TARGETS systematicstools_interface 
     EXPORT systematicstools-targets
@@ -120,27 +120,27 @@ foreach(APP ${APPS_TO_BUILD})
   INSTALL(TARGETS ${APP} DESTINATION bin)
 endforeach()
 
-####### fhicl files
-file(GLOB FCL ${CMAKE_SOURCE_DIR}/systematicstools/fcl/*.fcl)
-install(FILES ${FCL} DESTINATION ${CMAKE_INSTALL_PREFIX}/fcl)
+# ####### fhicl files
+# file(GLOB FCL ${CMAKE_SOURCE_DIR}/systematicstools/fcl/*.fcl)
+# install(FILES ${FCL} DESTINATION ${CMAKE_INSTALL_PREFIX}/fcl)
 
-install(FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/systematicstoolsConfig.cmake DESTINATION
-  ${CMAKE_INSTALL_PREFIX}/cmake)
+# install(FILES
+#   ${CMAKE_CURRENT_SOURCE_DIR}/systematicstoolsConfig.cmake DESTINATION
+#   ${CMAKE_INSTALL_PREFIX}/cmake)
 
-install(EXPORT systematicstools-targets
-  FILE systematicstoolsTargets.cmake
-  NAMESPACE systematicstools::
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake
-)
+# install(EXPORT systematicstools-targets
+#   FILE systematicstoolsTargets.cmake
+#   NAMESPACE systematicstools::
+#   DESTINATION ${CMAKE_INSTALL_PREFIX}/cmake
+# )
 
-FILE(WRITE ${CMAKE_INSTALL_PREFIX}/cmake/systematicstoolsVersion.cmake 
-  "SET(systematicstools_VERSION ${systematicstools_VERSION})\n" )
+# FILE(WRITE ${CMAKE_INSTALL_PREFIX}/cmake/systematicstoolsVersion.cmake 
+#   "SET(systematicstools_VERSION ${systematicstools_VERSION})\n" )
 
-####### environment scripts
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/setup.sh.in
-"${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/setup.sh" @ONLY)
+# ####### environment scripts
+# configure_file(${CMAKE_CURRENT_SOURCE_DIR}/setup.sh.in
+# "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/setup.sh" @ONLY)
 
-install(FILES
-  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/setup.sh" DESTINATION
-  ${CMAKE_INSTALL_PREFIX})
+# install(FILES
+#   "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/setup.sh" DESTINATION
+#   ${CMAKE_INSTALL_PREFIX})
