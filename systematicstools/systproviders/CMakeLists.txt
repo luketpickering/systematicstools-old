@@ -1,23 +1,19 @@
+####### SystProviders library
 
-cet_build_plugin(ExampleISystProvider art::tool
-  LIBRARIES
-   PUBLIC
-    systematicstools::interface
-    systematicstools::utility
-   PRIVATE
-    art::Framework_Core
-    art::Framework_Principal
-    art::Framework_Services_Registry
-    art::Framework_Services_Optional_RandomNumberGenerator_service
-    CLHEP::Random
-)
+SET(SPV_IMPLFILES
+${CMAKE_SOURCE_DIR}/systematicstools/systproviders/ExampleISystProvider_tool.cc)
 
-# cet_build_plugin(CorrelatedMultisimProvider art::tool
-#   LIBRARIES PRIVATE
-#   systematicstools_utility
-#   art::Framework_Core
-#   art::Framework_Principal
-#   art::Framework_Services_Registry
-#   art::Framework_Services_Optional_RandomNumberGenerator_service
-#   CLHEP::Random
-# )
+SET(SPV_HDRFILES
+${CMAKE_SOURCE_DIR}/systematicstools/systproviders/ExampleISystProvider_tool.hh)
+
+
+if(CMAKE_BUILD_TYPE MATCHES DEBUG)
+  add_library(systematicstools_systproviders STATIC ${SPV_IMPLFILES})
+else(CMAKE_BUILD_TYPE MATCHES RELEASE)
+  add_library(systematicstools_systproviders SHARED ${SPV_IMPLFILES})
+endif()
+
+add_dependencies(systematicstools_systproviders fhiclcpp-simple)
+
+INSTALL(TARGETS systematicstools_systproviders DESTINATION lib)
+INSTALL(FILES ${SPV_HDRFILES} DESTINATION include/systematicstools/systproviders)

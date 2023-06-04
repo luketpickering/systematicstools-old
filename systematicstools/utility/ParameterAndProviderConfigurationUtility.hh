@@ -7,10 +7,6 @@
 
 #include "systematicstools/utility/exceptions.hh"
 
-#ifndef NO_ART
-#include "art/Utilities/make_tool.h"
-#endif
-
 #include "fhiclcpp/ParameterSet.h"
 
 #include <chrono>
@@ -71,14 +67,7 @@ param_header_map_t BuildParameterHeaders(
 template <typename T = systtools::ISystProviderTool>
 std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromToolConfig(
     fhicl::ParameterSet const &paramset,
-    std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)>
-        InstanceBuilder
-#ifndef NO_ART
-    = [](fhicl::ParameterSet const &paramset) -> std::unique_ptr<T> {
-      return art::make_tool<T>(paramset);
-    }
-#endif
-    ,
+    std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)> InstanceBuilder,
     std::string const &key = "syst_providers", paramId_t syst_param_id = 0) {
 
   // Instantiate RNGs for seed suggestion.
@@ -135,14 +124,7 @@ std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromToolConfig(
 template <typename T = systtools::ISystProviderTool>
 std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromParameterHeaders(
     fhicl::ParameterSet const &paramset,
-    std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)>
-        InstanceBuilder
-#ifndef NO_ART
-    = [](fhicl::ParameterSet const &paramset) -> std::unique_ptr<T> {
-      return art::make_tool<T>(paramset);
-    }
-#endif
-    ,
+    std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)> InstanceBuilder,
     std::string const &key = "syst_providers") {
 
   std::vector<std::unique_ptr<T>> providers;

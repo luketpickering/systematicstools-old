@@ -12,80 +12,96 @@
 #  make package (builds distribution tarfile)
 # ======================================================================
 
-
 # use cmake 3.3 or later
-cmake_minimum_required (VERSION 3.20 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
-project(systematicstools VERSION 01.02.00 LANGUAGES CXX)
+find_program(CMAKE_C_COMPILER NAMES $ENV{CC} gcc PATHS ENV PATH NO_DEFAULT_PATH)
+find_program(CMAKE_CXX_COMPILER NAMES $ENV{CXX} g++ PATHS ENV PATH NO_DEFAULT_PATH)
 
-if(NOT DEFINED USEART) #by default build in ART mode
-  SET(USEART TRUE)
+project(systematicstools)
+
+#Changes default install path to be a subdirectory of the build dir.
+#Can set build dir at configure time with -DCMAKE_INSTALL_PREFIX=/install/path
+if(CMAKE_INSTALL_PREFIX STREQUAL "" OR CMAKE_INSTALL_PREFIX STREQUAL
+  "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
+elseif(NOT DEFINED CMAKE_INSTALL_PREFIX)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
 endif()
 
-if(USEART) # This is the standard, CET-empowered build for building the art module and associated tools
+#In case we want to use CPM?
+#LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
+#include(CPM)
 
-  find_package(cetmodules REQUIRED)
+################################################################################
+#                            Check Dependencies
+################################################################################
 
-  # cetbuildtools contains our cmake modules
+###### ROOT set up
 
-  include(CetCMakeEnv)
-  cet_cmake_env()
+if (NOT DEFINED ENV{ROOTSYS})
+  message (FATAL_ERROR "$ROOTSYS is not defined, please set up ROOT first.")
+else()
+  message(STATUS "Using ROOT installed at $ENV{ROOTSYS}")
+  set(CMAKE_ROOTSYS $ENV{ROOTSYS})
+endif()
 
-  cet_set_compiler_flags(DIAGS CAUTIOUS
-    WERROR
-    NO_UNDEFINED
-    EXTRA_FLAGS -pedantic )
+# Get cflags from ROOT
+execute_process (COMMAND root-config
+  --cflags OUTPUT_VARIABLE ROOT_CXX_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-  cet_report_compiler_flags(REPORT_THRESHOLD VERBOSE)
+# Get libdir from ROOT
+execute_process (COMMAND root-config
+  --libdir OUTPUT_VARIABLE ROOT_LIBDIR OUTPUT_STRIP_TRAILING_WHITESPACE)
+# Get version from ROOT
+execute_process (COMMAND root-config
+  --version OUTPUT_VARIABLE ROOT_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+# Get features from ROOT
+execute_process (COMMAND root-config
+  --features OUTPUT_VARIABLE ROOT_FEATURES OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-  # these are minimum required versions, not the actual product versions
-  find_package(art_root_io REQUIRED EXPORT)
-  find_package(canvas_root_io REQUIRED EXPORT)
-  find_package(art REQUIRED EXPORT)
-  find_package(canvas REQUIRED EXPORT)
-  find_package(messagefacility REQUIRED EXPORT)
-  find_package(fhiclcpp REQUIRED EXPORT)
-  find_package(cetlib REQUIRED EXPORT)
-  find_package(cetlib_except REQUIRED EXPORT)
-  find_package(ROOT COMPONENTS Core Hist Matrix REQUIRED EXPORT)
-  find_package(Boost COMPONENTS headers filesystem REQUIRED EXPORT)
-  find_package(CLHEP COMPONENTS Random REQUIRED EXPORT)
+SET(ROOT_LIBS)
+LIST(APPEND ROOT_LIBS
+  Core
+  MathCore
+  Hist)
 
-  # macros for dictionary and simple_plugin
-  include(ArtDictionary)
-  include(ArtMake)
-  include(BuildPlugins)
+message (STATUS "[ROOT]: root-config --version: ${ROOT_VERSION} ")
+message (STATUS "[ROOT]: root-config --cflags : ${ROOT_CXX_FLAGS} ")
+message (STATUS "[ROOT]: libs in use          : ${ROOT_LIBS} ")
 
-  # ADD SOURCE CODE SUBDIRECTORIES HERE
-  add_subdirectory(systematicstools)
-
-  SET(SYSTTOOLS_LIBS
-    systematicstools_interface
-    systematicstools_interpreters
-    systematicstools_utility)
-
-
-  # tests
-  add_subdirectory(test)
-
-  # ups - table and config files
-
-  # packaging utility
-
-  cet_cmake_config()
-
-else() #
-
-  #Changes default install path to be a subdirectory of the build dir.
-  #Can set build dir at configure time with -DCMAKE_INSTALL_PREFIX=/install/path
-  if(CMAKE_INSTALL_PREFIX STREQUAL "" OR CMAKE_INSTALL_PREFIX STREQUAL
-    "/usr/local")
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
-  elseif(NOT DEFINED CMAKE_INSTALL_PREFIX)
-    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
+###### Compiler set up
+  if(CMAKE_LINK_FLAGS STREQUAL "")
+    SET(CMAKE_LINK_FLAGS "-L${ROOT_LIBDIR}")
+  else()
+    SET(CMAKE_LINK_FLAGS "${CMAKE_LINK_FLAGS} -L${ROOT_LIBDIR}")
   endif()
-  message(STATUS "Installing to: ${CMAKE_INSTALL_PREFIX}")
 
-  add_subdirectory(systematicstools/artless)
-
+if(CMAKE_CXX_FLAGS STREQUAL "")
+  SET(CMAKE_CXX_FLAGS " -DNO_ART -Wall -Wextra -Werror ${ROOT_CXX_FLAGS}")
+else()
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_ART -std=c++1y -Wall -Wextra -Werror ${ROOT_CXX_FLAGS}")
 endif()
+
+###### fhiclcpp-simple set up
+
+include(ExternalProject)
+
+ExternalProject_Add(fhiclcpp-simple
+  PREFIX "${PROJECT_BINARY_DIR}/fhiclcpp-simple"
+  GIT_REPOSITORY https://github.com/luketpickering/fhiclcpp-simple.git
+  GIT_TAG stable
+  UPDATE_DISCONNECTED 0
+  CMAKE_ARGS
+  -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}
+  -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+  -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+  -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+  -DSETUPFILENAME=fhiclcpp.setup.sh
+)
+
+
+include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_INSTALL_PREFIX}/include)
+
+add_subdirectory(systematicstools)

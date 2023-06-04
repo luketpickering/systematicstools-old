@@ -7,10 +7,6 @@
 
 #include "systematicstools/utility/exceptions.hh"
 
-#ifndef NO_ART
-#include "art/Framework/Principal/Event.h"
-#endif
-
 #include "fhiclcpp/ParameterSet.h"
 
 #include <iomanip>
@@ -30,7 +26,7 @@ NEW_SYSTTOOLS_EXCEPT(invalid_ToolOptions);
 /// ABC defining the interface to systematic response syst_providers
 class ISystProviderTool {
 public:
-  /// ABC constructor required for art::make_tool
+
   ISystProviderTool(fhicl::ParameterSet const &ps);
 
   ///\brief Check if instance handles parameter
@@ -111,14 +107,6 @@ public:
   /// This is checked for by md5-ing the stringified fhicl representation of the
   /// parameters before and after the call.
   bool ConfigureFromParameterHeaders(fhicl::ParameterSet const &ps);
-
-#ifndef NO_ART
-  virtual std::unique_ptr<EventResponse>
-  GetEventResponse(art::Event const &) = 0;
-
-  std::unique_ptr<EventAndCVResponse>
-  GetEventVariationAndCVResponse(art::Event const &);
-#endif
 
   //==== return 1-filled event_unit_response_t
   systtools::event_unit_response_t GetDefaultEventResponse() const;
