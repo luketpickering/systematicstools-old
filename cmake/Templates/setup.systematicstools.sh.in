@@ -1,0 +1,1 @@
+export systematicstools_ROOT=@CMAKE_INSTALL_PREFIX@
