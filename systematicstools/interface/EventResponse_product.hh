@@ -24,7 +24,7 @@ struct ParamResponses {
 };
 typedef std::vector<ParamResponses> event_unit_response_t;
 
-///\brief The systematic parameter responses calculated for an ART event.
+///\brief The systematic parameter responses calculated for an event.
 ///
 /// For each 'object of interest' (e.g. neutrino interaction, muon track, ...)
 /// within an event, the relevant responses to parameter variations are stored.

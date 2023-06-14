@@ -1,4 +1,3 @@
-
 SET(SYSTTOOLS_APPS
   GenerateSystProviderConfig
   CheckSystProviderConfigmd5
