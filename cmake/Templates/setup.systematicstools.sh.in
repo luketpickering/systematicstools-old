@@ -1,1 +1,2 @@
 export systematicstools_ROOT=@CMAKE_INSTALL_PREFIX@
+export systematicstools_VERSION=@PROJECT_VERSION@
