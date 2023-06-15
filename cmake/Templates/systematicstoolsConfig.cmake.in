@@ -3,13 +3,14 @@
 set(systematicstools_VERSION @PROJECT_VERSION@)
 
 find_package(ROOT 6.10 REQUIRED)
+find_package(fhiclcpp REQUIRED)
 
 include(${CMAKE_CURRENT_LIST_DIR}/systtools-targets.cmake)
 
-set(systematicstools_FOUND FALSE)
+set(systematicstools_FOUND TRUE)
 
-if(NOT TARGET systematicstools::all)
-  cmessage(WARNING "Expected to find target systematicstools::all in ${CMAKE_CURRENT_LIST_DIR}/systtools-targets.cmake")
+if(NOT TARGET systtools::all)
+  message(WARNING "Expected to find target systtools::all in ${CMAKE_CURRENT_LIST_DIR}/systtools-targets.cmake")
   set(systematicstools_FOUND FALSE)
   return()
 endif()

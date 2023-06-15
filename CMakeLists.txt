@@ -5,7 +5,7 @@ find_program(CMAKE_CXX_COMPILER NAMES $ENV{CXX} g++ PATHS ENV PATH NO_DEFAULT_PA
 
 set(CMAKE_CXX_STANDARD 17)
 
-project(systematicstools VERSION 23.06)
+project(systematicstools VERSION 23.06 LANGUAGES CXX)
 
 #Changes default install path to be a subdirectory of the build dir.
 #Can set build dir at configure time with -DCMAKE_INSTALL_PREFIX=/install/path
@@ -47,7 +47,6 @@ install(TARGETS
 
 add_subdirectory(src/systematicstools)
 
-
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
     "${PROJECT_BINARY_DIR}/systematicstoolsConfigVersion.cmake"
@@ -72,3 +71,5 @@ install(FILES "${PROJECT_BINARY_DIR}/systematicstoolsConfigVersion.cmake"
 configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/Templates/setup.systematicstools.sh.in 
   ${PROJECT_BINARY_DIR}/setup.systematicstools.sh @ONLY)
 install(PROGRAMS ${PROJECT_BINARY_DIR}/setup.systematicstools.sh DESTINATION bin)
+
+install(DIRECTORY fcl DESTINATION fcl)
