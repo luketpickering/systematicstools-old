@@ -27,7 +27,7 @@ find_package(ROOT 6.10 REQUIRED)
 
 CPMAddPackage(
     NAME fhiclcpp
-    GIT_TAG stable
+    GIT_TAG 23.06
     GITHUB_REPOSITORY luketpickering/fhiclcpp-simple
 )
 
