@@ -2,7 +2,7 @@
 
 namespace systtools {
 
-ISystProviderTool::ISystProviderTool(fhicl::ParameterSet const &ps)
+ISystProviderTool::ISystProviderTool(fhiclsimple::ParameterSet const &ps)
     : fToolType{ps.get<std::string>("tool_type")}, fSeedSuggestion{0},
       fIsFullyConfigured{false}, fHaveSystMetaData{false} {
   if (!ps.has_key("instance_name")) {
@@ -35,7 +35,7 @@ void ISystProviderTool::SuggestParameterThrows(parameter_throws_list_t &&,
       << ", but it doesn't handle suggested throws.";
 }
 
-void ISystProviderTool::ConfigureFromToolConfig(fhicl::ParameterSet const &ps,
+void ISystProviderTool::ConfigureFromToolConfig(fhiclsimple::ParameterSet const &ps,
                                                 paramId_t firstId) {
   fSystMetaData = this->BuildSystMetaData(ps, firstId);
 
@@ -63,11 +63,11 @@ SystMetaData const &ISystProviderTool::GetSystMetaData() const{
   return fSystMetaData;
 }
 
-fhicl::ParameterSet ISystProviderTool::GetParameterHeadersDocument() {
+fhiclsimple::ParameterSet ISystProviderTool::GetParameterHeadersDocument() {
 
   CheckHaveMetaData();
 
-  fhicl::ParameterSet ParamHeadersDoc;
+  fhiclsimple::ParameterSet ParamHeadersDoc;
   std::vector<std::string> HeaderKeys;
   for (auto &hdr : GetSystMetaData()) {
     ParamHeadersDoc.put(hdr.prettyName, SystParamHeaderToFHiCL(hdr));
@@ -78,7 +78,7 @@ fhicl::ParameterSet ISystProviderTool::GetParameterHeadersDocument() {
   if (GetInstanceName().size()) {
     ParamHeadersDoc.put("instance_name", GetInstanceName());
   }
-  fhicl::ParameterSet ToolOptions = GetExtraToolOptions();
+  fhiclsimple::ParameterSet ToolOptions = GetExtraToolOptions();
   if (!ToolOptions.is_empty()) {
     ParamHeadersDoc.put("tool_options", ToolOptions);
   }
@@ -87,17 +87,17 @@ fhicl::ParameterSet ISystProviderTool::GetParameterHeadersDocument() {
 }
 
 bool ISystProviderTool::ConfigureFromParameterHeaders(
-    fhicl::ParameterSet const &ps) {
+    fhiclsimple::ParameterSet const &ps) {
   std::vector<std::string> const &ParamHeaderNames =
       ps.get<std::vector<std::string>>("parameter_headers");
 
   for (auto const &paramName : ParamHeaderNames) {
     fSystMetaData.emplace_back(
-        FHiCLToSystParamHeader(ps.get<fhicl::ParameterSet>(paramName)));
+        FHiCLToSystParamHeader(ps.get<fhiclsimple::ParameterSet>(paramName)));
   }
   fHaveSystMetaData = true;
 
-  fhicl::ParameterSet ToolOptions;
+  fhiclsimple::ParameterSet ToolOptions;
   ps.get_if_present("tool_options", ToolOptions);
 
   fIsFullyConfigured = this->SetupResponseCalculator(ToolOptions);

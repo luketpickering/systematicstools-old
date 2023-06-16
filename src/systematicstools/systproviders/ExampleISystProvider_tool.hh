@@ -8,12 +8,12 @@
 
 class ExampleISystProvider : public systtools::ISystProviderTool {
 public:
-  explicit ExampleISystProvider(fhicl::ParameterSet const &);
+  explicit ExampleISystProvider(fhiclsimple::ParameterSet const &);
 
-  systtools::SystMetaData BuildSystMetaData(fhicl::ParameterSet const &,
+  systtools::SystMetaData BuildSystMetaData(fhiclsimple::ParameterSet const &,
                                           systtools::paramId_t);
-  fhicl::ParameterSet GetExtraToolOptions();
-  bool SetupResponseCalculator(fhicl::ParameterSet const &);
+  fhiclsimple::ParameterSet GetExtraToolOptions();
+  bool SetupResponseCalculator(fhiclsimple::ParameterSet const &);
 
   std::string AsString();
 

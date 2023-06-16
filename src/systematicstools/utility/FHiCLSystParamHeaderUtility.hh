@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace fhicl {
+namespace fhiclsimple {
 class ParameterSet;
 }
 namespace systtools {
@@ -39,7 +39,7 @@ NEW_SYSTTOOLS_EXCEPT(invalid_FHiCL_random_distribution_descriptor);
 ///   - SystParamHeader::paramVariations = {5, 3, 1, 4}
 ///
 /// throws invalid_FHiCL_variation_descriptor on error
-bool ParseFHiCLVariationDescriptor(fhicl::ParameterSet const &paramset,
+bool ParseFHiCLVariationDescriptor(fhiclsimple::ParameterSet const &paramset,
                                    std::string const &CV_key,
                                    std::string const &vardescriptor_key,
                                    SystParamHeader &hdr);
@@ -58,7 +58,7 @@ bool ParseFHiCLVariationDescriptor(fhicl::ParameterSet const &paramset,
 /// found in paramset and the NThrows argument is 0, hdr is not modified.
 ///
 /// If no seed is passed, the current time will be used.
-bool MakeFHiCLDefinedRandomVariations(fhicl::ParameterSet const &paramset,
+bool MakeFHiCLDefinedRandomVariations(fhiclsimple::ParameterSet const &paramset,
                                       std::string const &nthrows_key,
                                       SystParamHeader &hdr,
                                       std::string const &distribution_key = "",
@@ -71,7 +71,7 @@ bool MakeFHiCLDefinedRandomVariations(fhicl::ParameterSet const &paramset,
 /// "<parameter_name>_variation_descriptor" exist, the parameter named
 /// <parameter_name> is considered to exist in the configuration.
 bool FHiCLSimpleToolConfigurationParameterExists(
-    fhicl::ParameterSet const &paramset, std::string const &parameter_name);
+    fhiclsimple::ParameterSet const &paramset, std::string const &parameter_name);
 
 ///\brief Builds SystParamHeader from standardized FHiCL that can be used to
 /// write Tool Configuration files.
@@ -91,7 +91,7 @@ bool FHiCLSimpleToolConfigurationParameterExists(
 ///
 /// Uses ParseFHiCLVariationDescriptor and MakeFHiCLDefinedRandomVariations
 bool ParseFHiCLSimpleToolConfigurationParameter(
-    fhicl::ParameterSet const &paramset, std::string const &parameter_name,
+    fhiclsimple::ParameterSet const &paramset, std::string const &parameter_name,
     SystParamHeader &hdr, uint64_t seed = 0, size_t NThrows = 0);
 
 } // namespace systtools
