@@ -10,12 +10,12 @@
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "art/Utilities/ToolMacros.h"
 
-#include "fhiclcpp/types/Atom.h"
-#include "fhiclcpp/types/Sequence.h"
-#include "fhiclcpp/types/Table.h"
+#include "fhiclcppsimple/types/Atom.h"
+#include "fhiclcppsimple/types/Sequence.h"
+#include "fhiclcppsimple/types/Table.h"
 
-#include "fhiclcpp/types/Comment.h"
-#include "fhiclcpp/types/Name.h"
+#include "fhiclcppsimple/types/Comment.h"
+#include "fhiclcppsimple/types/Name.h"
 
 #include "CLHEP/Random/MTwistEngine.h"
 #include "CLHEP/Random/RandGaussQ.h"

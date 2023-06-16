@@ -6,7 +6,7 @@
 
 #include "systematicstools/utility/exceptions.hh"
 
-#include "fhiclcpp/ParameterSet.h"
+#include "fhiclcppsimple/ParameterSet.h"
 
 #include <iomanip>
 #include <iostream>

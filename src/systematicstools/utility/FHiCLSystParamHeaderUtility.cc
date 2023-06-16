@@ -5,7 +5,7 @@
 #include "systematicstools/interface/SystMetaData.hh"
 #include "systematicstools/interface/types.hh"
 
-#include "fhiclcpp/ParameterSet.h"
+#include "fhiclcppsimple/ParameterSet.h"
 
 #include <chrono>
 #include <functional>

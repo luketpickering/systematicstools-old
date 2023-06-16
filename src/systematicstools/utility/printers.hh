@@ -4,7 +4,7 @@
 #include "systematicstools/interface/FHiCLSystParamHeaderConverters.hh"
 #include "systematicstools/interface/SystParamHeader.hh"
 
-#include "fhiclcpp/ParameterSet.h"
+#include "fhiclcppsimple/ParameterSet.h"
 
 #include <iomanip>
 #include <sstream>

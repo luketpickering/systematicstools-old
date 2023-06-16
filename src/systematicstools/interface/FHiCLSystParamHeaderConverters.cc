@@ -4,7 +4,7 @@
 
 #include "systematicstools/interface/types.hh"
 
-#include "fhiclcpp/ParameterSet.h"
+#include "fhiclcppsimple/ParameterSet.h"
 
 #include <vector>
 #include <iomanip>
