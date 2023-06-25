@@ -25,7 +25,7 @@ include(CPM)
 
 find_package(ROOT 6.10 REQUIRED)
 
-CPMAddPackage(
+CPMFindPackage(
     NAME fhiclcppsimple
     GIT_TAG feature/jskim_fhiclcpp_to_fhiclcppsimple
     GITHUB_REPOSITORY jedori0228/fhiclcpp-simple
