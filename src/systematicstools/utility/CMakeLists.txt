@@ -3,14 +3,12 @@
 SET(UTIL_IMPLFILES
   FHiCLSystParamHeaderUtility.cc
   ParameterAndProviderConfigurationUtility.cc
-  ResponselessParamUtility.cc
-  md5.cc)
+  ResponselessParamUtility.cc)
 
 SET(UTIL_HDRFILES
   FHiCLSystParamHeaderUtility.hh
   ParameterAndProviderConfigurationUtility.hh
   ResponselessParamUtility.hh
-  md5.hh
   printers.hh
   ROOTUtility.hh
   string_parsers.hh
