@@ -6,7 +6,7 @@
 #include "systematicstools/utility/string_parsers.hh"
 
 using namespace systtools;
-using namespace fhicl;
+using namespace fhiclsimple;
 
 // 1 sigma = 5% normalisation uncertainty by default.
 double default_centralvalue_nu = 1;

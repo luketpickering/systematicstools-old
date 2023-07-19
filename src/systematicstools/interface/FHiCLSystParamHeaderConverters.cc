@@ -4,14 +4,14 @@
 
 #include "systematicstools/interface/types.hh"
 
-#include "fhiclcpp/ParameterSet.h"
+#include "fhiclcppsimple/ParameterSet.h"
 
 #include <vector>
 #include <iomanip>
 
 namespace systtools {
 
-SystParamHeader FHiCLToSystParamHeader(fhicl::ParameterSet const &paramset) {
+SystParamHeader FHiCLToSystParamHeader(fhiclsimple::ParameterSet const &paramset) {
 
   static std::vector<std::string> allowed_keys = {"prettyName",
                                                   "systParamId",
@@ -34,7 +34,7 @@ SystParamHeader FHiCLToSystParamHeader(fhicl::ParameterSet const &paramset) {
     if (std::find(allowed_keys.begin(), allowed_keys.end(), key) ==
         allowed_keys.end()) {
       throw invalid_SystParamHeader_key()
-          << "[ERROR]: When parsing fhicl::ParameterSet as a "
+          << "[ERROR]: When parsing fhiclsimple::ParameterSet as a "
              "systtools::SystParamHeader, encountered key "
           << std::quoted(key) << " which was not expected.";
     }
@@ -62,8 +62,8 @@ SystParamHeader FHiCLToSystParamHeader(fhicl::ParameterSet const &paramset) {
   return sph;
 }
 
-fhicl::ParameterSet SystParamHeaderToFHiCL(SystParamHeader const &sph) {
-  fhicl::ParameterSet ps;
+fhiclsimple::ParameterSet SystParamHeaderToFHiCL(SystParamHeader const &sph) {
+  fhiclsimple::ParameterSet ps;
 
   if (!Validate(sph)) {
     (void)Validate(sph, false);

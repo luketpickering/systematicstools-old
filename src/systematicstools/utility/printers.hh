@@ -4,7 +4,7 @@
 #include "systematicstools/interface/FHiCLSystParamHeaderConverters.hh"
 #include "systematicstools/interface/SystParamHeader.hh"
 
-#include "fhiclcpp/ParameterSet.h"
+#include "fhiclcppsimple/ParameterSet.h"
 
 #include <iomanip>
 #include <sstream>
@@ -12,7 +12,7 @@
 
 namespace systtools {
 inline std::string to_str(SystParamHeader const &sph, bool indent = true) {
-  fhicl::ParameterSet ps = SystParamHeaderToFHiCL(sph);
+  fhiclsimple::ParameterSet ps = SystParamHeaderToFHiCL(sph);
   return indent ? ps.to_indented_string() : ps.to_string();
 }
 

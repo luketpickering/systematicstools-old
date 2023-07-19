@@ -10,12 +10,12 @@
 #include "art/Framework/Services/Registry/ServiceHandle.h"
 #include "art/Utilities/ToolMacros.h"
 
-#include "fhiclcpp/types/Atom.h"
-#include "fhiclcpp/types/Sequence.h"
-#include "fhiclcpp/types/Table.h"
+#include "fhiclcppsimple/types/Atom.h"
+#include "fhiclcppsimple/types/Sequence.h"
+#include "fhiclcppsimple/types/Table.h"
 
-#include "fhiclcpp/types/Comment.h"
-#include "fhiclcpp/types/Name.h"
+#include "fhiclcppsimple/types/Comment.h"
+#include "fhiclcppsimple/types/Name.h"
 
 #include "CLHEP/Random/MTwistEngine.h"
 #include "CLHEP/Random/RandGaussQ.h"
@@ -27,7 +27,7 @@
 #include <sstream>
 
 using namespace systtools;
-using namespace fhicl;
+using namespace fhiclsimple;
 
 namespace {
 
@@ -45,9 +45,9 @@ struct Config {
               "rows/columns of the input covariance matrix. Unnamed "
               "parameters will be thrown uncorrelated according to the "
               "normal distribution.")};
-  fhicl::Atom<uint64_t> numberOfThrows{
-      fhicl::Name("numberOfThrows"),
-      fhicl::Comment("Number of correlated throws to make. This will "
+  fhiclsimple::Atom<uint64_t> numberOfThrows{
+      fhiclsimple::Name("numberOfThrows"),
+      fhiclsimple::Comment("Number of correlated throws to make. This will "
                      "override any provided child options.")};
 };
 } // namespace
@@ -255,7 +255,7 @@ bool CorrelatedMultisimProvider::Configure() {
     }
   }
 
-  fhicl::ParameterSet syst_provider_config;
+  fhiclsimple::ParameterSet syst_provider_config;
 
   std::vector<std::string> providerNames;
   for (auto &cph : child_syst_provider_parameters) {

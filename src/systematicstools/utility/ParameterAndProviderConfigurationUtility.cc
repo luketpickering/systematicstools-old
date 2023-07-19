@@ -9,7 +9,7 @@
 
 namespace systtools {
 
-param_header_map_t BuildParameterHeaders(fhicl::ParameterSet const &paramset,
+param_header_map_t BuildParameterHeaders(fhiclsimple::ParameterSet const &paramset,
                                          std::string const &key) {
 
   param_header_map_t headers;
@@ -17,7 +17,7 @@ param_header_map_t BuildParameterHeaders(fhicl::ParameterSet const &paramset,
   // Foreach provider block
   auto const &provider_keys = paramset.get<std::vector<std::string>>(key);
   for (auto const &provkey : provider_keys) {
-    auto const &provider_cfg = paramset.get<fhicl::ParameterSet>(provkey);
+    auto const &provider_cfg = paramset.get<fhiclsimple::ParameterSet>(provkey);
 
     std::string provname = provider_cfg.get<std::string>("tool_type");
     if (provider_cfg.has_key("instance_name")) {
@@ -30,7 +30,7 @@ param_header_map_t BuildParameterHeaders(fhicl::ParameterSet const &paramset,
     // Foreach handled parameter block
     for (auto const &ParamHeaderKey : ParameterHeaderKeyNames) {
       SystParamHeader hdr = FHiCLToSystParamHeader(
-          provider_cfg.get<fhicl::ParameterSet>(ParamHeaderKey));
+          provider_cfg.get<fhiclsimple::ParameterSet>(ParamHeaderKey));
 
       // Check that this unique Id hasn't been used before.
       if (headers.find(hdr.systParamId) != headers.end()) {

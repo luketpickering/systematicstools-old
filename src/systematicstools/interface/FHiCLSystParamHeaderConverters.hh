@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace fhicl {
+namespace fhiclsimple {
 class ParameterSet;
 }
 namespace systtools {
@@ -13,14 +13,14 @@ struct SystParamHeader;
 
 namespace systtools {
 
-/// Exception thrown when an unexpected key is found in a fhicl::ParameterSet
+/// Exception thrown when an unexpected key is found in a fhiclsimple::ParameterSet
 /// being parsed as a SystParamHeader
 NEW_SYSTTOOLS_EXCEPT(invalid_SystParamHeader_key);
 
 ///\brief Deserializes a SystParamHeader instance from a passed FHiCL parameter
 /// set.
-SystParamHeader FHiCLToSystParamHeader(fhicl::ParameterSet const &paramset);
+SystParamHeader FHiCLToSystParamHeader(fhiclsimple::ParameterSet const &paramset);
 
 ///\brief Serializes a SyhstParamHeader instance to a FHiCL table.
-fhicl::ParameterSet SystParamHeaderToFHiCL(SystParamHeader const &sph);
+fhiclsimple::ParameterSet SystParamHeaderToFHiCL(SystParamHeader const &sph);
 }
