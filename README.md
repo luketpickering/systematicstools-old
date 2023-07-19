@@ -2,6 +2,19 @@
 
   This package provides a framework for writing, using, and interpreting the output of modular tools for propagating systematic uncertainties within an experimental simulation tool chain.
 
+## Build
+
+Requires ROOT v6+ and CMake v3.20+.
+
+Having checked out the repository in `/path/to/repo`:
+
+```bash
+cd /path/to/repo
+mkdir build; cd build
+cmake ..
+make install -j $(nproc)
+```
+
 ## Introduction
 
   Experimental physics is lousy with models. The 'event' signatures recorded in
@@ -20,10 +33,10 @@
 
 ## Where to start
 
-  For a short primer on the main moving parts within `systematicstools`, see [Moving parts](systematicstools/doc/MovingParts.md).
+  For a short primer on the main moving parts within `systematicstools`, see [Moving parts](doc/MovingParts.md).
 
-  For a description of the two levels of configuration file, with examples, see [Tool Configuration](systematicstools/doc/ToolConfiguration.md) and [Parameter Headers](systematicstools/doc/ParameterHeaders.md).
+  For a description of the two levels of configuration file, with examples, see [Tool Configuration](doc/ToolConfiguration.md) and [Parameter Headers](doc/ParameterHeaders.md).
 
-  For tips on how to begin writing a new systematic provider, and a short description of the ISystProviderTool abstract base class, see [Writing A Provider](systematicstools/doc/WritingAProvider.md).
+  For tips on how to begin writing a new systematic provider, and a short description of the ISystProviderTool abstract base class, see [Writing A Provider](doc/WritingAProvider.md).
 
-  For an example, and recommended documentation structure, of an ISystProviderTool implementation, see [ExampleSystProvider](systematicstools/doc/ExampleSystProvider.md).
+  For an example, and recommended documentation structure, of an ISystProviderTool implementation, see [ExampleSystProvider](doc/ExampleSystProvider.md).

@@ -1,65 +1,75 @@
-# ======================================================================
-#  systematicstools main build file
-#
-#  cd .../path/to/build/directory
-#  source .../path/to/systematicstools/ups/setup_for_development <-d|-p>
-#  cmake [-DCMAKE_INSTALL_PREFIX=/install/path]
-#        -DCMAKE_BUILD_TYPE=$CETPKG_TYPE
-#        $CETPKG_SOURCE
-#  make
-#  make test
-#  make install
-#  make package (builds distribution tarfile)
-# ======================================================================
+cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
+find_program(CMAKE_C_COMPILER NAMES $ENV{CC} gcc PATHS ENV PATH NO_DEFAULT_PATH)
+find_program(CMAKE_CXX_COMPILER NAMES $ENV{CXX} g++ PATHS ENV PATH NO_DEFAULT_PATH)
 
-# use cmake 3.3 or later
-cmake_minimum_required (VERSION 3.12...3.18 FATAL_ERROR)
+set(CMAKE_CXX_STANDARD 17)
 
-project(systematicstools LANGUAGES CXX)
+project(systematicstools VERSION 23.06 LANGUAGES CXX)
 
-# cetbuildtools contains our cmake modules
-find_package(cetbuildtools REQUIRED)
+#Changes default install path to be a subdirectory of the build dir.
+#Can set build dir at configure time with -DCMAKE_INSTALL_PREFIX=/install/path
+if(CMAKE_INSTALL_PREFIX STREQUAL "" OR CMAKE_INSTALL_PREFIX STREQUAL
+  "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
+elseif(NOT DEFINED CMAKE_INSTALL_PREFIX)
+  set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/${CMAKE_SYSTEM_NAME}")
+endif()
 
-list(APPEND CMAKE_MODULE_PATH $ENV{CANVAS_ROOT_IO_DIR}/Modules $ENV{ART_DIR}/Modules)
+if(CMAKE_BUILD_TYPE STREQUAL "")
+  set(CMAKE_BUILD_TYPE DebWithRelInfo)
+endif()
 
-include(CetCMakeEnv)
-cet_cmake_env()
+LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+include(CPM)
 
-cet_set_compiler_flags(DIAGS CAUTIOUS
-  WERROR
-  NO_UNDEFINED
-  EXTRA_FLAGS -pedantic )
+find_package(ROOT 6.10 REQUIRED)
 
-cet_report_compiler_flags()
+CPMAddPackage(
+    NAME fhiclcpp
+    GIT_TAG 23.06
+    GITHUB_REPOSITORY luketpickering/fhiclcpp-simple
+)
 
-# these are minimum required versions, not the actual product versions
-find_ups_product( canvas )
-find_ups_product( canvas_root_io )
-find_ups_product( art )
-find_ups_product(art_root_io)
-find_ups_root()
+###### Compiler set up
+add_library(systematicstools_dependencies INTERFACE)
+target_link_libraries(systematicstools_dependencies INTERFACE 
+  fhiclcpp::includes)
+target_include_directories(systematicstools_dependencies INTERFACE 
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+  $<INSTALL_INTERFACE:include> )
+set_target_properties(systematicstools_dependencies PROPERTIES EXPORT_NAME commondeps)
+add_library(systtools::commondeps ALIAS systematicstools_dependencies)
 
-# macros for dictionary and simple_plugin
-include(ArtDictionary)
-include(ArtMake)
-include(BuildPlugins)
+install(TARGETS 
+          systematicstools_dependencies
+    EXPORT systtools-targets)
 
-# ADD SOURCE CODE SUBDIRECTORIES HERE
-add_subdirectory(systematicstools)
+add_subdirectory(src/systematicstools)
 
-SET(SYSTTOOLS_LIBS
-  systematicstools_interface
-  systematicstools_interpreters
-  systematicstools_utility)
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${PROJECT_BINARY_DIR}/systematicstoolsConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+configure_package_config_file(
+  "${CMAKE_CURRENT_LIST_DIR}/cmake/Templates/systematicstoolsConfig.cmake.in"
+  "${PROJECT_BINARY_DIR}/systematicstoolsConfig.cmake"
+  INSTALL_DESTINATION cmake
+  NO_SET_AND_CHECK_MACRO
+  NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
 
+install(EXPORT systtools-targets
+        NAMESPACE systtools::
+        DESTINATION lib/cmake/systematicstools)
+install(FILES "${PROJECT_BINARY_DIR}/systematicstoolsConfigVersion.cmake"
+              "${PROJECT_BINARY_DIR}/systematicstoolsConfig.cmake"
+        DESTINATION lib/cmake/systematicstools)
 
-# tests
-add_subdirectory(test)
+configure_file(${CMAKE_CURRENT_LIST_DIR}/cmake/Templates/setup.systematicstools.sh.in 
+  ${PROJECT_BINARY_DIR}/setup.systematicstools.sh @ONLY)
+install(PROGRAMS ${PROJECT_BINARY_DIR}/setup.systematicstools.sh DESTINATION bin)
 
-# ups - table and config files
-add_subdirectory(ups)
-
-# packaging utility
-include(UseCPack)
-
+install(DIRECTORY fcl DESTINATION fcl)
