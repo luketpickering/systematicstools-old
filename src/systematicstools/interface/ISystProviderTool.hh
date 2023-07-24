@@ -6,7 +6,7 @@
 
 #include "systematicstools/utility/exceptions.hh"
 
-#include "fhiclcppsimple/ParameterSet.h"
+#include "fhiclcpp/ParameterSet.h"
 
 #include <iomanip>
 #include <iostream>
@@ -26,7 +26,7 @@ NEW_SYSTTOOLS_EXCEPT(invalid_ToolOptions);
 class ISystProviderTool {
 public:
 
-  ISystProviderTool(fhiclsimple::ParameterSet const &ps);
+  ISystProviderTool(fhicl::ParameterSet const &ps);
 
   ///\brief Check if instance handles parameter
   ///
@@ -66,8 +66,8 @@ public:
 
   ///\brief Sub-classes may override this method to provide an example Tool
   /// Configuration FHiCL document.
-  virtual fhiclsimple::ParameterSet GetExampleToolConfiguration() {
-    fhiclsimple::ParameterSet ex_cfg;
+  virtual fhicl::ParameterSet GetExampleToolConfiguration() {
+    fhicl::ParameterSet ex_cfg;
     ex_cfg.put<std::string>("tool_type", GetToolType());
     return ex_cfg;
   }
@@ -81,7 +81,7 @@ public:
   ///
   /// Validates that the SystParamHeaders created by the subclass in
   /// `BuildSystMetaData` are contiguous.
-  void ConfigureFromToolConfig(fhiclsimple::ParameterSet const &ps,
+  void ConfigureFromToolConfig(fhicl::ParameterSet const &ps,
                                paramId_t firstId);
 
   ///\brief Gets the currently configured set of systematic parameter headers.
@@ -95,7 +95,7 @@ public:
   ///
   /// If a sub-class requires extra configuration options they should be exposed
   /// through GetExtraToolOptions
-  fhiclsimple::ParameterSet GetParameterHeadersDocument();
+  fhicl::ParameterSet GetParameterHeadersDocument();
 
   ///\brief Try and read parameter configuration from input fhicl file.
   ///
@@ -105,7 +105,7 @@ public:
   ///\note Sub-classes may not alter fSystMetaData during the configure call.
   /// This is checked for by md5-ing the stringified fhicl representation of the
   /// parameters before and after the call.
-  bool ConfigureFromParameterHeaders(fhiclsimple::ParameterSet const &ps);
+  bool ConfigureFromParameterHeaders(fhicl::ParameterSet const &ps);
 
   //==== return 1-filled event_unit_response_t
   systtools::event_unit_response_t GetDefaultEventResponse() const;
@@ -123,14 +123,14 @@ public:
 protected:
   ///\brief Convert tool-specific configuration fhicl parameter set into generic
   /// SystParamHeaders.
-  virtual SystMetaData BuildSystMetaData(fhiclsimple::ParameterSet const &,
+  virtual SystMetaData BuildSystMetaData(fhicl::ParameterSet const &,
                                          paramId_t) = 0;
 
   ///\brief Gets any extra tool options generated during
   /// ConfigureFromToolConfig that aren't de-serializable to the SystParamHeader
   /// format.
-  virtual fhiclsimple::ParameterSet GetExtraToolOptions() {
-    return fhiclsimple::ParameterSet();
+  virtual fhicl::ParameterSet GetExtraToolOptions() {
+    return fhicl::ParameterSet();
   }
 
   ///\brief Any further configuration required by a subclass before
@@ -143,7 +143,7 @@ protected:
   /// Configuration returned by GetExtraToolOptions after initial Tool
   /// Configuration will be passed into here during
   /// ConfigureFromParameterHeaders
-  virtual bool SetupResponseCalculator(fhiclsimple::ParameterSet const &) = 0;
+  virtual bool SetupResponseCalculator(fhicl::ParameterSet const &) = 0;
 
   ///\brief Checks if internal parameter metadata has been generated or loaded
   /// from a Parameter Headers file.
