@@ -24,7 +24,7 @@ LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 include(CPM)
 
 find_package(ROOT 6.10 REQUIRED)
-find_package(fhiclcpp 4.17.00 REQUIRED)
+find_package(fhiclcpp 4.17.01 REQUIRED)
 
 ###### Compiler set up
 add_library(systematicstools_dependencies INTERFACE)

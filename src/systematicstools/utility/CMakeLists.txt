@@ -3,7 +3,8 @@
 SET(UTIL_IMPLFILES
   FHiCLSystParamHeaderUtility.cc
   ParameterAndProviderConfigurationUtility.cc
-  ResponselessParamUtility.cc)
+  ResponselessParamUtility.cc
+  md5.cc)
 
 SET(UTIL_HDRFILES
   FHiCLSystParamHeaderUtility.hh
@@ -12,7 +13,8 @@ SET(UTIL_HDRFILES
   printers.hh
   ROOTUtility.hh
   string_parsers.hh
-  exceptions.hh)
+  exceptions.hh
+  md5.hh)
 
 add_library(systematicstools_utility SHARED ${UTIL_IMPLFILES})
 add_library(systtools::utility ALIAS systematicstools_utility)
