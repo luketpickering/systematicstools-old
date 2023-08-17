@@ -8,12 +8,12 @@
 
 class ExampleISystProvider : public systtools::ISystProviderTool {
 public:
-  explicit ExampleISystProvider(fhiclsimple::ParameterSet const &);
+  explicit ExampleISystProvider(fhicl::ParameterSet const &);
 
-  systtools::SystMetaData BuildSystMetaData(fhiclsimple::ParameterSet const &,
+  systtools::SystMetaData BuildSystMetaData(fhicl::ParameterSet const &,
                                           systtools::paramId_t);
-  fhiclsimple::ParameterSet GetExtraToolOptions();
-  bool SetupResponseCalculator(fhiclsimple::ParameterSet const &);
+  fhicl::ParameterSet GetExtraToolOptions();
+  bool SetupResponseCalculator(fhicl::ParameterSet const &);
 
   std::string AsString();
 
@@ -22,4 +22,3 @@ private:
   std::unique_ptr<std::mt19937_64> RNgine;
   std::unique_ptr<std::normal_distribution<double>> RNJesus;
 };
-

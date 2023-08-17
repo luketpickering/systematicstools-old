@@ -6,7 +6,7 @@
 
 #include "systematicstools/utility/exceptions.hh"
 
-#include "fhiclcppsimple/ParameterSet.h"
+#include "fhiclcpp/ParameterSet.h"
 
 #include <chrono>
 #include <functional>
@@ -26,7 +26,7 @@ NEW_SYSTTOOLS_EXCEPT(ISystProvider_FQName_collision);
 /// Used by standalone interpreters to read response interpretation metadata
 /// from input FHiCL
 param_header_map_t
-BuildParameterHeaders(fhiclsimple::ParameterSet const &paramset,
+BuildParameterHeaders(fhicl::ParameterSet const &paramset,
                       std::string const &key = "syst_providers");
 
 ///\brief Builds map of SystProvider instances and handled parameters from a
@@ -65,8 +65,8 @@ param_header_map_t BuildParameterHeaders(
 /// art, other instantiators must be used.
 template <typename T = systtools::ISystProviderTool>
 std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromToolConfig(
-    fhiclsimple::ParameterSet const &paramset,
-    std::function<std::unique_ptr<T>(fhiclsimple::ParameterSet const &)> InstanceBuilder,
+    fhicl::ParameterSet const &paramset,
+    std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)> InstanceBuilder,
     std::string const &key = "syst_providers", paramId_t syst_param_id = 0) {
 
   // Instantiate RNGs for seed suggestion.
@@ -79,7 +79,7 @@ std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromToolConfig(
 
   for (auto const &provkey : paramset.get<std::vector<std::string>>(key)) {
     // Get fhicl config for provider
-    auto const &provider_cfg = paramset.get<fhiclsimple::ParameterSet>(provkey);
+    auto const &provider_cfg = paramset.get<fhicl::ParameterSet>(provkey);
 
     // Make an instance of the plugin
     std::unique_ptr<T> is = InstanceBuilder(provider_cfg);
@@ -122,15 +122,15 @@ std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromToolConfig(
 /// art, other instantiators must be used.
 template <typename T = systtools::ISystProviderTool>
 std::vector<std::unique_ptr<T>> ConfigureISystProvidersFromParameterHeaders(
-    fhiclsimple::ParameterSet const &paramset,
-    std::function<std::unique_ptr<T>(fhiclsimple::ParameterSet const &)> InstanceBuilder,
+    fhicl::ParameterSet const &paramset,
+    std::function<std::unique_ptr<T>(fhicl::ParameterSet const &)> InstanceBuilder,
     std::string const &key = "syst_providers") {
 
   std::vector<std::unique_ptr<T>> providers;
 
   for (auto const &provkey : paramset.get<std::vector<std::string>>(key)) {
     // Get fhicl config for provider
-    auto const &provider_cfg = paramset.get<fhiclsimple::ParameterSet>(provkey);
+    auto const &provider_cfg = paramset.get<fhicl::ParameterSet>(provkey);
 
     // Make an instance of the plugin
     std::unique_ptr<T> is = InstanceBuilder(provider_cfg);
