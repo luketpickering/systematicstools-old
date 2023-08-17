@@ -5,7 +5,7 @@
 #include "systematicstools/interface/SystMetaData.hh"
 #include "systematicstools/interface/types.hh"
 
-#include "fhiclcppsimple/ParameterSet.h"
+#include "fhiclcpp/ParameterSet.h"
 
 #include <chrono>
 #include <functional>
@@ -16,7 +16,7 @@
 
 namespace systtools {
 
-bool ParseFHiCLVariationDescriptor(fhiclsimple::ParameterSet const &paramset,
+bool ParseFHiCLVariationDescriptor(fhicl::ParameterSet const &paramset,
                                    std::string const &CV_key,
                                    std::string const &vardescriptor_key,
                                    SystParamHeader &hdr) {
@@ -101,7 +101,7 @@ bool ParseFHiCLVariationDescriptor(fhiclsimple::ParameterSet const &paramset,
   return true;
 }
 
-bool MakeFHiCLDefinedRandomVariations(fhiclsimple::ParameterSet const &paramset,
+bool MakeFHiCLDefinedRandomVariations(fhicl::ParameterSet const &paramset,
                                       std::string const &nthrows_key,
                                       SystParamHeader &hdr,
                                       std::string const &distribution_key,
@@ -151,8 +151,8 @@ bool MakeFHiCLDefinedRandomVariations(fhiclsimple::ParameterSet const &paramset,
   return true;
 }
 
-bool FHiCLSimpleToolConfigurationParameterExists(
-    fhiclsimple::ParameterSet const &paramset, std::string const &parameter_name) {
+bool FhiclToolConfigurationParameterExists(
+    fhicl::ParameterSet const &paramset, std::string const &parameter_name) {
 
   std::string CV_key = parameter_name + "_central_value";
   std::string Tweak_key = parameter_name + "_variation_descriptor";
@@ -166,8 +166,8 @@ bool FHiCLSimpleToolConfigurationParameterExists(
   return false;
 }
 
-bool ParseFHiCLSimpleToolConfigurationParameter(
-    fhiclsimple::ParameterSet const &paramset, std::string const &parameter_name,
+bool ParseFhiclToolConfigurationParameter(
+    fhicl::ParameterSet const &paramset, std::string const &parameter_name,
     SystParamHeader &hdr, uint64_t seed, size_t NThrows) {
 
   std::string CV_key = parameter_name + "_central_value";
