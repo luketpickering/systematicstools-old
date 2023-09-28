@@ -1,12 +1,10 @@
 #pragma once
 
 #include "systematicstools/utility/exceptions.hh"
+#include "fhiclcpp/fwd.h"
 
 #include <string>
 
-namespace fhicl {
-class ParameterSet;
-}
 namespace systtools {
 struct SystParamHeader;
 }
@@ -70,7 +68,7 @@ bool MakeFHiCLDefinedRandomVariations(fhicl::ParameterSet const &paramset,
 /// If either "<parameter_name>_central_value" or
 /// "<parameter_name>_variation_descriptor" exist, the parameter named
 /// <parameter_name> is considered to exist in the configuration.
-bool FHiCLSimpleToolConfigurationParameterExists(
+bool FhiclToolConfigurationParameterExists(
     fhicl::ParameterSet const &paramset, std::string const &parameter_name);
 
 ///\brief Builds SystParamHeader from standardized FHiCL that can be used to
@@ -90,7 +88,7 @@ bool FHiCLSimpleToolConfigurationParameterExists(
 /// }
 ///
 /// Uses ParseFHiCLVariationDescriptor and MakeFHiCLDefinedRandomVariations
-bool ParseFHiCLSimpleToolConfigurationParameter(
+bool ParseFhiclToolConfigurationParameter(
     fhicl::ParameterSet const &paramset, std::string const &parameter_name,
     SystParamHeader &hdr, uint64_t seed = 0, size_t NThrows = 0);
 

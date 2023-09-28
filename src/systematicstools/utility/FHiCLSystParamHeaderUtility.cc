@@ -151,7 +151,7 @@ bool MakeFHiCLDefinedRandomVariations(fhicl::ParameterSet const &paramset,
   return true;
 }
 
-bool FHiCLSimpleToolConfigurationParameterExists(
+bool FhiclToolConfigurationParameterExists(
     fhicl::ParameterSet const &paramset, std::string const &parameter_name) {
 
   std::string CV_key = parameter_name + "_central_value";
@@ -166,7 +166,7 @@ bool FHiCLSimpleToolConfigurationParameterExists(
   return false;
 }
 
-bool ParseFHiCLSimpleToolConfigurationParameter(
+bool ParseFhiclToolConfigurationParameter(
     fhicl::ParameterSet const &paramset, std::string const &parameter_name,
     SystParamHeader &hdr, uint64_t seed, size_t NThrows) {
 

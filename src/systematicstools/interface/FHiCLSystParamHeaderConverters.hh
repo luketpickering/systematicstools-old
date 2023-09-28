@@ -1,12 +1,10 @@
 #pragma once
 
 #include "systematicstools/utility/exceptions.hh"
+#include "fhiclcpp/fwd.h"
 
 #include <string>
 
-namespace fhicl {
-class ParameterSet;
-}
 namespace systtools {
 struct SystParamHeader;
 }

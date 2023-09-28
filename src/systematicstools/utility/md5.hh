@@ -47,6 +47,9 @@ documentation and/or software.
 //      MD5(std::string).hexdigest()
 //
 // assumes that char is 8 bit and int is 32 bit
+
+namespace systtools {
+
 class MD5
 {
 public:
@@ -89,5 +92,7 @@ private:
 };
 
 std::string md5(const std::string str);
+
+} // end namespae systtools
 
 #endif

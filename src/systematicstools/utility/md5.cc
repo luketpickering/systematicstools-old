@@ -57,6 +57,8 @@ documentation and/or software.
 
 ///////////////////////////////////////////////
 
+namespace systtools{
+
 // F, G, H and I are basic MD5 functions.
 inline MD5::uint4 MD5::F(uint4 x, uint4 y, uint4 z) {
   return (x&y) | (~x&z);
@@ -360,3 +362,5 @@ std::string md5(const std::string str)
 
     return md5.hexdigest();
 }
+
+} // end namespace systtools

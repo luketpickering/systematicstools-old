@@ -22,4 +22,3 @@ private:
   std::unique_ptr<std::mt19937_64> RNgine;
   std::unique_ptr<std::normal_distribution<double>> RNJesus;
 };
-
