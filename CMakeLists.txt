@@ -24,12 +24,17 @@ LIST(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 include(CPM)
 
 find_package(ROOT 6.10 REQUIRED)
-find_package(fhiclcpp 4.17.01 REQUIRED)
+
+CPMAddPackage(
+    NAME fhiclcpp
+    GIT_TAG 23.06
+    GITHUB_REPOSITORY luketpickering/fhiclcpp-simple
+)
 
 ###### Compiler set up
 add_library(systematicstools_dependencies INTERFACE)
 target_link_libraries(systematicstools_dependencies INTERFACE 
-  fhiclcpp::fhiclcpp)
+  fhiclcpp::includes)
 target_include_directories(systematicstools_dependencies INTERFACE 
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
   $<INSTALL_INTERFACE:include> )
