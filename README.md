@@ -4,7 +4,7 @@
 
 ## Build
 
-Requires ROOT v6+ and CMake v3.20+.
+Requires ROOT v6+ and CMake v3.21+ (see [here](#fetch-cmake-3-21) for updating CMake hints)
 
 Having checked out the repository in `/path/to/repo`:
 
@@ -40,3 +40,20 @@ make install -j $(nproc)
   For tips on how to begin writing a new systematic provider, and a short description of the ISystProviderTool abstract base class, see [Writing A Provider](doc/WritingAProvider.md).
 
   For an example, and recommended documentation structure, of an ISystProviderTool implementation, see [ExampleSystProvider](doc/ExampleSystProvider.md).
+
+### Fetch CMake 3.21
+
+If you just want a local build of cmake for this package and do not want to update
+your system cmake, you can try the below recipe.
+
+```
+CMAKEVERSION=3.21.7
+cd /path/to/repo
+wget https://github.com/Kitware/CMake/archive/refs/tags/v${CMAKEVERSION}.tar.gz
+tar -zxf v${CMAKEVERSION}.tar.gz
+cd CMake-${CMAKEVERSION}
+./bootstrap
+make -j 8
+export PATH=$(pwd)/bin:${PATH}
+which cmake; cmake --version
+```

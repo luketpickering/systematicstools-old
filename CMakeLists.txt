@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
 
 find_program(CMAKE_C_COMPILER NAMES $ENV{CC} gcc PATHS ENV PATH NO_DEFAULT_PATH)
 find_program(CMAKE_CXX_COMPILER NAMES $ENV{CXX} g++ PATHS ENV PATH NO_DEFAULT_PATH)
@@ -25,16 +25,17 @@ include(CPM)
 
 find_package(ROOT 6.10 REQUIRED)
 
-CPMAddPackage(
-    NAME fhiclcpp
-    GIT_TAG 23.09
-    GITHUB_REPOSITORY luketpickering/fhiclcpp-simple
+CPMFindPackage(
+    NAME fhicl_cpp_standalone
+    GIT_TAG develop
+    VERSION 4.18.01
+    GITHUB_REPOSITORY luketpickering/fhicl-cpp-standalone
 )
 
 ###### Compiler set up
 add_library(systematicstools_dependencies INTERFACE)
 target_link_libraries(systematicstools_dependencies INTERFACE 
-  fhiclcpp::fhiclcpp)
+  fhiclcpp::standalone)
 target_include_directories(systematicstools_dependencies INTERFACE 
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
   $<INSTALL_INTERFACE:include> )
